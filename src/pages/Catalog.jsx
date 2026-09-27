@@ -4,6 +4,7 @@ import { Link } from '../router.jsx';
 import BookCard from '../components/BookCard.jsx';
 import CategoryChips from '../components/CategoryChips.jsx';
 import SearchBox from '../components/SearchBox.jsx';
+import ViewerHeader from '../components/ViewerHeader.jsx';
 
 // Beranda katalog: cari cepat + kategori + koleksi terbaru.
 // Cermin halaman Katalog elibrary yang dipindah ke sini.
@@ -42,10 +43,7 @@ export default function Catalog({ go }) {
 
     return (
         <div className="reader">
-            <header className="reader-header">
-                <Link to="/" className="back-link">{data?.library || 'Perpustakaan WBS'}</Link>
-                <p className="reader-position">Katalog</p>
-            </header>
+            <ViewerHeader library={data?.library || 'Perpustakaan WBS'} right="Katalog" />
             <main className="page">
                 <h1 className="page-title">Cari buku</h1>
                 <p className="page-sub">Cek ketersediaan koleksi tanpa perlu login.</p>

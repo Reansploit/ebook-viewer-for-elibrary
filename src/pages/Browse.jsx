@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api.js';
-import { Link } from '../router.jsx';
 import BookCard from '../components/BookCard.jsx';
 import CategoryChips from '../components/CategoryChips.jsx';
 import Pagination from '../components/Pagination.jsx';
 import SearchBox from '../components/SearchBox.jsx';
+import ViewerHeader from '../components/ViewerHeader.jsx';
 
 // Semua buku: saring kategori + kata kunci + paginasi server 20/halaman.
 export default function Browse({ params, go }) {
@@ -13,6 +13,7 @@ export default function Browse({ params, go }) {
     const [page, setPage] = useState(1);
     const [data, setData] = useState(null);
     const [categories, setCategories] = useState([]);
+    const [library, setLibrary] = useState('Perpustakaan WBS');
     const [error, setError] = useState(false);
 
     useEffect(() => {
@@ -26,7 +27,10 @@ export default function Browse({ params, go }) {
             .then((d) => {
                 setData(d);
                 if (d.data && categories.length === 0) {
-                    api.catalog().then((c) => setCategories(c.categories || [])).catch(() => {});
+                    api.catalog().then((c) => {
+                        setCategories(c.categories || []);
+                        if (c.library) setLibrary(c.library);
+                    }).catch(() => {});
                 }
             })
             .catch(() => setError(true));
@@ -41,10 +45,7 @@ export default function Browse({ params, go }) {
 
     return (
         <div className="reader">
-            <header className="reader-header">
-                <Link to="/katalog" className="back-link">Katalog</Link>
-                <p className="reader-position">Semua buku</p>
-            </header>
+            <ViewerHeader library={library} backTo="/katalog" backLabel="Katalog" right="Semua buku" />
             <main className="page">
                 <SearchBox
                     initial={q}

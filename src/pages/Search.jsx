@@ -1,16 +1,21 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { api } from '../api.js';
-import { Link } from '../router.jsx';
 import BookCard from '../components/BookCard.jsx';
 import SearchBox from '../components/SearchBox.jsx';
+import ViewerHeader from '../components/ViewerHeader.jsx';
 
 // Cari lalu baca: ketik, pilih hasil, tombol Baca membuka reader.
 // Reader masih stub engine (placeholder jujur) sampai engine asli dipasang.
 export default function Search({ onRead }) {
+    const [library, setLibrary] = useState('Perpustakaan WBS');
     const [query, setQuery] = useState('');
     const [results, setResults] = useState(null);
     const [searching, setSearching] = useState(false);
     const timer = useRef(null);
+
+    useEffect(() => {
+        api.catalog().then((d) => d.library && setLibrary(d.library)).catch(() => {});
+    }, []);
 
     const liveSearch = (q) => {
         setQuery(q);
@@ -33,10 +38,7 @@ export default function Search({ onRead }) {
 
     return (
         <div className="reader">
-            <header className="reader-header">
-                <Link to="/" className="back-link">Portal</Link>
-                <p className="reader-position">Cari buku</p>
-            </header>
+            <ViewerHeader library={library} right="Cari buku" />
             <main className="page">
                 <SearchBox placeholder="Ketik judul, pengarang, atau ID buku" onSearch={liveSearch} />
                 {query.length < 1 && (
