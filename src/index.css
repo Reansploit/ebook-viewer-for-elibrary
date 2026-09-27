@@ -7,12 +7,15 @@
     --ink: #1c1917;
     --muted: #78716c;
     --line: #ede4d8;
-    --card: #ffffff;
+    --card: #fffdf6;
+    --soft: #ece6da;
+    --soft-ink: #9a3412;
     --accent: #ea580c;
     --btn-bg: #9a3412;
     --btn-ink: #fff7ed;
-    --danger: #dc2626;
-    --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+    --danger: #e7000b;
+    --radius: 0.625rem;
+    --sans: Inter, system-ui, 'Segoe UI', Roboto, sans-serif;
 
     color-scheme: light dark;
     font-family: var(--sans);
@@ -28,7 +31,9 @@
         --btn-bg: #fdba74;
         --btn-ink: #0b0f19;
         --card: #121826;
-        --danger: #f87171;
+        --soft: #1a2238;
+        --soft-ink: #fdba74;
+        --danger: #ff6467;
     }
 }
 
@@ -136,7 +141,7 @@ body {
     max-width: 20rem;
     padding: 1.5rem;
     border: 1px solid var(--line);
-    border-radius: 0.75rem;
+    border-radius: var(--radius);
     background: var(--card);
     color: var(--ink);
     text-decoration: none;
@@ -266,7 +271,7 @@ body {
 
 .book-card {
     border: 1px solid var(--line);
-    border-radius: 0.75rem;
+    border-radius: var(--radius);
     background: var(--card);
     overflow: hidden;
 }
@@ -284,8 +289,8 @@ body {
     justify-content: center;
     font-size: 2.5rem;
     font-weight: 700;
-    color: var(--muted);
-    background: var(--paper);
+    color: var(--soft-ink);
+    background: var(--soft);
 }
 
 .book-body {
@@ -331,7 +336,9 @@ body {
 }
 
 .badge-soft {
-    background: var(--paper);
+    background: var(--soft);
+    color: var(--soft-ink);
+    border-color: transparent;
 }
 
 .badge-red {
