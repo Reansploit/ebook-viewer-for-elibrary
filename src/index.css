@@ -1,0 +1,146 @@
+:root {
+    --paper: #fdfbf5;
+    --ink: #292524;
+    --muted: #78716c;
+    --line: #e7e0d3;
+    --accent: #7c5a2e;
+    --accent-ink: #fffdf5;
+    --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+
+    color-scheme: light dark;
+    font-family: var(--sans);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --paper: #1c1917;
+        --ink: #e7e5e4;
+        --muted: #a8a29e;
+        --line: #44403c;
+        --accent: #c8a15c;
+        --accent-ink: #1c1917;
+    }
+}
+
+body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+}
+
+.reader {
+    display: flex;
+    flex-direction: column;
+    min-height: 100svh;
+    max-width: 48rem;
+    margin: 0 auto;
+}
+
+.reader-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--line);
+}
+
+.reader-title {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.reader-position {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+.reader-viewport {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.25rem;
+}
+
+.page-placeholder {
+    text-align: center;
+    color: var(--muted);
+}
+
+.page-placeholder p {
+    margin: 0.25rem 0;
+}
+
+.page-placeholder-sub {
+    font-size: 0.875rem;
+}
+
+.reader-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.875rem 1.25rem;
+    border-top: 1px solid var(--line);
+}
+
+.reader-controls button {
+    font: inherit;
+    font-weight: 600;
+    padding: 0.625rem 1.25rem;
+    min-height: 44px;
+    border-radius: 0.5rem;
+    border: 1px solid transparent;
+    background: var(--accent);
+    color: var(--accent-ink);
+    cursor: pointer;
+}
+
+.reader-controls button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.reader-controls button:focus-visible,
+.reader-jump-input:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.reader-jump {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--muted);
+}
+
+.reader-jump-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+}
+
+.reader-jump-input {
+    font: inherit;
+    width: 4rem;
+    padding: 0.5rem;
+    min-height: 44px;
+    box-sizing: border-box;
+    text-align: center;
+    border: 1px solid var(--line);
+    border-radius: 0.5rem;
+    background: transparent;
+    color: var(--ink);
+}
+
+.reader-jump-total {
+    white-space: nowrap;
+}
