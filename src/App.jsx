@@ -1,19 +1,23 @@
+import { useState } from 'react';
 import Controls from './components/Controls.jsx';
 import Header from './components/Header.jsx';
 import Viewport from './components/Viewport.jsx';
 import { useEngine } from './engine/engine.jsx';
+import { useHashRoute } from './router.jsx';
+import Browse from './pages/Browse.jsx';
+import Catalog from './pages/Catalog.jsx';
+import Portal from './pages/Portal.jsx';
+import Search from './pages/Search.jsx';
+import './index.css';
 
-// Shell UI pembaca ebook pondok.
-// Design Read: tampilan baca untuk santri di HP dan laptop, gaya tenang
-// mengikuti isi kitab. Dial ENERGY 1 / RHYTHM 1 / MOTION 1.
-// `source` contoh di bawah diganti sumber asli saat integrasi.
+// Portal viewer: #/ portal, #/katalog, #/semua, #/cari, #/baca.
+// Design Read: portal baca santri, tenang mengikuti elibrary.
+// Dial ENERGY 1 / RHYTHM 1 / MOTION 1.
 const demoSource = { title: 'Contoh Kitab', pageCount: 24 };
 
-export default function App() {
-    const engine = useEngine(demoSource);
+function Reader({ source }) {
+    const engine = useEngine(source);
 
-    // Stub selalu ready; cabang loading/error hidup saat engine asli dipasang.
-    // Tiap kondisi menyebut sebab dan langkah berikut (R-27).
     if (engine.status === 'loading') {
         return (
             <div className="reader">
@@ -52,4 +56,25 @@ export default function App() {
             />
         </div>
     );
+}
+
+export default function App() {
+    const { path, params, go } = useHashRoute();
+    // Buku yang dibuka dari hasil cari. Judulnya dipakai, isi halaman tetap
+    // stub sampai engine asli dipasang (placeholder-nya berkata jujur).
+    const [reading, setReading] = useState(null);
+
+    const openBook = (book) => {
+        setReading(book);
+        go('/baca');
+    };
+
+    if (path === '/katalog') return <Catalog go={go} />;
+    if (path === '/semua') return <Browse params={params} go={go} />;
+    if (path === '/cari') return <Search onRead={openBook} />;
+    if (path === '/baca') {
+        const source = reading ? { ...demoSource, title: reading.title } : demoSource;
+        return <Reader source={source} />;
+    }
+    return <Portal />;
 }
