@@ -7,6 +7,8 @@
 //     title: string,        // judul dokumen
 //     pageCount: number,    // jumlah halaman (>= 1)
 //     page: number,         // halaman aktif (1-based)
+//     status: 'loading' | 'ready' | 'error',  // kondisi pemuatan (R-27)
+//     error: string | null, // pesan galat saat status 'error'
 //     goTo(n: number),      // pindah halaman, dijepit ke 1..pageCount
 //     next(), prev(),       // jalan pintas goTo(page +/- 1)
 //     renderPage(n: number) -> ReactNode,  // isi halaman n untuk viewport
@@ -40,7 +42,7 @@ export function useStubEngine(source = {}) {
         [],
     );
 
-    return { title, pageCount, page, goTo, next, prev, renderPage };
+    return { title, pageCount, page, status: 'ready', error: null, goTo, next, prev, renderPage };
 }
 
 // Alias yang dipakai UI. Tim engine: arahkan ke hook asli di sini.
