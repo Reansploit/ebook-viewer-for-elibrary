@@ -12,9 +12,8 @@ const demoSource = { title: 'Contoh Kitab', pageCount: 24 };
 export default function App() {
     const engine = useEngine(demoSource);
 
-    // Kondisi pemuatan (R-27): stub selalu ready, cabang ini hidup
-    // saat engine asli memuat atau gagal. Tiap kondisi menyebut sebab
-    // dan langkah berikut, bukan sekadar "tidak ada data".
+    // Stub selalu ready; cabang loading/error hidup saat engine asli dipasang.
+    // Tiap kondisi menyebut sebab dan langkah berikut (R-27).
     if (engine.status === 'loading') {
         return (
             <div className="reader">

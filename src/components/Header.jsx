@@ -1,5 +1,4 @@
-// Bilah atas: judul dokumen + posisi halaman. Tanpa tombol,
-// jadi tidak ada kontrol mati (R-26).
+// Bilah atas: judul + posisi halaman. Tanpa tombol.
 export default function Header({ title, page, pageCount }) {
     return (
         <header className="reader-header">

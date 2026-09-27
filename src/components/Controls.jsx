@@ -1,9 +1,7 @@
 import { useState } from 'react';
 
-// Kontrol pindah halaman. Semua tombol berfungsi sungguhan terhadap engine:
-// di halaman pertama tombol Mundur mati, di terakhir tombol Maju mati.
-// Alasan satu baris (R-31): pembaca kitab berpindah halaman terus-menerus,
-// jadi kontrolnya selalu terlihat di bawah viewport (tangan santri di HP).
+// Kontrol pindah halaman, selalu terlihat di bawah viewport karena dipakai
+// terus-menerus. Tombol mati di ujung (halaman 1 / terakhir).
 export default function Controls({ page, pageCount, onPrev, onNext, onGoTo }) {
     const [draft, setDraft] = useState(String(page));
 

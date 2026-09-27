@@ -12,9 +12,8 @@
 }
 
 @media (prefers-color-scheme: dark) {
-/* Palet (R-01, R-29): kertas hangat + tinta + satu aksen coklat kitab.
-   Alasan (R-31): meniru bahan bacaan pondok agar mata betah lama,
-   bukan gradasi atau warna tren. Kontras teks utama minimal 4.5:1 (R-25). */
+/* Palet: kertas hangat + tinta + satu aksen coklat kitab, meniru bahan
+   bacaan pondok agar mata betah lama. Kontras teks utama min. 4.5:1. */
 :root {
         --paper: #1c1917;
         --ink: #e7e5e4;
