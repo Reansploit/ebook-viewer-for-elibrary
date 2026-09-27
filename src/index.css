@@ -1,10 +1,15 @@
+/* Palet elibrary (R-01: dari identitas produk, bukan tren): latar hangat,
+   tinta stone, aksen oranye. Isi tombol memakai oranye tua (#9A3412),
+   bukan primary #EA580C, karena teks terang di atas #EA580C hanya 3.35:1
+   dan gagal WCAG AA (R-25). Fokus ring tetap primary sebagai aksen. */
 :root {
-    --paper: #fdfbf5;
-    --ink: #292524;
+    --paper: #f9f8f6;
+    --ink: #1c1917;
     --muted: #78716c;
-    --line: #e7e0d3;
-    --accent: #7c5a2e;
-    --accent-ink: #fffdf5;
+    --line: #ede4d8;
+    --accent: #ea580c;
+    --btn-bg: #9a3412;
+    --btn-ink: #fff7ed;
     --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
 
     color-scheme: light dark;
@@ -12,15 +17,14 @@
 }
 
 @media (prefers-color-scheme: dark) {
-/* Palet: kertas hangat + tinta + satu aksen coklat kitab, meniru bahan
-   bacaan pondok agar mata betah lama. Kontras teks utama min. 4.5:1. */
 :root {
-        --paper: #1c1917;
-        --ink: #e7e5e4;
-        --muted: #a8a29e;
-        --line: #44403c;
-        --accent: #c8a15c;
-        --accent-ink: #1c1917;
+        --paper: #0b0f19;
+        --ink: #f1f5f9;
+        --muted: #94a3b8;
+        --line: #232d45;
+        --accent: #f97316;
+        --btn-bg: #fdba74;
+        --btn-ink: #0b0f19;
     }
 }
 
@@ -105,8 +109,8 @@ body {
     min-height: 44px;
     border-radius: 0.5rem;
     border: 1px solid transparent;
-    background: var(--accent);
-    color: var(--accent-ink);
+    background: var(--btn-bg);
+    color: var(--btn-ink);
     cursor: pointer;
 }
 
