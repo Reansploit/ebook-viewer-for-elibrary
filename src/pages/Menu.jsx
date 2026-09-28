@@ -62,7 +62,7 @@ export default function Menu({ onRead, wallpaper }) {
 
     return (
         <div
-            className={`kiosk kiosk-custom wp-bottom-${tones.bottom}`}
+            className={`kiosk kiosk-custom wp-top-${tones.top} wp-mid-${tones.mid} wp-bottom-${tones.bottom}`}
             style={{ '--wp': `url("${bg}")` }}
         >
             <header className="kiosk-head">
