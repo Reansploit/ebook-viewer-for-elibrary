@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import HoloRfid from '../components/HoloRfid.jsx';
 import { useSession } from '../session.jsx';
 
 // Gerbang portal: tempel kartu RFID lalu Enter (scanner mengetik + Enter,
@@ -38,19 +39,7 @@ export default function Gate({ onEnter }) {
                     <>
                         <p className="portal-sub">Tempelkan kartu lalu tekan Enter.</p>
                         <form className="gate-form" onSubmit={submit}>
-                            <label className="reader-jump-label" htmlFor="rfid">
-                                ID kartu RFID
-                            </label>
-                            <input
-                                id="rfid"
-                                className="search-input gate-input"
-                                type="text"
-                                autoComplete="off"
-                                autoFocus
-                                placeholder="Tempel kartu di sini"
-                                value={rfid}
-                                onChange={(e) => setRfid(e.target.value)}
-                            />
+                            <HoloRfid value={rfid} onChange={setRfid} disabled={busy} />
                         </form>
                         {busy && <p className="reader-state">Mengenali kartu...</p>}
                         {error && (
