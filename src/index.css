@@ -1042,6 +1042,34 @@ body {
     background: #000;
     color: #e5e5e5;
     max-width: none;
+    position: relative;
+}
+
+/* Merek pojok kiri atas gerbang: logo + elibrary. */
+.gate-brand {
+    position: absolute;
+    top: 1rem;
+    left: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+}
+
+.gate-brand .site-logo {
+    height: 2rem;
+    width: 2rem;
+    object-fit: contain;
+    background: rgb(255 255 255 / 0.92);
+    border-radius: 0.5rem;
+    padding: 0.125rem;
+}
+
+.gate-brand-name {
+    font-family: 'Fira Code', Consolas, monospace;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: #fff;
+    text-shadow: 0 0 12px rgb(0 242 234 / 0.5);
 }
 
 /* Cyberpunk beneran (arahan pemilik, override R-07/R-19): grid redup +

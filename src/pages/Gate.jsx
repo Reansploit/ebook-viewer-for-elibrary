@@ -33,8 +33,11 @@ export default function Gate({ onEnter }) {
 
     return (
         <div className="reader gate-dark gate-cyber">
+            <div className="gate-brand">
+                <img src="/images/logo-wbs.png" alt="" className="site-logo" />
+                <span className="gate-brand-name">elibrary</span>
+            </div>
             <main className="portal">
-                <h1 className="portal-title cyber-title">Perpustakaan WBS</h1>
                 {!member ? (
                     <>
                         <p className="portal-sub">Tempelkan kartu lalu tekan Enter.</p>
