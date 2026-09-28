@@ -545,17 +545,31 @@ body {
 }
 
 .kiosk-custom {
-    background-image:
-        linear-gradient(rgb(255 255 255 / 0.72), rgb(255 255 255 / 0.72)),
-        var(--wp);
+    background-image: var(--wp);
     background-size: cover;
     background-position: center;
 }
 
 .dark .kiosk-custom {
-    background-image:
-        linear-gradient(rgb(11 15 25 / 0.82), rgb(11 15 25 / 0.82)),
-        var(--wp);
+    background-image: var(--wp);
+}
+
+/* Teks kepala di atas foto: bayangan tipis agar terbaca di atas foto ramai.
+   Kartu tetap solid jadi aman tanpa bayangan. */
+.kiosk-custom .kiosk-title,
+.kiosk-custom .kiosk-user,
+.kiosk-custom .kiosk-date,
+.kiosk-custom .kiosk-time,
+.kiosk-custom .kiosk-heading {
+    text-shadow: 0 1px 6px rgb(0 0 0 / 0.45);
+}
+
+.dark .kiosk-custom .kiosk-title,
+.dark .kiosk-custom .kiosk-user,
+.dark .kiosk-custom .kiosk-date,
+.dark .kiosk-custom .kiosk-time,
+.dark .kiosk-custom .kiosk-heading {
+    text-shadow: 0 1px 6px rgb(0 0 0 / 0.7);
 }
 
 .kiosk-head {
