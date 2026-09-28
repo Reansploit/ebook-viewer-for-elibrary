@@ -40,7 +40,6 @@ export default function Gate({ onEnter }) {
             <main className="portal">
                 {!member ? (
                     <>
-                        <p className="portal-sub">Tempelkan kartu lalu tekan Enter.</p>
                         <form className="gate-form" onSubmit={submit}>
                             <HoloRfid value={rfid} onChange={setRfid} disabled={busy} />
                         </form>
