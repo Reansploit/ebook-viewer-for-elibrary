@@ -29,6 +29,7 @@ export default function Notes() {
     const [query, setQuery] = useState('');
     const [found, setFound] = useState(null);
     const [editingId, setEditingId] = useState(null);
+    const [active, setActive] = useState({});
     const paperRef = useRef(null);
     const timer = useRef(null);
 
@@ -39,6 +40,31 @@ export default function Notes() {
     };
 
     useEffect(reload, [token]);
+
+    // Tandai tombol yang aktif mengikuti posisi kursor di kertas.
+    useEffect(() => {
+        const update = () => {
+            if (!paperRef.current?.contains(document.activeElement)) return;
+            try {
+                setActive({
+                    bold: document.queryCommandState('bold'),
+                    italic: document.queryCommandState('italic'),
+                    underline: document.queryCommandState('underline'),
+                    h1: document.queryCommandValue('formatBlock').toLowerCase() === 'h2',
+                    left: document.queryCommandState('justifyLeft'),
+                    center: document.queryCommandState('justifyCenter'),
+                    right: document.queryCommandState('justifyRight'),
+                    justify: document.queryCommandState('justifyFull'),
+                    ul: document.queryCommandState('insertUnorderedList'),
+                    ol: document.queryCommandState('insertOrderedList'),
+                });
+            } catch {
+                // abaikan: browser tidak mendukung
+            }
+        };
+        document.addEventListener('selectionchange', update);
+        return () => document.removeEventListener('selectionchange', update);
+    }, []);
 
     const searchBook = (q) => {
         setQuery(q);
@@ -52,10 +78,27 @@ export default function Notes() {
         }, 350);
     };
 
-    const tool = (fn) => (e) => {
+    const tool = (id, fn) => (e) => {
         e.preventDefault();
         paperRef.current?.focus();
         fn();
+        // Baca ulang setelah perintah jalan (state berubah sesudahnya).
+        setTimeout(() => {
+            try {
+                const map = {
+                    bold: 'bold', italic: 'italic', underline: 'underline',
+                    left: 'justifyLeft', center: 'justifyCenter', right: 'justifyRight',
+                    justify: 'justifyFull', ul: 'insertUnorderedList', ol: 'insertOrderedList',
+                };
+                if (id === 'h1') {
+                    setActive((a) => ({ ...a, h1: document.queryCommandValue('formatBlock').toLowerCase() === 'h2' }));
+                } else if (map[id]) {
+                    setActive((a) => ({ ...a, [id]: document.queryCommandState(map[id]) }));
+                }
+            } catch {
+                // abaikan
+            }
+        }, 0);
     };
 
     const readPaper = () => sanitizeNoteHtml(paperRef.current?.innerHTML || '');
@@ -118,7 +161,13 @@ export default function Notes() {
                 <form className="note-editor" onSubmit={save}>
                     <div className="md-toolbar" role="toolbar" aria-label="Alat tulis">
                         {TOOLS.map((t) => (
-                            <button key={t.id} type="button" className="mini-btn" onMouseDown={tool(t.run)}>
+                            <button
+                                key={t.id}
+                                type="button"
+                                className={active[t.id] ? 'mini-btn tool-active' : 'mini-btn'}
+                                onMouseDown={tool(t.id, t.run)}
+                                aria-pressed={!!active[t.id]}
+                            >
                                 {t.label}
                             </button>
                         ))}

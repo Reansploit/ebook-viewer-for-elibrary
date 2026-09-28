@@ -1107,6 +1107,12 @@ body {
     gap: 0.5rem;
 }
 
+.mini-btn.tool-active {
+    border-color: transparent;
+    background: var(--btn-bg);
+    color: var(--btn-ink);
+}
+
 .md-area {
     font: inherit;
     width: 100%;
