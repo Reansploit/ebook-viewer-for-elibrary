@@ -529,6 +529,167 @@ body {
     gap: 1rem;
 }
 
+/* Kios layanan (halaman menu): ombak merah-oranye khas layanan yayasan,
+   kartu putih, ikon oranye. Kulit tetap di kedua tema karena ini identitas
+   layar, bukan tema konten (R-21: keputusan brand, bukan default). */
+.kiosk {
+    min-height: 100svh;
+    background:
+        radial-gradient(110% 55% at 0% 0%, #c81e1e 0%, #e04a12 45%, transparent 70%),
+        radial-gradient(90% 50% at 100% 100%, #c81e1e 0%, #f97316 50%, transparent 72%),
+        #f6dfae;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+}
+
+.kiosk-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    padding: 1.25rem;
+    max-width: 56rem;
+    width: 100%;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+.kiosk-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+}
+
+.kiosk-brand .site-logo {
+    background: rgb(255 255 255 / 0.92);
+    border-radius: 0.5rem;
+    padding: 0.125rem;
+}
+
+.kiosk-title {
+    margin: 0;
+    font-weight: 800;
+    font-size: 1.25rem;
+    letter-spacing: 0.02em;
+}
+
+.kiosk-user {
+    margin: 0;
+    font-size: 0.875rem;
+    color: rgb(255 255 255 / 0.85);
+}
+
+.kiosk-clock {
+    text-align: right;
+}
+
+.kiosk-date {
+    margin: 0;
+    font-size: 0.875rem;
+    color: rgb(255 255 255 / 0.9);
+}
+
+.kiosk-time {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+}
+
+.kiosk-main {
+    flex: 1;
+    width: 100%;
+    max-width: 56rem;
+    margin: 0 auto;
+    padding: 0.5rem 1.25rem 2.5rem;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.kiosk-heading {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.kiosk-resume {
+    font: inherit;
+    font-weight: 700;
+    text-align: left;
+    padding: 0.875rem 1.25rem;
+    min-height: 44px;
+    border: none;
+    border-radius: var(--radius);
+    background: var(--btn-bg);
+    color: var(--btn-ink);
+    cursor: pointer;
+}
+
+.kiosk-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+@media (min-width: 40rem) {
+    .kiosk-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.kiosk-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.25rem;
+    padding: 1.5rem 1rem;
+    background: #fffdf6;
+    border-radius: var(--radius);
+    color: #1c1917;
+    text-decoration: none;
+    min-height: 44px;
+}
+
+.kiosk-icon {
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+}
+
+.kiosk-icon svg {
+    width: 2.5rem;
+    height: 2.5rem;
+    display: block;
+}
+
+.kiosk-card-title {
+    font-weight: 700;
+}
+
+.kiosk-card-desc {
+    font-size: 0.75rem;
+    color: #78716c;
+}
+
+.kiosk-exit {
+    align-self: center;
+    font: inherit;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    padding: 0.625rem 1.5rem;
+    min-height: 44px;
+    border: 1px solid rgb(255 255 255 / 0.7);
+    border-radius: 0.5rem;
+    background: transparent;
+    color: #fff;
+    cursor: pointer;
+}
+
 /* Gerbang RFID + profil */
 .gate-form {
     width: 100%;

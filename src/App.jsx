@@ -229,7 +229,7 @@ function Shell() {
         );
     else if (!authed) page = <Gate onEnter={() => setEntered(true)} />;
     else if (!entered) page = <Gate onEnter={() => setEntered(true)} />;
-    else page = <Menu theme={theme} toggle={toggleTheme} onRead={openBook} />;
+    else page = <Menu onRead={openBook} />;
 
     return <div className={`wp-${wallpaper}`}>{page}</div>;
 }
