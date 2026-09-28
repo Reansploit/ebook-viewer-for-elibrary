@@ -16,4 +16,45 @@ export const api = {
     catalog: () => get('/api/v1/katalog'),
     all: ({ q = '', kategori = '', page = 1 } = {}) => get('/api/v1/katalog/semua', { q, kategori, page }),
     search: (q) => get('/api/v1/katalog/cari', { q }),
+
+    readerLogin: (rfid) =>
+        fetch(BASE + '/api/v1/reader/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: JSON.stringify({ rfid }),
+        }).then(async (res) => {
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) throw new Error(data.message || `HTTP ${res.status}`);
+            return data;
+        }),
+    logout: (token) =>
+        fetch(BASE + '/api/v1/reader/logout', {
+            method: 'POST',
+            headers: { ...authHeader(token), Accept: 'application/json' },
+        }).catch(() => {}),
 };
+
+function authHeader(token) {
+    return { Authorization: `Bearer ${token}` };
+}
+
+// Panggilan akun (butuh token). GET/POST/PUT/DELETE sederhana.
+export async function readerApi(token, method, path, body) {
+    const res = await fetch(BASE + path, {
+        method,
+        headers: {
+            ...authHeader(token),
+            Accept: 'application/json',
+            ...(body ? { 'Content-Type': 'application/json' } : {}),
+        },
+        ...(body ? { body: JSON.stringify(body) } : {}),
+    });
+    if (res.status === 401) {
+        const err = new Error('Sesi berakhir, masuk lagi.');
+        err.unauthorized = true;
+        throw err;
+    }
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.message || `HTTP ${res.status}`);
+    return data;
+}

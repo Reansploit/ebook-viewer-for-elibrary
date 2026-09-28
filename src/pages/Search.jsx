@@ -1,14 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
-import { api } from '../api.js';
+import { api, readerApi } from '../api.js';
 import BookCard from '../components/BookCard.jsx';
 import SearchBox from '../components/SearchBox.jsx';
 import ViewerHeader from '../components/ViewerHeader.jsx';
+import { useSession } from '../session.jsx';
 
 // Cari lalu baca: ketik, pilih hasil, tombol Baca membuka reader.
 // Reader masih stub engine (placeholder jujur) sampai engine asli dipasang.
 export default function Search({ onRead, theme, toggle }) {
+    const { token } = useSession();
     const [library, setLibrary] = useState('Perpustakaan WBS');
     const [query, setQuery] = useState('');
+    const [lists, setLists] = useState([]);
+    const [pick, setPick] = useState({});
     const [results, setResults] = useState(null);
     const [searching, setSearching] = useState(false);
     const timer = useRef(null);
@@ -16,6 +20,24 @@ export default function Search({ onRead, theme, toggle }) {
     useEffect(() => {
         api.catalog().then((d) => d.library && setLibrary(d.library)).catch(() => {});
     }, []);
+
+    useEffect(() => {
+        if (!token) {
+            setLists([]);
+            return;
+        }
+        readerApi(token, 'GET', '/api/v1/reader/lists')
+            .then((d) => setLists(d.lists || []))
+            .catch(() => {});
+    }, [token]);
+
+    const saveToList = (book) => {
+        const listId = pick[book.id] || lists[0]?.id;
+        if (!listId || !token) return;
+        readerApi(token, 'POST', `/api/v1/reader/lists/${listId}/items`, { id_buku: book.id })
+            .then(() => setPick((p) => ({ ...p, [book.id]: 'ok' })))
+            .catch(() => {});
+    };
 
     const liveSearch = (q) => {
         setQuery(q);
@@ -69,6 +91,25 @@ export default function Search({ onRead, theme, toggle }) {
                                 >
                                     Baca
                                 </button>
+                                {token && lists.length > 0 && (
+                                    <span className="save-row">
+                                        <select
+                                            className="save-select"
+                                            value={pick[b.id] && pick[b.id] !== 'ok' ? pick[b.id] : lists[0].id}
+                                            onChange={(e) => setPick((p) => ({ ...p, [b.id]: Number(e.target.value) }))}
+                                            aria-label={`Simpan ${b.title} ke daftar`}
+                                        >
+                                            {lists.map((l) => (
+                                                <option key={l.id} value={l.id}>
+                                                    {l.name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        <button type="button" className="mini-btn" onClick={() => saveToList(b)}>
+                                            {pick[b.id] === 'ok' ? 'Tersimpan' : 'Simpan'}
+                                        </button>
+                                    </span>
+                                )}
                             </div>
                         ))}
                     </div>

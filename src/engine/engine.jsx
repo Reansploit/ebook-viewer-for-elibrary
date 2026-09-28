@@ -6,10 +6,10 @@
 //
 import { useCallback, useState } from 'react';
 
-export function useStubEngine(source = {}) {
+export function useStubEngine(source = {}, startPage = 1) {
     const title = source.title || 'Dokumen tanpa judul';
     const pageCount = Math.max(1, source.pageCount || 1);
-    const [page, setPage] = useState(1);
+    const [page, setPage] = useState(Math.min(pageCount, Math.max(1, startPage || 1)));
 
     const goTo = useCallback(
         (n) => {
