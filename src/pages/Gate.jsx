@@ -17,11 +17,19 @@ export default function Gate({ onEnter }) {
         if (!uid || busy) return;
         setBusy(true);
         setError('');
+        // Batas 20 detik: scanner + jaringan pondok kadang lambat.
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 20000);
         try {
-            await login(uid);
-        } catch {
-            setError('Kartu tidak dikenal. Tempelkan kartu santri yang terdaftar.');
+            await login(uid, controller.signal);
+        } catch (err) {
+            if (err.name === 'AbortError') {
+                setError('Jaringan lambat. Periksa koneksi lalu tempel ulang kartunya.');
+            } else {
+                setError('Kartu tidak dikenal. Tempelkan kartu santri yang terdaftar.');
+            }
         } finally {
+            clearTimeout(timer);
             setBusy(false);
         }
     };
@@ -47,7 +55,7 @@ export default function Gate({ onEnter }) {
                                 <CyberBtn type="submit" kbd="⏎" label="Next" action="Next" />
                             </div>
                         </form>
-                        {busy && <p className="reader-state">Mengenali kartu...</p>}
+                        {busy && <div className="fx-spotlight">mencari</div>}
                         {error && (
                             <div className="reader-state">
                                 <p>{error}</p>

@@ -17,11 +17,12 @@ export const api = {
     all: ({ q = '', kategori = '', page = 1 } = {}) => get('/api/v1/katalog/semua', { q, kategori, page }),
     search: (q) => get('/api/v1/katalog/cari', { q }),
 
-    readerLogin: (rfid) =>
+    readerLogin: (rfid, signal) =>
         fetch(BASE + '/api/v1/reader/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
             body: JSON.stringify({ rfid }),
+            signal,
         }).then(async (res) => {
             const data = await res.json().catch(() => ({}));
             if (!res.ok) throw new Error(data.message || `HTTP ${res.status}`);

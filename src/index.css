@@ -1170,6 +1170,29 @@ body {
     color: #a3a3a3;
 }
 
+/* Teks "mencari" sorotan (snippet pemilik, override R-19: loop saat sibuk).
+   Hanya tampil selama pencarian, berhenti saat selesai. */
+.fx-spotlight {
+    --ink: #e5e5e5;
+    --ink-2: #ff4fd8;
+    --ink-3: #4ff8ff;
+    font: 600 26px/1.2 'JetBrains Mono', Consolas, monospace;
+    letter-spacing: 0.08em;
+    margin-top: 1.5rem;
+    background: radial-gradient(3.5ch 100% at 50% 50%,
+            var(--ink) 20%,
+            color-mix(in srgb, var(--ink) 14%, transparent) 75%) 0 0 / 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: fx-spotlight 3.4s ease-in-out infinite alternate;
+}
+
+@keyframes fx-spotlight {
+    0% { background-position: 100% 0; }
+    100% { background-position: 0% 0; }
+}
+
 /* Tombol cyber (snippet pemilik tanpa modal/popover, override R-01/R-19).
    Font Cyber eksternal tidak dipakai; monospace lokal. Cahaya tampil saat
    hover, fokus keyboard, dan sentuh (active). */

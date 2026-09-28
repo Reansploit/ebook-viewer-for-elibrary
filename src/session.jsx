@@ -33,8 +33,8 @@ export function SessionProvider({ children }) {
         }
     }, [token]);
 
-    const login = useCallback(async (rfid) => {
-        const data = await api.readerLogin(rfid);
+    const login = useCallback(async (rfid, signal) => {
+        const data = await api.readerLogin(rfid, signal);
         setToken(data.token);
         setMember(data.member);
         try {
