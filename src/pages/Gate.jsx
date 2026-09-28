@@ -65,7 +65,7 @@ export default function Gate({ onEnter }) {
                             <p className="profile-meta">Kelas {member.class}</p>
                         </div>
                         <div className="gate-actions">
-                            <button type="button" className="btn-solid" onClick={onEnter}>
+                            <button type="button" className="glow-on-hover" onClick={onEnter}>
                                 Masuk
                             </button>
                             <button type="button" className="btn-outline" onClick={cancel}>
