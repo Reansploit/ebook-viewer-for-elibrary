@@ -295,8 +295,14 @@ body {
 }
 
 .chip-active {
-    border-color: var(--accent);
+    border-color: transparent;
+    background: var(--btn-bg);
+    color: var(--btn-ink);
     font-weight: 700;
+}
+
+.portal-card:hover {
+    border-color: var(--accent);
 }
 
 .section {
