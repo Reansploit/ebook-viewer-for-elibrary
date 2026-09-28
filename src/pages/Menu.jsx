@@ -51,22 +51,19 @@ export default function Menu({ onRead, wallpaper }) {
             .catch(() => {});
     }, [token]);
 
-    const custom = wallpaper && wallpaper !== 'polos';
+    // Tanpa wallpaper custom = base.jpg bawaan (bukan putih polos).
+    // Nada teks tetap dideteksi dari foto yang tampil.
+    const bg = wallpaper && wallpaper !== 'polos' ? wallpaper : '/base.jpg';
     const [tones, setTones] = useState({ top: 'light', mid: 'light', bottom: 'light' });
 
     useEffect(() => {
-        if (!custom) return;
-        detectTones(wallpaper).then(setTones);
-    }, [wallpaper, custom]);
+        detectTones(bg).then(setTones);
+    }, [bg]);
 
     return (
         <div
-            className={
-                custom
-                    ? `kiosk kiosk-custom wp-bottom-${tones.bottom}`
-                    : 'kiosk'
-            }
-            style={custom ? { '--wp': `url("${wallpaper}")` } : undefined}
+            className={`kiosk kiosk-custom wp-bottom-${tones.bottom}`}
+            style={{ '--wp': `url("${bg}")` }}
         >
             <header className="kiosk-head">
                 <div className="kiosk-brand">
