@@ -554,22 +554,28 @@ body {
     background-image: var(--wp);
 }
 
-/* Teks kepala di atas foto: bayangan tipis agar terbaca di atas foto ramai.
-   Kartu tetap solid jadi aman tanpa bayangan. */
-.kiosk-custom .kiosk-title,
-.kiosk-custom .kiosk-user,
-.kiosk-custom .kiosk-date,
-.kiosk-custom .kiosk-time,
-.kiosk-custom .kiosk-heading {
-    text-shadow: 0 1px 6px rgb(0 0 0 / 0.45);
+/* Teks kepala mengikuti terang-gelap foto (hasil detektor):
+   foto gelap = teks putih + bayangan, foto terang = teks tinta. */
+.wp-tone-dark .kiosk-title,
+.wp-tone-dark .kiosk-user,
+.wp-tone-dark .kiosk-date,
+.wp-tone-dark .kiosk-time,
+.wp-tone-dark .kiosk-heading {
+    color: #fff;
+    text-shadow: 0 1px 6px rgb(0 0 0 / 0.7);
 }
 
-.dark .kiosk-custom .kiosk-title,
-.dark .kiosk-custom .kiosk-user,
-.dark .kiosk-custom .kiosk-date,
-.dark .kiosk-custom .kiosk-time,
-.dark .kiosk-custom .kiosk-heading {
-    text-shadow: 0 1px 6px rgb(0 0 0 / 0.7);
+.wp-tone-light .kiosk-title,
+.wp-tone-light .kiosk-user,
+.wp-tone-light .kiosk-date,
+.wp-tone-light .kiosk-time,
+.wp-tone-light .kiosk-heading {
+    color: #1c1917;
+    text-shadow: none;
+}
+
+.wp-tone-dark .kiosk-exit {
+    color: #fff;
 }
 
 .kiosk-head {
