@@ -75,7 +75,7 @@ export default function App() {
     if (path === '/semua') return <Browse params={params} go={go} theme={theme} toggle={toggle} />;
     if (path === '/cari') return <Search onRead={openBook} theme={theme} toggle={toggle} />;
     if (path === '/baca') {
-        const source = reading ? { ...demoSource, title: reading.title } : demoSource;
+        const source = reading ? { ...demoSource, title: reading.title, fileUrl: reading.file } : demoSource;
         return <Reader source={source} theme={theme} toggle={toggle} />;
     }
     return <Portal theme={theme} toggle={toggle} />;

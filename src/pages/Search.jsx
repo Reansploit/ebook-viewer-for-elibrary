@@ -64,8 +64,8 @@ export default function Search({ onRead, theme, toggle }) {
                                     type="button"
                                     className="btn-solid"
                                     onClick={() => onRead(b)}
-                                    disabled={!b.remaining || b.remaining <= 0}
-                                    title={!b.remaining || b.remaining <= 0 ? 'Stok habis' : undefined}
+                                    disabled={!b.file}
+                                    title={!b.file ? 'Belum ada berkas digital' : undefined}
                                 >
                                     Baca
                                 </button>

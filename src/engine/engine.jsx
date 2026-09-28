@@ -1,6 +1,8 @@
 // Kontrak engine viewer. Tim engine mengganti `useStubEngine` dengan
 // implementasi asli selama bentuk kembaliannya sama. `source` bebas
-// bentuknya (URL, File, Blob); stub hanya membaca title dan pageCount.
+// bentuknya; yang dipakai: title, pageCount, dan fileUrl (URL absolut
+// berkas PDF/EPUB dari API elibrary, engine asli membacanya di sini).
+// Stub hanya membaca title dan pageCount.
 //
 import { useCallback, useState } from 'react';
 
