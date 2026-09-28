@@ -16,8 +16,8 @@ export default function HoloRfid({ value, onChange, disabled }) {
                     onChange={(e) => onChange(e.target.value)}
                     disabled={disabled}
                 />
-                <label htmlFor="holo-input" className="input-label" data-text="ACCESS_CODE">
-                    ACCESS_CODE
+                <label htmlFor="holo-input" className="input-label" data-text="masukkan/letakkan kartu rfid anda">
+                    masukkan/letakkan kartu rfid anda
                 </label>
 
                 <div className="input-border"></div>
