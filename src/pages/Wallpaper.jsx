@@ -21,7 +21,7 @@ export default function Wallpaper({ theme, toggle, wallpaper, setWallpaper }) {
             setWallpaper(data.wallpaper);
             setFile(null);
         } catch {
-            setError('Gagal mengunggah. Maksimal 2MB, format gambar.');
+            setError('Gagal mengunggah. Maksimal 8MB, format gambar.');
         } finally {
             setBusy(false);
         }
