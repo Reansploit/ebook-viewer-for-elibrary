@@ -59,7 +59,7 @@ export default function Gate({ onEnter }) {
                                 <CyberBtn type="submit" kbd="⏎" label="Next" action="Next" />
                             </div>
                         </form>
-                        {busy && <div className="fx-spotlight">mencari</div>}
+                        {busy && <div className="fx-spotlight">mencari...</div>}
                         {error && (
                             <div className="reader-state">
                                 <p>{error}</p>
