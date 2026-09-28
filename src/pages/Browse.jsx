@@ -23,7 +23,7 @@ export default function Browse({ params, go }) {
     useEffect(() => {
         setError(false);
         api
-            .all({ q, kategori, page })
+            .all({ q, kategori, page, digital: '0' })
             .then((d) => {
                 setData(d);
                 if (d.data && categories.length === 0) {
@@ -45,7 +45,7 @@ export default function Browse({ params, go }) {
 
     return (
         <div className="reader">
-            <ViewerHeader library={library} backTo="/katalog" backLabel="Katalog" right="Semua buku" />
+            <ViewerHeader library={library} backTo="/katalog" backLabel="Katalog" right="Buku fisik" />
             <main className="page">
                 <SearchBox
                     initial={q}

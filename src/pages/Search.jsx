@@ -49,7 +49,7 @@ export default function Search({ onRead }) {
         }
         setSearching(true);
         timer.current = setTimeout(() => {
-            api.search(q)
+            api.search(q, '1')
                 .then((d) => {
                     setResults(d.books || []);
                     setSearching(false);
@@ -63,6 +63,7 @@ export default function Search({ onRead }) {
             <ViewerHeader library={library} right="Cari buku" />
             <main className="page">
                 <SearchBox placeholder="Ketik judul, pengarang, atau ID buku" onSearch={liveSearch} />
+                <p className="page-sub">Hanya buku yang ada berkas digitalnya.</p>
                 {query.length < 1 && (
                     <p className="reader-state">Ketik di atas untuk mulai mencari.</p>
                 )}

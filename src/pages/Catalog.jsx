@@ -30,7 +30,7 @@ export default function Catalog({ go }) {
         }
         setSearching(true);
         timer.current = setTimeout(() => {
-            api.search(q)
+            api.search(q, '0')
                 .then((d) => {
                     setResults(d.books || []);
                     setSearching(false);

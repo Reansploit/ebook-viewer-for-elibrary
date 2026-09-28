@@ -42,14 +42,14 @@ export default function Portal() {
                         <span className="icon-circle">
                             <BookIcon />
                         </span>
-                        <span className="portal-card-title">Jelajahi Katalog</span>
-                        <span className="portal-card-desc">Lihat koleksi terbaru dan per kategori.</span>
+                        <span className="portal-card-title">Katalog Fisik</span>
+                        <span className="portal-card-desc">Cek ketersediaan buku di rak.</span>
                     </Link>
                     <Link to="/cari" className="portal-card">
                         <span className="icon-circle">
                             <SearchIcon />
                         </span>
-                        <span className="portal-card-title">Cari Buku</span>
+                        <span className="portal-card-title">Cari Ebook</span>
                         <span className="portal-card-desc">Ketik judul atau pengarang, langsung baca.</span>
                     </Link>
                 </div>

@@ -14,8 +14,8 @@ async function get(path, params = {}) {
 
 export const api = {
     catalog: () => get('/api/v1/katalog'),
-    all: ({ q = '', kategori = '', page = 1 } = {}) => get('/api/v1/katalog/semua', { q, kategori, page }),
-    search: (q) => get('/api/v1/katalog/cari', { q }),
+    all: ({ q = '', kategori = '', page = 1, digital = '' } = {}) => get('/api/v1/katalog/semua', { q, kategori, page, digital }),
+    search: (q, digital = '') => get('/api/v1/katalog/cari', { q, digital }),
 
     readerLogin: (rfid, signal) =>
         fetch(BASE + '/api/v1/reader/login', {
