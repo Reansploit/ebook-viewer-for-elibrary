@@ -1148,78 +1148,181 @@ body {
     color: #a3a3a3;
 }
 
-/* Tombol Masuk pelangi (snippet pemilik, override R-01/R-19).
-   Aturan html/body snippet tidak dipakai. Cahaya tampil saat hover,
-   fokus keyboard, DAN saat disentuh (active), karena sentuh tidak punya
-   hover. Teks diganti "Masuk". */
-.glow-on-hover {
-    width: 220px;
-    max-width: 100%;
-    height: 50px;
-    border: none;
-    outline: none;
-    color: #fff;
-    background: #111;
-    cursor: pointer;
-    position: relative;
-    z-index: 0;
-    border-radius: 10px;
-    font: inherit;
-    font-weight: 700;
-}
-
-.glow-on-hover:before {
-    content: '';
-    background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    background-size: 400%;
-    z-index: -1;
-    filter: blur(5px);
-    width: calc(100% + 4px);
-    height: calc(100% + 4px);
-    animation: glowing 20s linear infinite;
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out;
-    border-radius: 10px;
-}
-
-.glow-on-hover:active {
-    color: #fff;
-}
-
-.glow-on-hover:active:after {
+/* Tombol cyber (snippet pemilik tanpa modal/popover, override R-01/R-19).
+   Font Cyber eksternal tidak dipakai; monospace lokal. Cahaya tampil saat
+   hover, fokus keyboard, dan sentuh (active). */
+.cyber-btn {
+    --cyber-corner: 12px;
+    --cyber-border: 1px;
+    --cyber-clip: polygon(
+        0 0,
+        100% 0,
+        100% calc(100% - var(--cyber-corner)),
+        calc(100% - var(--cyber-corner)) 100%,
+        0% 100%
+    );
+    --cyber-accent: #00f2ea;
+    font-family: Consolas, 'Courier New', Courier, monospace;
+    min-width: 140px;
+    min-height: 44px;
+    text-align: left;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border: 0;
     background: transparent;
+    position: relative;
+    color: var(--cyber-accent);
+    cursor: pointer;
 }
 
-.glow-on-hover:hover:before,
-.glow-on-hover:focus-visible:before,
-.glow-on-hover:active:before {
-    opacity: 1;
+.cyber-btn > * {
+    pointer-events: none;
 }
 
-.glow-on-hover:focus-visible {
-    outline: 2px solid #00f2ea;
+.cyber-btn .backdrop {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    background: rgb(0 0 0 / 0.4);
+    clip-path: var(--cyber-clip);
+    pointer-events: none;
+}
+
+.cyber-btn .backdrop::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--cyber-accent);
+    border: var(--cyber-border) solid #0000;
+    clip-path: var(--cyber-clip);
+    mask: linear-gradient(#0000 0% 100%), linear-gradient(#fff 0% 100%);
+    mask-clip: padding-box, border-box;
+    mask-repeat: no-repeat;
+    mask-composite: intersect;
+    z-index: 2;
+}
+
+.cyber-btn .backdrop .corner {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: var(--cyber-corner);
+    width: var(--cyber-corner);
+}
+
+.cyber-btn .backdrop .corner::after {
+    content: '';
+    height: calc(var(--cyber-border) * 2);
+    width: 200%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    transform: rotate(135deg);
+    background: var(--cyber-accent);
+}
+
+.cyber-btn kbd {
+    color: #000;
+    font-weight: bold;
+    width: 20px;
+    aspect-ratio: 1;
+    font-size: 10px;
+    border-radius: 50%;
+    background: var(--cyber-accent);
+    display: inline-grid;
+    place-items: center;
+    font-family: inherit;
+}
+
+.cyber-btn:is(:hover, :focus-visible, :active) {
+    color: #000;
+}
+
+.cyber-btn:is(:hover, :focus-visible, :active) .backdrop {
+    background: var(--cyber-accent);
+}
+
+.cyber-btn:is(:hover, :focus-visible, :active) kbd {
+    color: var(--cyber-accent);
+    background: #000;
+}
+
+.cyber-btn:focus-visible {
+    outline: 2px solid var(--cyber-accent);
     outline-offset: 2px;
 }
 
-.glow-on-hover:after {
-    z-index: -1;
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: #111;
-    left: 0;
-    top: 0;
-    border-radius: 10px;
+.cyber-btn .letters {
+    display: flex;
 }
 
-@keyframes glowing {
-    0% { background-position: 0 0; }
-    50% { background-position: 400% 0; }
-    100% { background-position: 0 0; }
+.cyber-btn .letters span:nth-of-type(2),
+.cyber-btn .letters span:nth-of-type(5) {
+    scale: 1 -1;
+}
+
+.cyber-btn .letters span:nth-of-type(3),
+.cyber-btn .letters span:nth-of-type(6),
+.cyber-btn .letters span:nth-of-type(7) {
+    scale: -1 -1;
+}
+
+.cyber-btn .glitch {
+    --shimmy-distance: 5;
+    --clip-one: polygon(0 2%, 100% 2%, 100% 95%, 95% 95%, 95% 90%, 85% 90%, 85% 95%, 8% 95%, 0 70%);
+    --clip-two: polygon(0 78%, 100% 78%, 100% 100%, 95% 100%, 95% 90%, 85% 90%, 85% 100%, 8% 100%, 0 78%);
+    --clip-three: polygon(0 44%, 100% 44%, 100% 54%, 95% 54%, 95% 54%, 85% 54%, 85% 54%, 8% 54%, 0 54%);
+    --clip-four: polygon(0 0, 100% 0, 100% 0, 95% 0, 95% 0, 85% 0, 85% 0, 8% 0, 0 0);
+    --clip-five: polygon(0 0, 100% 0, 100% 0, 95% 0, 95% 0, 85% 0, 85% 0, 8% 0, 0 0);
+    --clip-six: polygon(0 40%, 100% 40%, 100% 85%, 95% 85%, 95% 85%, 85% 85%, 85% 85%, 8% 85%, 0 70%);
+    --clip-seven: polygon(0 63%, 100% 63%, 100% 80%, 95% 80%, 95% 80%, 85% 80%, 85% 80%, 8% 80%, 0 70%);
+    display: none;
+    position: absolute;
+    inset: 0;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    pointer-events: none;
+    color: #000;
+}
+
+.cyber-btn:is(:hover, :focus-visible, :active) .glitch {
+    animation: cyber-glitch 2s infinite;
+    display: inline-flex;
+}
+
+.cyber-btn .glitch kbd {
+    opacity: 0;
+}
+
+@keyframes cyber-glitch {
+    0% { clip-path: var(--clip-one); }
+    2%, 8% { clip-path: var(--clip-two); transform: translate(calc(var(--shimmy-distance) * -1%), 0); }
+    6% { clip-path: var(--clip-two); transform: translate(calc(var(--shimmy-distance) * 1%), 0); }
+    9% { clip-path: var(--clip-two); transform: translate(0, 0); }
+    10% { clip-path: var(--clip-three); transform: translate(calc(var(--shimmy-distance) * 1%), 0); }
+    13% { clip-path: var(--clip-three); transform: translate(0, 0); }
+    14%, 21% { clip-path: var(--clip-four); transform: translate(calc(var(--shimmy-distance) * 1%), 0); }
+    25% { clip-path: var(--clip-five); transform: translate(calc(var(--shimmy-distance) * 1%), 0); }
+    30% { clip-path: var(--clip-five); transform: translate(calc(var(--shimmy-distance) * -1%), 0); }
+    35%, 45% { clip-path: var(--clip-six); transform: translate(calc(var(--shimmy-distance) * -1%)); }
+    40% { clip-path: var(--clip-six); transform: translate(calc(var(--shimmy-distance) * 1%)); }
+    50% { clip-path: var(--clip-six); transform: translate(0, 0); }
+    55% { clip-path: var(--clip-seven); transform: translate(calc(var(--shimmy-distance) * 1%), 0); }
+    60% { clip-path: var(--clip-seven); transform: translate(0, 0); }
+    31%, 61%, 100% { clip-path: var(--clip-four); }
+}
+
+.gate-next {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.25rem;
+}
+
 }
 
 /* Gerbang RFID + profil */

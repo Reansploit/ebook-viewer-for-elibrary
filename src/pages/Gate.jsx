@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import CyberBtn from '../components/CyberBtn.jsx';
 import HoloRfid from '../components/HoloRfid.jsx';
 import { useSession } from '../session.jsx';
 
@@ -42,6 +43,9 @@ export default function Gate({ onEnter }) {
                     <>
                         <form className="gate-form" onSubmit={submit}>
                             <HoloRfid value={rfid} onChange={setRfid} disabled={busy} />
+                            <div className="gate-next">
+                                <CyberBtn type="submit" kbd="⏎" label="Next" action="Next" />
+                            </div>
                         </form>
                         {busy && <p className="reader-state">Mengenali kartu...</p>}
                         {error && (
@@ -64,12 +68,8 @@ export default function Gate({ onEnter }) {
                             <p className="profile-meta">Kelas {member.class}</p>
                         </div>
                         <div className="gate-actions">
-                            <button type="button" className="glow-on-hover" onClick={onEnter}>
-                                Masuk
-                            </button>
-                            <button type="button" className="btn-outline" onClick={cancel}>
-                                Bukan kamu
-                            </button>
+                            <CyberBtn kbd="→" label="Next" action="Masuk" onClick={onEnter} />
+                            <CyberBtn kbd="✕" label="Bukan kamu" action="Batal" onClick={cancel} />
                         </div>
                     </>
                 )}
