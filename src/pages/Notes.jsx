@@ -17,42 +17,57 @@ export default function Notes() {
     const [found, setFound] = useState(null);
     const [editingId, setEditingId] = useState(null);
     const [ready, setReady] = useState(false);
+    const [failed, setFailed] = useState('');
     const editorRef = useRef(null);
     const boxRef = useRef(null);
     const timer = useRef(null);
 
     useEffect(() => {
         let cancelled = false;
-        ClassicEditor.create(boxRef.current, {
-            licenseKey: 'GPL',
-            placeholder: 'Tulis naskah di sini...',
-            toolbar: [
-                'bold',
-                'italic',
-                'underline',
-                '|',
-                'heading',
-                '|',
-                'alignment',
-                '|',
-                'bulletedList',
-                'numberedList',
-                '|',
-                'blockQuote',
-                '|',
-                'undo',
-                'redo',
-            ],
-        })
-            .then((editor) => {
-                if (cancelled) {
-                    editor.destroy();
-                    return;
-                }
-                editorRef.current = editor;
-                setReady(true);
+        // Toolbar penuh dulu; bila build tidak menyediakan salah satunya,
+        // mundur ke toolbar minimal agar tetap bisa mengetik.
+        const full = [
+            'bold',
+            'italic',
+            'underline',
+            '|',
+            'heading',
+            '|',
+            'alignment',
+            '|',
+            'bulletedList',
+            'numberedList',
+            '|',
+            'blockQuote',
+            '|',
+            'undo',
+            'redo',
+        ];
+        const minimal = ['bold', 'italic', '|', 'bulletedList', 'numberedList', '|', 'undo', 'redo'];
+        const start = (toolbar) => {
+            ClassicEditor.create(boxRef.current, {
+                licenseKey: 'GPL',
+                placeholder: 'Tulis naskah di sini...',
+                toolbar,
             })
-            .catch(() => {});
+                .then((editor) => {
+                    if (cancelled) {
+                        editor.destroy();
+                        return;
+                    }
+                    editorRef.current = editor;
+                    setReady(true);
+                })
+                .catch(() => {
+                    if (toolbar !== minimal) {
+                        boxRef.current?.replaceChildren();
+                        start(minimal);
+                    } else if (!cancelled) {
+                        setFailed('Editor gagal dimuat di perangkat ini.');
+                    }
+                });
+        };
+        start(full);
         return () => {
             cancelled = true;
             editorRef.current?.destroy().catch(() => {});
@@ -151,6 +166,11 @@ export default function Notes() {
                     <div className="paper paper-ck">
                         <div ref={boxRef} />
                     </div>
+                    {failed && (
+                        <div className="reader-state">
+                            <p>{failed}</p>
+                        </div>
+                    )}
 
                     {!book && !editingId && (
                         <>
