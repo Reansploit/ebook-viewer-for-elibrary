@@ -1,8 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-// Tema ala elibrary: terang sebagai default, gelap hanya bila pengguna
-// meminta lewat toggle. Tidak mengikuti sistem (itulah keluhan kemarin:
-// browser gelap membuat viewer ikut gelap). Pilihan disimpan lokal.
+// Tema mengikuti wallpaper akun: foto gelap = gelap, terang/polos = terang.
+// Tanpa toggle manual dan tanpa ikut sistem.
 const KEY = 'ebook-viewer-theme';
 
 export function useTheme() {
@@ -23,9 +22,5 @@ export function useTheme() {
         }
     }, [theme]);
 
-    const toggle = useCallback(() => {
-        setTheme((t) => (t === 'dark' ? 'light' : 'dark'));
-    }, []);
-
-    return { theme, toggle, setTheme };
+    return { theme, setTheme };
 }

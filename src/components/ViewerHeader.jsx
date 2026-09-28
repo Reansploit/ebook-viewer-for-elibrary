@@ -1,7 +1,7 @@
 import { Link } from '../router.jsx';
 
 // Kepala halaman ala katalog elibrary: logo + nama (tautan ke portal)
-// + keterangan konteks dan toggle tema di kanan.
+// + keterangan konteks di kanan.
 export default function ViewerHeader({ library, backTo = '/', backLabel = 'Portal', right }) {
     const brand = (
         <>

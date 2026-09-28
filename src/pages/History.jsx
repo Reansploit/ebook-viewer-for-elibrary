@@ -4,7 +4,7 @@ import { readerApi } from '../api.js';
 import { useSession } from '../session.jsx';
 
 // Riwayat buka buku milik akun, terbaru di atas.
-export default function History({ theme, toggle, onRead }) {
+export default function History({ onRead }) {
     const { member, token } = useSession();
     const [rows, setRows] = useState([]);
 

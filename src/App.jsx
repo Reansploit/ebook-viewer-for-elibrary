@@ -25,7 +25,7 @@ import './index.css';
 // Dial ENERGY 1 / RHYTHM 1 / MOTION 1.
 const demoSource = { title: 'Contoh Kitab', pageCount: 24 };
 
-function Reader({ source, bookId, startPage, theme, toggle }) {
+function Reader({ source, bookId, startPage }) {
     const { token } = useSession();
     const engine = useEngine(source, startPage);
     const [noteOpen, setNoteOpen] = useState(false);
