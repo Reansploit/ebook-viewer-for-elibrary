@@ -531,6 +531,34 @@ body {
     background-image: var(--wp);
 }
 
+/* Foto custom: kerudung atas agar kepala selalu terbaca tanpa
+   bergantung pada deteksi (deteksi bisa gagal bila CORS belum optimize).
+   Tengah dan bawah tetap ikut detektor per area. */
+.kiosk-custom::before {
+    content: '';
+    position: fixed;
+    inset: 0 0 auto 0;
+    height: 11rem;
+    pointer-events: none;
+    background: linear-gradient(rgb(0 0 0 / 0.5), transparent);
+}
+
+.dark .kiosk-custom::before {
+    background: linear-gradient(rgb(0 0 0 / 0.65), transparent);
+}
+
+.kiosk-head {
+    position: relative;
+}
+
+.kiosk-custom .kiosk-title,
+.kiosk-custom .kiosk-user,
+.kiosk-custom .kiosk-date,
+.kiosk-custom .kiosk-time {
+    color: #fff;
+    text-shadow: 0 1px 6px rgb(0 0 0 / 0.7);
+}
+
 /* Teks mengikuti terang-gelap fotonya per area (hasil detektor):
    pita atas untuk kepala, tengah untuk judul, bawah untuk tombol keluar. */
 .wp-top-dark .kiosk-title,
@@ -545,8 +573,8 @@ body {
 .wp-top-light .kiosk-user,
 .wp-top-light .kiosk-date,
 .wp-top-light .kiosk-time {
-    color: #1c1917;
-    text-shadow: none;
+    color: #fff;
+    text-shadow: 0 1px 6px rgb(0 0 0 / 0.7);
 }
 
 .wp-mid-dark .kiosk-heading {
@@ -620,6 +648,7 @@ body {
 }
 
 .kiosk-main {
+    position: relative;
     flex: 1;
     width: 100%;
     max-width: 56rem;
