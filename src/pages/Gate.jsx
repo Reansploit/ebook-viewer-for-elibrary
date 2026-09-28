@@ -17,9 +17,9 @@ export default function Gate({ onEnter }) {
         if (!uid || busy) return;
         setBusy(true);
         setError('');
-        // Batas 20 detik: scanner + jaringan pondok kadang lambat.
+        // Batas 10 detik: cukup untuk scanner + jaringan pondok.
         const controller = new AbortController();
-        const timer = setTimeout(() => controller.abort(), 20000);
+        const timer = setTimeout(() => controller.abort(), 10000);
         try {
             await login(uid, controller.signal);
         } catch (err) {
