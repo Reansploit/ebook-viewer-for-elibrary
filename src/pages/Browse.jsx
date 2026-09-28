@@ -84,6 +84,7 @@ export default function Browse({ params, go }) {
                                                 setData((d) =>
                                                     d ? { ...d, data: d.data.map((x) => (x.id === bid ? { ...x, likes, dislikes } : x)) } : d,
                                                 ),
+                                            )
                                         }
                                     />
                             ))}

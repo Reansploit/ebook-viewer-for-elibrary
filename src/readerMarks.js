@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import { readerApi } from '../api.js';
-import { useSession } from '../session.jsx';
+import { readerApi } from './api.js';
+import { useSession } from './session.jsx';
 
 // Suara + simpanan milik akun. Tamu dapat peta kosong (rating tetap tampil).
 export function useReaderMarks() {
