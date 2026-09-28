@@ -30,6 +30,7 @@ export default function Notes() {
     const [found, setFound] = useState(null);
     const [editingId, setEditingId] = useState(null);
     const [active, setActive] = useState({});
+    const lastExclusive = useRef({ align: null, list: null });
     const paperRef = useRef(null);
     const timer = useRef(null);
 
@@ -46,7 +47,7 @@ export default function Notes() {
         const update = () => {
             if (!paperRef.current?.contains(document.activeElement)) return;
             try {
-                setActive({
+                const next = {
                     bold: document.queryCommandState('bold'),
                     italic: document.queryCommandState('italic'),
                     underline: document.queryCommandState('underline'),
@@ -57,7 +58,21 @@ export default function Notes() {
                     justify: document.queryCommandState('justifyFull'),
                     ul: document.queryCommandState('insertUnorderedList'),
                     ol: document.queryCommandState('insertOrderedList'),
-                });
+                };
+                // Kursor pindah pun hanya yang terakhir diklik yang menyala.
+                const alignOn = ['left', 'center', 'right', 'justify'].filter((k) => next[k]);
+                if (alignOn.length > 1 && lastExclusive.current.align) {
+                    for (const k of alignOn) {
+                        if (k !== lastExclusive.current.align) next[k] = false;
+                    }
+                }
+                const listOn = ['ul', 'ol'].filter((k) => next[k]);
+                if (listOn.length > 1 && lastExclusive.current.list) {
+                    for (const k of listOn) {
+                        if (k !== lastExclusive.current.list) next[k] = false;
+                    }
+                }
+                setActive(next);
             } catch {
                 // abaikan: browser tidak mendukung
             }
@@ -78,6 +93,14 @@ export default function Notes() {
         }, 350);
     };
 
+    // Perataan dan daftar saling menggugurkan di DOM (yang terakhir
+    // menang), tapi sebagian browser melaporkan keduanya aktif.
+    // Samakan tampilannya dengan kenyataan: hanya yang terakhir menyala.
+    const EXCLUSIVE = [
+        ['left', 'center', 'right', 'justify'],
+        ['ul', 'ol'],
+    ];
+
     const tool = (id, fn) => (e) => {
         e.preventDefault();
         paperRef.current?.focus();
@@ -93,7 +116,23 @@ export default function Notes() {
                 if (id === 'h1') {
                     setActive((a) => ({ ...a, h1: document.queryCommandValue('formatBlock').toLowerCase() === 'h2' }));
                 } else if (map[id]) {
-                    setActive((a) => ({ ...a, [id]: document.queryCommandState(map[id]) }));
+                    if (['left', 'center', 'right', 'justify'].includes(id)) {
+                        lastExclusive.current.align = id;
+                    }
+                    if (['ul', 'ol'].includes(id)) {
+                        lastExclusive.current.list = id;
+                    }
+                    setActive((a) => {
+                        const next = { ...a, [id]: document.queryCommandState(map[id]) };
+                        for (const group of EXCLUSIVE) {
+                            if (group.includes(id) && next[id]) {
+                                for (const other of group) {
+                                    if (other !== id) next[other] = false;
+                                }
+                            }
+                        }
+                        return next;
+                    });
                 }
             } catch {
                 // abaikan
