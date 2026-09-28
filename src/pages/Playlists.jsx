@@ -5,7 +5,7 @@ import { useSession } from '../session.jsx';
 
 // Daftar putar milik akun: buat, buka isi, tambah dari hasil cari,
 // hapus buku atau hapus daftarnya.
-export default function Playlists({ theme, toggle, onRead }) {
+export default function Playlists({ onRead }) {
     const { member, token } = useSession();
     const [lists, setLists] = useState([]);
     const [name, setName] = useState('');

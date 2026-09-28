@@ -5,7 +5,7 @@ import { useSession } from '../session.jsx';
 
 // Profil akun: data diri dari kartu + hitungan milik akun + Keluar.
 // Catatan milik akun tampil di sini (tambahnya dari halaman baca).
-export default function Profile({ theme, toggle }) {
+export default function Profile() {
     const { member, token, logout } = useSession();
     const [stats, setStats] = useState({ baca: 0, selesai: 0, notes: 0 });
     const [notes, setNotes] = useState([]);
