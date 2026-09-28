@@ -1,14 +1,23 @@
 import { useEffect, useRef, useState } from 'react';
-import { ClassicEditor } from 'ckeditor5';
-import 'ckeditor5/ckeditor5.css';
+import Quill from 'quill';
+import 'quill/dist/quill.snow.css';
 import { api, readerApi } from '../api.js';
 import ViewerHeader from '../components/ViewerHeader.jsx';
 import { sanitizeNoteHtml } from '../sanitize.js';
 import { useSession } from '../session.jsx';
 
-// Kertas CKEditor untuk naskah (mis. muhadhoroh). Lisensi GPL (kunci di
-// bawah) agar tanpa banner trial. Simpan HTML tersanitasi; Cetak
-// mengeluarkan kertasnya. Bisa terikat buku atau bebas.
+// Kertas Quill untuk naskah (mis. muhadhoroh): Tebal, Miring,
+// Garis bawah, Judul, Rata, Daftar, Nomor, Bersihkan. Tanda aktif
+// bawaan Quill (diwarnai oranye via CSS). Simpan HTML tersanitasi;
+// Cetak mengeluarkan kertasnya. Bisa terikat buku atau bebas.
+const TOOLBAR = [
+    ['bold', 'italic', 'underline'],
+    [{ header: [1, 2, false] }],
+    [{ align: [] }],
+    [{ list: 'ordered' }, { list: 'bullet' }],
+    ['clean'],
+];
+
 export default function Notes() {
     const { member, token } = useSession();
     const [notes, setNotes] = useState([]);
@@ -16,65 +25,17 @@ export default function Notes() {
     const [query, setQuery] = useState('');
     const [found, setFound] = useState(null);
     const [editingId, setEditingId] = useState(null);
-    const [ready, setReady] = useState(false);
-    const [failed, setFailed] = useState('');
-    const editorRef = useRef(null);
+    const quillRef = useRef(null);
     const boxRef = useRef(null);
     const timer = useRef(null);
 
     useEffect(() => {
-        let cancelled = false;
-        // Toolbar penuh dulu; bila build tidak menyediakan salah satunya,
-        // mundur ke toolbar minimal agar tetap bisa mengetik.
-        const full = [
-            'bold',
-            'italic',
-            'underline',
-            '|',
-            'heading',
-            '|',
-            'alignment',
-            '|',
-            'bulletedList',
-            'numberedList',
-            '|',
-            'blockQuote',
-            '|',
-            'undo',
-            'redo',
-        ];
-        const minimal = ['bold', 'italic', '|', 'bulletedList', 'numberedList', '|', 'undo', 'redo'];
-        const start = (toolbar) => {
-            ClassicEditor.create(boxRef.current, {
-                licenseKey: 'GPL',
-                placeholder: 'Tulis naskah di sini...',
-                toolbar,
-            })
-                .then((editor) => {
-                    if (cancelled) {
-                        editor.destroy();
-                        return;
-                    }
-                    editorRef.current = editor;
-                    setReady(true);
-                })
-                .catch((err) => {
-                    // eslint-disable-next-line no-console
-                    console.error('CKEditor gagal:', err);
-                    if (toolbar !== minimal) {
-                        boxRef.current?.replaceChildren();
-                        start(minimal);
-                    } else if (!cancelled) {
-                        setFailed(`Editor gagal dimuat: ${err?.message || err}`);
-                    }
-                });
-        };
-        start(full);
-        return () => {
-            cancelled = true;
-            editorRef.current?.destroy().catch(() => {});
-            editorRef.current = null;
-        };
+        if (!boxRef.current || quillRef.current) return;
+        quillRef.current = new Quill(boxRef.current, {
+            theme: 'snow',
+            placeholder: 'Tulis naskah di sini...',
+            modules: { toolbar: TOOLBAR },
+        });
     }, []);
 
     const reload = () => {
@@ -97,10 +58,10 @@ export default function Notes() {
         }, 350);
     };
 
-    const readPaper = () => sanitizeNoteHtml(editorRef.current?.getData() || '');
+    const readPaper = () => sanitizeNoteHtml(quillRef.current?.root.innerHTML || '');
 
     const resetPaper = () => {
-        editorRef.current?.setData('');
+        quillRef.current?.setText('');
         setBook(null);
         setEditingId(null);
     };
@@ -108,7 +69,7 @@ export default function Notes() {
     const save = (e) => {
         e.preventDefault();
         const catatan = readPaper();
-        if (!editorRef.current?.getData().replace(/<[^>]*>/g, '').trim()) return;
+        if (!quillRef.current?.getText().trim()) return;
         const payload = { id_buku: book?.id || null, catatan };
         const done = () => {
             resetPaper();
@@ -125,10 +86,10 @@ export default function Notes() {
     };
 
     const edit = (n) => {
-        editorRef.current?.setData(sanitizeNoteHtml(n.catatan));
+        quillRef.current?.clipboard.dangerouslyPasteHTML(0, sanitizeNoteHtml(n.catatan));
         setBook(n.book ? { id: n.book.id ?? null, title: n.book.title } : null);
         setEditingId(n.id);
-        editorRef.current?.focus();
+        quillRef.current?.focus();
     };
 
     const drop = (id) => {
@@ -137,12 +98,12 @@ export default function Notes() {
 
     const print = () => {
         const html = readPaper();
-        if (!editorRef.current?.getData().replace(/<[^>]*>/g, '').trim()) return;
+        if (!quillRef.current?.getText().trim()) return;
         const w = window.open('', '_blank', 'width=800,height=600');
         if (!w) return;
         w.document.write(
             `<!doctype html><html lang="id"><head><meta charset="utf-8"><title>Naskah</title>` +
-                `<style>body{font-family:Georgia,serif;line-height:1.8;max-width:42rem;margin:2rem auto;padding:0 1rem;color:#111}h1,h2,h3{line-height:1.3}blockquote{border-left:3px solid #999;margin-left:0;padding-left:1rem;color:#444}</style>` +
+                `<style>body{font-family:Georgia,serif;line-height:1.8;max-width:42rem;margin:2rem auto;padding:0 1rem;color:#111}h1,h2,h3{line-height:1.3}blockquote{border-left:3px solid #999;margin-left:0;padding-left:1rem;color:#444}.ql-align-center{text-align:center}.ql-align-right{text-align:right}.ql-align-justify{text-align:justify}</style>` +
                 `</head><body>${html}</body></html>`,
         );
         w.document.close();
@@ -165,14 +126,9 @@ export default function Notes() {
                     )}
                     {editingId && <p className="book-meta">Mengubah catatan lama.</p>}
 
-                    <div className="paper paper-ck">
+                    <div className="paper paper-quill">
                         <div ref={boxRef} />
                     </div>
-                    {failed && (
-                        <div className="reader-state">
-                            <p>{failed}</p>
-                        </div>
-                    )}
 
                     {!book && !editingId && (
                         <>
@@ -196,10 +152,10 @@ export default function Notes() {
                     )}
 
                     <div className="gate-actions">
-                        <button type="submit" className="btn-solid" disabled={!ready}>
+                        <button type="submit" className="btn-solid">
                             Simpan
                         </button>
-                        <button type="button" className="btn-outline" onClick={print} disabled={!ready}>
+                        <button type="button" className="btn-outline" onClick={print}>
                             Cetak
                         </button>
                         {(editingId || book) && (
