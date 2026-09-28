@@ -20,9 +20,13 @@ export default function Gate({ onEnter }) {
         // Batas 10 detik: cukup untuk scanner + jaringan pondok.
         const controller = new AbortController();
         const timer = setTimeout(() => controller.abort(), 10000);
+        const started = Date.now();
         try {
             await login(uid, controller.signal);
         } catch (err) {
+            // Kartu salah pun menunggu 10 detik "mencari" dulu sebelum vonis.
+            const sisa = 10000 - (Date.now() - started);
+            if (sisa > 0) await new Promise((r) => setTimeout(r, sisa));
             if (err.name === 'AbortError') {
                 setError('Jaringan lambat. Periksa koneksi lalu tempel ulang kartunya.');
             } else {
