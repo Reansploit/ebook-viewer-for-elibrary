@@ -1,7 +1,6 @@
-/* Palet elibrary (R-01: dari identitas produk, bukan tren): latar hangat,
-   tinta stone, aksen oranye. Tombol pakai primary terang (#EA580C) dengan
-   teks tinta gelap: kontras 4.91:1 lolos WCAG AA (R-25), tidak seperti
-   teks terang elibrary yang hanya 3.35:1. Fokus ring tetap primary. */
+/* Palet elibrary kecuali aksen: pemilik minta oranye #FFA500 menggantikan
+   primary #EA580C (override R-01, dicatat di sini). Tombol pakai aksen
+   dengan teks tinta gelap: kontras 8.86:1 lolos WCAG AA (R-25). */
 :root {
     --paper: #f9f8f6;
     --ink: #1c1917;
@@ -10,8 +9,8 @@
     --card: #fffdf6;
     --soft: #ece6da;
     --soft-ink: #9a3412;
-    --accent: #ea580c;
-    --btn-bg: #ea580c;
+    --accent: #ffa500;
+    --btn-bg: #ffa500;
     --btn-ink: #1c1917;
     --danger: #e7000b;
     --radius: 0.625rem;
