@@ -1106,29 +1106,12 @@ body {
     color: #e5e5e5;
 }
 
-.gate-dark .portal-title,
-.gate-dark .profile-name {
-    color: #fff;
-}
-
-.gate-dark .portal-sub,
 .gate-dark .profile-meta {
     color: #a3a3a3;
 }
 
-.gate-dark .profile-card {
-    background: #111;
-    border-color: #333;
-}
-
 .gate-dark .profile-photo-empty {
     background: #222;
-    color: #e5e5e5;
-}
-
-.gate-dark .btn-outline {
-    background: transparent;
-    border-color: #525252;
     color: #e5e5e5;
 }
 
