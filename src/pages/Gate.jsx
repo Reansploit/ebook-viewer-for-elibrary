@@ -68,7 +68,7 @@ export default function Gate({ onEnter }) {
                             <p className="profile-meta">Kelas {member.class}</p>
                         </div>
                         <div className="gate-actions">
-                            <CyberBtn kbd="→" label="Next" action="Masuk" onClick={onEnter} />
+                            <CyberBtn kbd="⏎" label="Next" action="Masuk" onClick={onEnter} />
                             <CyberBtn kbd="✕" label="Bukan kamu" action="Batal" onClick={cancel} />
                         </div>
                     </>
