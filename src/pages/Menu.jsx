@@ -63,7 +63,7 @@ export default function Menu({ onRead, wallpaper }) {
         <div
             className={
                 custom
-                    ? `kiosk kiosk-custom wp-top-${tones.top} wp-mid-${tones.mid} wp-bottom-${tones.bottom}`
+                    ? `kiosk kiosk-custom wp-bottom-${tones.bottom}`
                     : 'kiosk'
             }
             style={custom ? { '--wp': `url("${wallpaper}")` } : undefined}
@@ -83,7 +83,6 @@ export default function Menu({ onRead, wallpaper }) {
             </header>
 
             <main className="kiosk-main">
-                <h1 className="kiosk-heading">Pilih Layanan</h1>
                 {resume && (
                     <button type="button" className="kiosk-resume" onClick={() => onRead(resume.book, resume.page)}>
                         Lanjutkan: {resume.book.title} (halaman {resume.page})

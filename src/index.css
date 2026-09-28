@@ -577,16 +577,6 @@ body {
     text-shadow: 0 1px 6px rgb(0 0 0 / 0.7);
 }
 
-.wp-mid-dark .kiosk-heading {
-    color: #fff;
-    text-shadow: 0 1px 6px rgb(0 0 0 / 0.7);
-}
-
-.wp-mid-light .kiosk-heading {
-    color: #1c1917;
-    text-shadow: none;
-}
-
 .wp-bottom-dark .kiosk-exit {
     color: #fff;
 }
@@ -660,10 +650,35 @@ body {
     gap: 1rem;
 }
 
-.kiosk-heading {
-    margin: 0;
-    font-size: 1.25rem;
-    font-weight: 700;
+/* Hover ubin (MOTION 1: hanya hover): terangkat + border oranye.
+   Fokus keyboard mendapat efek yang sama. */
+.kiosk-card {
+    transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.kiosk-card:hover,
+.kiosk-card:focus-visible {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+    box-shadow:
+        inset 0 1px 0 rgb(255 255 255 / 0.5),
+        0 12px 28px rgb(28 25 23 / 0.18);
+    outline: none;
+}
+
+.kiosk-card:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* Tombol keluar di atas foto: selalu kaca solid agar terbaca tanpa
+   bergantung detektor (seperti kartu, bukan teks polos). */
+.kiosk-custom .kiosk-exit {
+    background: rgb(255 253 246 / 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-color: rgb(255 255 255 / 0.65);
+    color: #1c1917;
 }
 
 .kiosk-resume {
