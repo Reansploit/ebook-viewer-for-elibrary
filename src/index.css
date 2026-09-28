@@ -1043,6 +1043,69 @@ body {
     color: #e5e5e5;
 }
 
+/* Cyberpunk beneran (arahan pemilik, override R-07/R-19): grid redup +
+   vignette sebagai tekstur identitas gerbang. Animasi hanya di input holo
+   (saat fokus); halaman sendiri statis. */
+.gate-cyber {
+    background:
+        radial-gradient(ellipse at 50% 120%, rgb(0 242 234 / 0.08), transparent 60%),
+        linear-gradient(rgb(0 242 234 / 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgb(0 242 234 / 0.05) 1px, transparent 1px),
+        #000;
+    background-size:
+        100% 100%,
+        2.5rem 2.5rem,
+        2.5rem 2.5rem,
+        100% 100%;
+}
+
+.cyber-title {
+    font-family: 'Fira Code', Consolas, 'Courier New', Courier, monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: #fff;
+    text-shadow:
+        0 0 8px rgb(0 242 234 / 0.8),
+        0 0 28px rgb(0 242 234 / 0.4);
+}
+
+.gate-dark .portal-sub {
+    font-family: 'Fira Code', Consolas, monospace;
+    color: #00f2ea;
+    opacity: 0.85;
+}
+
+.gate-dark .profile-card {
+    background: rgb(17 17 17 / 0.9);
+    border-color: rgb(0 242 234 / 0.4);
+    box-shadow:
+        0 0 24px rgb(0 242 234 / 0.12),
+        inset 0 0 24px rgb(0 242 234 / 0.04);
+}
+
+.gate-dark .profile-photo {
+    border: 2px solid #00f2ea;
+    box-shadow: 0 0 16px rgb(0 242 234 / 0.5);
+}
+
+.gate-dark .profile-name {
+    font-family: 'Fira Code', Consolas, monospace;
+    letter-spacing: 0.05em;
+}
+
+.gate-dark .btn-solid {
+    background: #00f2ea;
+    color: #000;
+    box-shadow: 0 0 20px rgb(0 242 234 / 0.45);
+    border: none;
+}
+
+.gate-dark .btn-outline {
+    background: transparent;
+    border-color: #a855f7;
+    color: #e5e5e5;
+}
+
 .gate-dark .portal-title,
 .gate-dark .profile-name {
     color: #fff;

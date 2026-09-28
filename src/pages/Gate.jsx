@@ -32,9 +32,9 @@ export default function Gate({ onEnter }) {
     };
 
     return (
-        <div className="reader gate-dark">
+        <div className="reader gate-dark gate-cyber">
             <main className="portal">
-                <h1 className="portal-title">Perpustakaan WBS</h1>
+                <h1 className="portal-title cyber-title">Perpustakaan WBS</h1>
                 {!member ? (
                     <>
                         <p className="portal-sub">Tempelkan kartu lalu tekan Enter.</p>
