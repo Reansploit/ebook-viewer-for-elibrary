@@ -19,7 +19,6 @@ const CARDS = [
     { to: '/riwayat', title: 'Riwayat', desc: 'Buku yang dibuka', icon: 'M12 8v4l3 2m6-2a9 9 0 1 1-9-9 9 9 0 0 1 9 9Z' },
     { to: '/profil', title: 'Profil Akun', desc: 'Data diri + catatan', icon: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 9a7 7 0 0 1 14 0' },
     { to: '/wallpaper', title: 'Wallpaper', desc: 'Latar foto custom', icon: 'M4 5h16v14H4zM4 15l4-4 3 3 3-3 6 6M9 9h.01' },
-    { to: '/tema', title: 'Tema', desc: 'Terang atau gelap', icon: 'M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z' },
 ];
 
 // Menu utama akun, gaya kios layanan ala referensi SALAM PAY milik yayasan:

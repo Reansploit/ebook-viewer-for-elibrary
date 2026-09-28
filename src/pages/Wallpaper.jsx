@@ -5,7 +5,7 @@ import { useSession } from '../session.jsx';
 
 // Wallpaper milik akun: foto custom (maks 2MB), tersimpan di backend
 // sehingga berlaku di semua perangkat. Polos = latar putih.
-export default function Wallpaper({ theme, toggle, wallpaper, setWallpaper }) {
+export default function Wallpaper({ wallpaper, setWallpaper }) {
     const { member, token } = useSession();
     const [file, setFile] = useState(null);
     const [busy, setBusy] = useState(false);
@@ -45,8 +45,8 @@ export default function Wallpaper({ theme, toggle, wallpaper, setWallpaper }) {
                 backTo="/"
                 backLabel="Menu"
                 right="Wallpaper"
-                theme={theme}
-                toggle={toggle}
+               
+               
             />
             <main className="page">
                 {wallpaper !== 'polos' && (

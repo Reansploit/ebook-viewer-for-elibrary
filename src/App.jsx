@@ -6,10 +6,10 @@ import { useEngine } from './engine/engine.jsx';
 import { readerApi } from './api.js';
 import { useHashRoute } from './router.jsx';
 import { SessionProvider, useSession } from './session.jsx';
+import { detectTone } from './wp.js';
 import { useTheme } from './theme.jsx';
 import Browse from './pages/Browse.jsx';
 import Catalog from './pages/Catalog.jsx';
-import Tema from './pages/Tema.jsx';
 import Wallpaper from './pages/Wallpaper.jsx';
 import Gate from './pages/Gate.jsx';
 import History from './pages/History.jsx';
@@ -77,7 +77,7 @@ function Reader({ source, bookId, startPage, theme, toggle }) {
     if (engine.status === 'loading') {
         return (
             <div className="reader">
-                <Header title={engine.title} page={engine.page} pageCount={engine.pageCount} theme={theme} toggle={toggle} />
+                <Header title={engine.title} page={engine.page} pageCount={engine.pageCount} />
                 <main className="reader-viewport">
                     <p className="reader-state">Menyiapkan dokumen...</p>
                 </main>
@@ -88,7 +88,7 @@ function Reader({ source, bookId, startPage, theme, toggle }) {
     if (engine.status === 'error') {
         return (
             <div className="reader">
-                <Header title={engine.title} page={engine.page} pageCount={engine.pageCount} theme={theme} toggle={toggle} />
+                <Header title={engine.title} page={engine.page} pageCount={engine.pageCount} />
                 <main className="reader-viewport">
                     <div className="reader-state">
                         <p>Dokumen gagal dibuka{engine.error ? `: ${engine.error}` : '.'}</p>
@@ -101,7 +101,7 @@ function Reader({ source, bookId, startPage, theme, toggle }) {
 
     return (
         <div className="reader">
-            <Header title={engine.title} page={engine.page} pageCount={engine.pageCount} theme={theme} toggle={toggle} />
+            <Header title={engine.title} page={engine.page} pageCount={engine.pageCount} />
             <Viewport page={engine.page} renderPage={engine.renderPage} />
             <Controls
                 page={engine.page}
@@ -144,7 +144,7 @@ function Reader({ source, bookId, startPage, theme, toggle }) {
 function Shell() {
     const { path, params, go } = useHashRoute();
     const { token, authed, logout } = useSession();
-    const { theme, toggle, setTheme } = useTheme();
+    const { setTheme } = useTheme();
     const [entered, setEntered] = useState(false);
     // Wallpaper milik akun: 'polos' atau URL foto. Polos = latar putih.
     const [wallpaper, setWallpaper] = useState('polos');
@@ -156,30 +156,29 @@ function Shell() {
         if (!authed) setEntered(false);
     }, [authed]);
 
-    // Pengaturan akun menimpa lokal saat masuk; perubahan ditulis balik.
+    // Wallpaper akun dimuat saat masuk; tema mengikuti terang-gelapnya.
+    // Tanpa toggle manual: foto gelap = mode gelap, foto terang/polos = terang.
     useEffect(() => {
-        if (!token) return;
+        if (!token) {
+            setWallpaper('polos');
+            setTheme('light');
+            return;
+        }
         readerApi(token, 'GET', '/api/v1/reader/settings')
             .then((s) => {
-                if (s.theme === 'light' || s.theme === 'dark') setTheme(s.theme);
-                if (typeof s.wallpaper === 'string' && s.wallpaper !== '') setWallpaper(s.wallpaper);
+                const wp = typeof s.wallpaper === 'string' && s.wallpaper !== '' ? s.wallpaper : 'polos';
+                setWallpaper(wp);
+                if (wp === 'polos') {
+                    setTheme('light');
+                } else {
+                    detectTone(wp).then((t) => setTheme(t));
+                }
             })
             .catch((e) => {
                 if (e.unauthorized) logout();
             });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token]);
-
-    const persistSettings = (patch) => {
-        if (!token) return;
-        readerApi(token, 'PUT', '/api/v1/reader/settings', patch).catch(() => {});
-    };
-
-    const toggleTheme = () => {
-        const next = theme === 'dark' ? 'light' : 'dark';
-        toggle();
-        persistSettings({ theme: next });
-    };
 
     const openBook = (book, startPage) => {
         setReading({ ...book, startPage: startPage || 1 });
@@ -195,9 +194,9 @@ function Shell() {
     };
 
     let page = null;
-    if (path === '/katalog') page = <Catalog go={go} theme={theme} toggle={toggleTheme} />;
-    else if (path === '/semua') page = <Browse params={params} go={go} theme={theme} toggle={toggleTheme} />;
-    else if (path === '/cari') page = <Search onRead={openBook} theme={theme} toggle={toggleTheme} />;
+    if (path === '/katalog') page = <Catalog go={go} />;
+    else if (path === '/semua') page = <Browse params={params} go={go} />;
+    else if (path === '/cari') page = <Search onRead={openBook} />;
     else if (path === '/baca') {
         const source = reading
             ? { ...demoSource, title: reading.title, fileUrl: reading.file }
@@ -207,19 +206,18 @@ function Shell() {
                 source={source}
                 bookId={reading?.id || null}
                 startPage={reading?.startPage || 1}
-                theme={theme}
-                toggle={toggleTheme}
+               
+               
             />
         );
     } else if (path === '/playlist')
-        page = authedRoute(<Playlists theme={theme} toggle={toggleTheme} onRead={openBook} />);
+        page = authedRoute(<Playlists onRead={openBook} />);
     else if (path === '/riwayat')
-        page = authedRoute(<History theme={theme} toggle={toggleTheme} onRead={openBook} />);
-    else if (path === '/profil') page = authedRoute(<Profile theme={theme} toggle={toggleTheme} />);
-    else if (path === '/tema') page = authedRoute(<Tema theme={theme} toggle={toggleTheme} />);
+        page = authedRoute(<History onRead={openBook} />);
+    else if (path === '/profil') page = authedRoute(<Profile />);
     else if (path === '/wallpaper')
         page = authedRoute(
-            <Wallpaper theme={theme} toggle={toggleTheme} wallpaper={wallpaper} setWallpaper={setWallpaper} />,
+            <Wallpaper wallpaper={wallpaper} setWallpaper={setWallpaper} />,
         );
     else if (!authed) page = <Gate onEnter={() => setEntered(true)} />;
     else if (!entered) page = <Gate onEnter={() => setEntered(true)} />;

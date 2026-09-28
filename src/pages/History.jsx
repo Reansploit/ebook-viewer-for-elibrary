@@ -17,7 +17,7 @@ export default function History({ theme, toggle, onRead }) {
 
     return (
         <div className="reader">
-            <ViewerHeader library={member?.name || ''} backTo="/" backLabel="Menu" right="Riwayat" theme={theme} toggle={toggle} />
+            <ViewerHeader library={member?.name || ''} backTo="/" backLabel="Menu" right="Riwayat" />
             <main className="page">
                 {rows.length === 0 && (
                     <p className="reader-state">Belum ada riwayat. Buka buku dulu dari katalog atau pencarian.</p>

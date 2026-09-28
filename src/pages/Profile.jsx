@@ -43,7 +43,7 @@ export default function Profile({ theme, toggle }) {
 
     return (
         <div className="reader">
-            <ViewerHeader library={member.name} backTo="/" backLabel="Menu" right="Profil" theme={theme} toggle={toggle} />
+            <ViewerHeader library={member.name} backTo="/" backLabel="Menu" right="Profil" />
             <main className="page">
                 <div className="profile-card">
                     {member.photo ? (

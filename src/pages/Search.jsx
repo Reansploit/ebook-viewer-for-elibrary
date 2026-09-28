@@ -7,7 +7,7 @@ import { useSession } from '../session.jsx';
 
 // Cari lalu baca: ketik, pilih hasil, tombol Baca membuka reader.
 // Reader masih stub engine (placeholder jujur) sampai engine asli dipasang.
-export default function Search({ onRead, theme, toggle }) {
+export default function Search({ onRead }) {
     const { token } = useSession();
     const [library, setLibrary] = useState('Perpustakaan WBS');
     const [query, setQuery] = useState('');
@@ -60,7 +60,7 @@ export default function Search({ onRead, theme, toggle }) {
 
     return (
         <div className="reader">
-            <ViewerHeader library={library} right="Cari buku" theme={theme} toggle={toggle} />
+            <ViewerHeader library={library} right="Cari buku" />
             <main className="page">
                 <SearchBox placeholder="Ketik judul, pengarang, atau ID buku" onSearch={liveSearch} />
                 {query.length < 1 && (

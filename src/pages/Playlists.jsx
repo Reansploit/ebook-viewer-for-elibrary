@@ -56,7 +56,7 @@ export default function Playlists({ theme, toggle, onRead }) {
 
     return (
         <div className="reader">
-            <ViewerHeader library={member?.name || ''} backTo="/" backLabel="Menu" right="Playlist" theme={theme} toggle={toggle} />
+            <ViewerHeader library={member?.name || ''} backTo="/" backLabel="Menu" right="Playlist" />
             <main className="page">
                 <form className="inline-form" onSubmit={create}>
                     <label className="reader-jump-label" htmlFor="list-name">
