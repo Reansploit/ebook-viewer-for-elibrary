@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { readerApi } from '../api.js';
 import { Link } from '../router.jsx';
 import { useSession } from '../session.jsx';
-import { detectTone } from '../wp.js';
+import { detectTones } from '../wp.js';
 
 // Ikon garis oranye per layanan (R-04): bentuk mengikuti isi kartu.
 function Icon({ d }) {
@@ -53,16 +53,20 @@ export default function Menu({ onRead, wallpaper }) {
     }, [token]);
 
     const custom = wallpaper && wallpaper !== 'polos';
-    const [tone, setTone] = useState('light');
+    const [tones, setTones] = useState({ top: 'light', mid: 'light', bottom: 'light' });
 
     useEffect(() => {
         if (!custom) return;
-        detectTone(wallpaper).then(setTone);
+        detectTones(wallpaper).then(setTones);
     }, [wallpaper, custom]);
 
     return (
         <div
-            className={custom ? `kiosk kiosk-custom wp-tone-${tone}` : 'kiosk'}
+            className={
+                custom
+                    ? `kiosk kiosk-custom wp-top-${tones.top} wp-mid-${tones.mid} wp-bottom-${tones.bottom}`
+                    : 'kiosk'
+            }
             style={custom ? { '--wp': `url("${wallpaper}")` } : undefined}
         >
             <header className="kiosk-head">

@@ -554,27 +554,35 @@ body {
     background-image: var(--wp);
 }
 
-/* Teks kepala mengikuti terang-gelap foto (hasil detektor):
-   foto gelap = teks putih + bayangan, foto terang = teks tinta. */
-.wp-tone-dark .kiosk-title,
-.wp-tone-dark .kiosk-user,
-.wp-tone-dark .kiosk-date,
-.wp-tone-dark .kiosk-time,
-.wp-tone-dark .kiosk-heading {
+/* Teks mengikuti terang-gelap fotonya per area (hasil detektor):
+   pita atas untuk kepala, tengah untuk judul, bawah untuk tombol keluar. */
+.wp-top-dark .kiosk-title,
+.wp-top-dark .kiosk-user,
+.wp-top-dark .kiosk-date,
+.wp-top-dark .kiosk-time {
     color: #fff;
     text-shadow: 0 1px 6px rgb(0 0 0 / 0.7);
 }
 
-.wp-tone-light .kiosk-title,
-.wp-tone-light .kiosk-user,
-.wp-tone-light .kiosk-date,
-.wp-tone-light .kiosk-time,
-.wp-tone-light .kiosk-heading {
+.wp-top-light .kiosk-title,
+.wp-top-light .kiosk-user,
+.wp-top-light .kiosk-date,
+.wp-top-light .kiosk-time {
     color: #1c1917;
     text-shadow: none;
 }
 
-.wp-tone-dark .kiosk-exit {
+.wp-mid-dark .kiosk-heading {
+    color: #fff;
+    text-shadow: 0 1px 6px rgb(0 0 0 / 0.7);
+}
+
+.wp-mid-light .kiosk-heading {
+    color: #1c1917;
+    text-shadow: none;
+}
+
+.wp-bottom-dark .kiosk-exit {
     color: #fff;
 }
 
