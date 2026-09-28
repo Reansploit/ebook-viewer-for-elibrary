@@ -529,18 +529,33 @@ body {
     gap: 1rem;
 }
 
-/* Kios layanan (halaman menu): ombak merah-oranye khas layanan yayasan,
-   kartu putih, ikon oranye. Kulit tetap di kedua tema karena ini identitas
-   layar, bukan tema konten (R-21: keputusan brand, bukan default). */
+/* Kios layanan: latar putih (mode terang) / navy (mode gelap).
+   Foto custom menutup latar dengan kerudung agar kartu tetap terbaca. */
 .kiosk {
     min-height: 100svh;
-    background:
-        radial-gradient(110% 55% at 0% 0%, #c81e1e 0%, #e04a12 45%, transparent 70%),
-        radial-gradient(90% 50% at 100% 100%, #c81e1e 0%, #f97316 50%, transparent 72%),
-        #f6dfae;
-    color: #fff;
+    background: #fff;
+    color: #1c1917;
     display: flex;
     flex-direction: column;
+}
+
+.dark .kiosk {
+    background: #0b0f19;
+    color: #f1f5f9;
+}
+
+.kiosk-custom {
+    background-image:
+        linear-gradient(rgb(255 255 255 / 0.9), rgb(255 255 255 / 0.9)),
+        var(--wp);
+    background-size: cover;
+    background-position: center;
+}
+
+.dark .kiosk-custom {
+    background-image:
+        linear-gradient(rgb(11 15 25 / 0.92), rgb(11 15 25 / 0.92)),
+        var(--wp);
 }
 
 .kiosk-head {
@@ -563,9 +578,10 @@ body {
 }
 
 .kiosk-brand .site-logo {
-    background: rgb(255 255 255 / 0.92);
+    border: 1px solid var(--line);
     border-radius: 0.5rem;
     padding: 0.125rem;
+    background: #fff;
 }
 
 .kiosk-title {
@@ -578,7 +594,7 @@ body {
 .kiosk-user {
     margin: 0;
     font-size: 0.875rem;
-    color: rgb(255 255 255 / 0.85);
+    color: var(--muted);
 }
 
 .kiosk-clock {
@@ -588,7 +604,7 @@ body {
 .kiosk-date {
     margin: 0;
     font-size: 0.875rem;
-    color: rgb(255 255 255 / 0.9);
+    color: var(--muted);
 }
 
 .kiosk-time {
@@ -614,7 +630,6 @@ body {
     margin: 0;
     font-size: 1.25rem;
     font-weight: 700;
-    color: #fff;
 }
 
 .kiosk-resume {
@@ -652,6 +667,7 @@ body {
     padding: 1.5rem 1rem;
     min-height: 12rem;
     background: #fffdf6;
+    border: 1px solid var(--line);
     border-radius: var(--radius);
     color: #1c1917;
     text-decoration: none;
@@ -685,11 +701,19 @@ body {
     margin-top: 0.5rem;
     padding: 0.625rem 1.5rem;
     min-height: 44px;
-    border: 1px solid rgb(255 255 255 / 0.7);
+    border: 1px solid var(--line);
     border-radius: 0.5rem;
     background: transparent;
-    color: #fff;
+    color: inherit;
     cursor: pointer;
+}
+
+.wp-preview {
+    width: 100%;
+    max-height: 16rem;
+    object-fit: cover;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
 }
 
 /* Gerbang RFID + profil */

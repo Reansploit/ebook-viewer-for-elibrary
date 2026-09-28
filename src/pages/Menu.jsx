@@ -17,6 +17,7 @@ const CARDS = [
     { to: '/playlist', title: 'Playlist Buku', desc: 'Daftar bacaanmu', icon: 'M4 6h12M4 10h12M4 14h7m-7 4h10m4-9 2 2 2-2m-2 7 2 2 2-2' },
     { to: '/riwayat', title: 'Riwayat', desc: 'Buku yang dibuka', icon: 'M12 8v4l3 2m6-2a9 9 0 1 1-9-9 9 9 0 0 1 9 9Z' },
     { to: '/profil', title: 'Profil Akun', desc: 'Data diri + catatan', icon: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 9a7 7 0 0 1 14 0' },
+    { to: '/wallpaper', title: 'Wallpaper', desc: 'Latar foto custom', icon: 'M4 5h16v14H4zM4 15l4-4 3 3 3-3 6 6M9 9h.01' },
     { to: '/tema', title: 'Tema', desc: 'Terang atau gelap', icon: 'M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z' },
 ];
 
@@ -35,7 +36,7 @@ function useClock() {
     return { date, time };
 }
 
-export default function Menu({ onRead }) {
+export default function Menu({ onRead, wallpaper }) {
     const { member, token, logout } = useSession();
     const { date, time } = useClock();
     const [resume, setResume] = useState(null);
@@ -50,8 +51,13 @@ export default function Menu({ onRead }) {
             .catch(() => {});
     }, [token]);
 
+    const custom = wallpaper && wallpaper !== 'polos';
+
     return (
-        <div className="kiosk">
+        <div
+            className={custom ? 'kiosk kiosk-custom' : 'kiosk'}
+            style={custom ? { '--wp': `url("${wallpaper}")` } : undefined}
+        >
             <header className="kiosk-head">
                 <div className="kiosk-brand">
                     <img src="/images/logo-wbs.png" alt="" className="site-logo" />

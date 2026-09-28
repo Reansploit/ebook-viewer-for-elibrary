@@ -38,6 +38,29 @@ function authHeader(token) {
     return { Authorization: `Bearer ${token}` };
 }
 
+export async function uploadWallpaper(token, file) {
+    const form = new FormData();
+    form.append('photo', file);
+    const res = await fetch(BASE + '/api/v1/reader/wallpaper', {
+        method: 'POST',
+        headers: { ...authHeader(token), Accept: 'application/json' },
+        body: form,
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.message || `HTTP ${res.status}`);
+    return data;
+}
+
+export async function deleteWallpaper(token) {
+    const res = await fetch(BASE + '/api/v1/reader/wallpaper', {
+        method: 'DELETE',
+        headers: { ...authHeader(token), Accept: 'application/json' },
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.message || `HTTP ${res.status}`);
+    return data;
+}
+
 // Panggilan akun (butuh token). GET/POST/PUT/DELETE sederhana.
 export async function readerApi(token, method, path, body) {
     const res = await fetch(BASE + path, {
