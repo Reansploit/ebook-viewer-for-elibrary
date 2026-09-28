@@ -793,21 +793,21 @@ body {
 }
 
 /* Wallpaper portal (mode terang saja; gelap tetap navy elibrary) */
-.wp-senja {
+:root:not(.dark) .wp-senja {
     --paper: #faf3e8;
     --card: #fff9ef;
     --line: #ecddc4;
     --soft: #f3e4c8;
 }
 
-.wp-laut {
+:root:not(.dark) .wp-laut {
     --paper: #f2f6fa;
     --card: #ffffff;
     --line: #dbe6f0;
     --soft: #e2edf6;
 }
 
-.wp-hutan {
+:root:not(.dark) .wp-hutan {
     --paper: #f2f7f1;
     --card: #ffffff;
     --line: #d8e6d5;
