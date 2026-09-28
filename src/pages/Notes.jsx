@@ -58,12 +58,14 @@ export default function Notes() {
                     editorRef.current = editor;
                     setReady(true);
                 })
-                .catch(() => {
+                .catch((err) => {
+                    // eslint-disable-next-line no-console
+                    console.error('CKEditor gagal:', err);
                     if (toolbar !== minimal) {
                         boxRef.current?.replaceChildren();
                         start(minimal);
                     } else if (!cancelled) {
-                        setFailed('Editor gagal dimuat di perangkat ini.');
+                        setFailed(`Editor gagal dimuat: ${err?.message || err}`);
                     }
                 });
         };
