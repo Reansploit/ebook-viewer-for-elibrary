@@ -169,7 +169,23 @@ function Shell() {
     const { path, params, go } = useHashRoute();
     const { token, authed, logout } = useSession();
     const { setTheme } = useTheme();
-    const [entered, setEntered] = useState(false);
+    // Status masuk bertahan lewat refresh (tokennya pun begitu).
+    // Keluar benar = tombol Keluar di Profil (logout menghapus ini).
+    const [entered, setEntered] = useState(() => {
+        try {
+            return localStorage.getItem('reader_entered') === '1';
+        } catch {
+            return false;
+        }
+    });
+    const enter = () => {
+        setEntered(true);
+        try {
+            localStorage.setItem('reader_entered', '1');
+        } catch {
+            // abaikan
+        }
+    };
     // Wallpaper milik akun: 'polos' atau URL foto. Polos = latar putih.
     const [wallpaper, setWallpaper] = useState('polos');
     // Buku yang dibuka dari hasil cari / riwayat / playlist.
@@ -177,7 +193,14 @@ function Shell() {
 
     // Keluar = kembali ke gerbang.
     useEffect(() => {
-        if (!authed) setEntered(false);
+        if (!authed) {
+            setEntered(false);
+            try {
+                localStorage.removeItem('reader_entered');
+            } catch {
+                // abaikan
+            }
+        }
     }, [authed]);
 
     // Wallpaper akun dimuat saat masuk; tema mengikuti terang-gelapnya.
@@ -246,8 +269,8 @@ function Shell() {
         page = authedRoute(
             <Wallpaper wallpaper={wallpaper} setWallpaper={setWallpaper} />,
         );
-    else if (!authed) page = <Gate onEnter={() => setEntered(true)} />;
-    else if (!entered) page = <Gate onEnter={() => setEntered(true)} />;
+    else if (!authed) page = <Gate onEnter={enter} />;
+    else if (!entered) page = <Gate onEnter={enter} />;
     else page = <Menu onRead={openBook} wallpaper={wallpaper} />;
 
     return <>{page}</>;
