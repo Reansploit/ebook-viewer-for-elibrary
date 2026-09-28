@@ -9,7 +9,7 @@ import { SessionProvider, useSession } from './session.jsx';
 import { useTheme } from './theme.jsx';
 import Browse from './pages/Browse.jsx';
 import Catalog from './pages/Catalog.jsx';
-import Display from './pages/Display.jsx';
+import Tema from './pages/Tema.jsx';
 import Gate from './pages/Gate.jsx';
 import History from './pages/History.jsx';
 import Menu from './pages/Menu.jsx';
@@ -19,7 +19,7 @@ import Search from './pages/Search.jsx';
 import './index.css';
 
 // Portal viewer: #/ gerbang/menu, #/katalog, #/semua, #/cari, #/baca,
-// #/playlist, #/riwayat, #/profil, #/wallpaper, #/tema.
+// #/playlist, #/riwayat, #/profil, #/tema.
 // Design Read: portal baca santri, tenang mengikuti elibrary.
 // Dial ENERGY 1 / RHYTHM 1 / MOTION 1.
 const demoSource = { title: 'Contoh Kitab', pageCount: 24 };
@@ -145,7 +145,6 @@ function Shell() {
     const { token, authed, logout } = useSession();
     const { theme, toggle, setTheme } = useTheme();
     const [entered, setEntered] = useState(false);
-    const [wallpaper, setWallpaperState] = useState('polos');
     // Buku yang dibuka dari hasil cari / riwayat / playlist.
     const [reading, setReading] = useState(null);
 
@@ -160,7 +159,6 @@ function Shell() {
         readerApi(token, 'GET', '/api/v1/reader/settings')
             .then((s) => {
                 if (s.theme === 'light' || s.theme === 'dark') setTheme(s.theme);
-                if (s.wallpaper) setWallpaperState(s.wallpaper);
             })
             .catch((e) => {
                 if (e.unauthorized) logout();
@@ -177,11 +175,6 @@ function Shell() {
         const next = theme === 'dark' ? 'light' : 'dark';
         toggle();
         persistSettings({ theme: next });
-    };
-
-    const setWallpaper = (id) => {
-        setWallpaperState(id);
-        persistSettings({ wallpaper: id });
     };
 
     const openBook = (book, startPage) => {
@@ -219,19 +212,12 @@ function Shell() {
     else if (path === '/riwayat')
         page = authedRoute(<History theme={theme} toggle={toggleTheme} onRead={openBook} />);
     else if (path === '/profil') page = authedRoute(<Profile theme={theme} toggle={toggleTheme} />);
-    else if (path === '/wallpaper')
-        page = authedRoute(
-            <Display theme={theme} toggle={toggleTheme} wallpaper={wallpaper} setWallpaper={setWallpaper} section="wallpaper" />,
-        );
-    else if (path === '/tema')
-        page = authedRoute(
-            <Display theme={theme} toggle={toggleTheme} wallpaper={wallpaper} setWallpaper={setWallpaper} section="tema" />,
-        );
+    else if (path === '/tema') page = authedRoute(<Tema theme={theme} toggle={toggleTheme} />);
     else if (!authed) page = <Gate onEnter={() => setEntered(true)} />;
     else if (!entered) page = <Gate onEnter={() => setEntered(true)} />;
     else page = <Menu onRead={openBook} />;
 
-    return <div className={`wp-${wallpaper}`}>{page}</div>;
+    return <>{page}</>;
 }
 
 export default function App() {

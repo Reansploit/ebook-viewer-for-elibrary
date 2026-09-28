@@ -646,29 +646,31 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     text-align: center;
     gap: 0.25rem;
     padding: 1.5rem 1rem;
+    min-height: 12rem;
     background: #fffdf6;
     border-radius: var(--radius);
     color: #1c1917;
     text-decoration: none;
-    min-height: 44px;
 }
 
 .kiosk-icon {
     color: var(--accent);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
 }
 
 .kiosk-icon svg {
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 3rem;
+    height: 3rem;
     display: block;
 }
 
 .kiosk-card-title {
     font-weight: 700;
+    color: #c2410c;
 }
 
 .kiosk-card-desc {
@@ -953,65 +955,15 @@ body {
     flex: 1;
 }
 
-/* Wallpaper portal (mode terang saja; gelap tetap navy elibrary) */
-:root:not(.dark) .wp-senja {
-    --paper: #faf3e8;
-    --card: #fff9ef;
-    --line: #ecddc4;
-    --soft: #f3e4c8;
-}
 
-:root:not(.dark) .wp-laut {
-    --paper: #f2f6fa;
-    --card: #ffffff;
-    --line: #dbe6f0;
-    --soft: #e2edf6;
-}
 
-:root:not(.dark) .wp-hutan {
-    --paper: #f2f7f1;
-    --card: #ffffff;
-    --line: #d8e6d5;
-    --soft: #e0eddc;
-}
 
-.wp-grid {
-    display: grid;
-    gap: 1rem;
-    grid-template-columns: repeat(2, 1fr);
-}
 
-.wp-swatch {
-    font: inherit;
-    font-weight: 700;
-    padding: 1.5rem 1rem;
-    min-height: 44px;
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    cursor: pointer;
-    color: #1c1917;
-}
 
-.wp-swatch.wp-polos {
-    background: #f9f8f6;
-}
 
-.wp-swatch.wp-senja {
-    background: #faf3e8;
-}
 
-.wp-swatch.wp-laut {
-    background: #f2f6fa;
-}
 
-.wp-swatch.wp-hutan {
-    background: #f2f7f1;
-}
 
-.wp-swatch.wp-active {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-}
 
 .reader-controls {
     display: flex;
