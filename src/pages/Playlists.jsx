@@ -11,10 +11,14 @@ export default function Playlists({ onRead }) {
     const [name, setName] = useState('');
     const [openId, setOpenId] = useState(null);
     const [items, setItems] = useState([]);
+    const [saved, setSaved] = useState([]);
 
     const reload = () => {
         readerApi(token, 'GET', '/api/v1/reader/lists')
             .then((d) => setLists(d.lists || []))
+            .catch(() => {});
+        readerApi(token, 'GET', '/api/v1/reader/saves')
+            .then((d) => setSaved(d.saves || []))
             .catch(() => {});
     };
 
@@ -58,6 +62,34 @@ export default function Playlists({ onRead }) {
         <div className="reader">
             <ViewerHeader library={member?.name || ''} backTo="/" backLabel="Menu" right="Playlist" />
             <main className="page">
+                {saved.length > 0 && (
+                    <section className="section">
+                        <h2 className="section-title">Ebook tersimpan</h2>
+                        <div className="book-list">
+                            {saved.map((b) => (
+                                <div key={b.id} className="list-item">
+                                    <span className="book-title">{b.title}</span>
+                                    <span className="list-item-actions">
+                                        {b.file && (
+                                            <button type="button" className="mini-btn" onClick={() => onRead(b)}>
+                                                Baca
+                                            </button>
+                                        )}
+                                        <button
+                                            type="button"
+                                            className="mini-btn"
+                                            onClick={() =>
+                                                readerApi(token, 'DELETE', `/api/v1/reader/saves/${b.id}`).then(reload)
+                                            }
+                                        >
+                                            Keluarkan
+                                        </button>
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+                )}
                 <form className="inline-form" onSubmit={create}>
                     <label className="reader-jump-label" htmlFor="list-name">
                         Nama daftar baru

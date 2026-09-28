@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api.js';
 import BookCard from '../components/BookCard.jsx';
+import { useReaderMarks } from '../readerMarks.js';
 import CategoryChips from '../components/CategoryChips.jsx';
 import Pagination from '../components/Pagination.jsx';
 import SearchBox from '../components/SearchBox.jsx';
@@ -8,6 +9,7 @@ import ViewerHeader from '../components/ViewerHeader.jsx';
 
 // Semua buku: saring kategori + kata kunci + paginasi server 20/halaman.
 export default function Browse({ params, go }) {
+    const { votes, sendVote } = useReaderMarks();
     const kategori = params.get('kategori') || '';
     const q = params.get('q') || '';
     const [page, setPage] = useState(1);
@@ -73,7 +75,17 @@ export default function Browse({ params, go }) {
                     <>
                         <div className="book-grid">
                             {data.data.map((b) => (
-                                <BookCard key={b.id} book={b} />
+                                <BookCard
+                                        key={b.id}
+                                        book={b}
+                                        myVote={votes[b.id] || 0}
+                                        onVote={(id, v) =>
+                                            sendVote(id, v, (bid, likes, dislikes) =>
+                                                setData((d) =>
+                                                    d ? { ...d, data: d.data.map((x) => (x.id === bid ? { ...x, likes, dislikes } : x)) } : d,
+                                                ),
+                                        }
+                                    />
                             ))}
                         </div>
                         <Pagination page={data.current_page} lastPage={data.last_page} onGo={setPage} />

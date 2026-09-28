@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { api } from '../api.js';
 import { Link } from '../router.jsx';
 import BookCard from '../components/BookCard.jsx';
+import { useReaderMarks } from '../readerMarks.js';
 import CategoryChips from '../components/CategoryChips.jsx';
 import SearchBox from '../components/SearchBox.jsx';
 import ViewerHeader from '../components/ViewerHeader.jsx';
@@ -9,6 +10,7 @@ import ViewerHeader from '../components/ViewerHeader.jsx';
 // Beranda katalog: cari cepat + kategori + koleksi terbaru.
 // Cermin halaman Katalog elibrary yang dipindah ke sini.
 export default function Catalog({ go }) {
+    const { votes, sendVote } = useReaderMarks();
     const [data, setData] = useState(null);
     const [error, setError] = useState(false);
     const [query, setQuery] = useState('');
@@ -19,6 +21,12 @@ export default function Catalog({ go }) {
     useEffect(() => {
         api.catalog().then(setData).catch(() => setError(true));
     }, []);
+
+    const applyCounts = (bookId, likes, dislikes) => {
+        const patch = (rows) => (rows || []).map((b) => (b.id === bookId ? { ...b, likes, dislikes } : b));
+        setResults((r) => (r ? patch(r) : r));
+        setData((d) => (d ? { ...d, featured: patch(d.featured) } : d));
+    };
 
     const liveSearch = (q) => {
         setQuery(q);
@@ -73,7 +81,7 @@ export default function Catalog({ go }) {
                         {results && results.length > 0 && (
                             <div className="book-grid">
                                 {results.map((b) => (
-                                    <BookCard key={b.id} book={b} />
+                                    <BookCard key={b.id} book={b} myVote={votes[b.id] || 0} onVote={(id, v) => sendVote(id, v, applyCounts)} />
                                 ))}
                             </div>
                         )}
@@ -91,7 +99,7 @@ export default function Catalog({ go }) {
                                     <h2 className="section-title">Koleksi terbaru</h2>
                                     <div className="book-grid">
                                         {data.featured.map((b) => (
-                                            <BookCard key={b.id} book={b} />
+                                            <BookCard key={b.id} book={b} myVote={votes[b.id] || 0} onVote={(id, v) => sendVote(id, v, applyCounts)} />
                                         ))}
                                     </div>
                                     {data.total > data.featured.length && (

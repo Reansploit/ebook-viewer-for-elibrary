@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { api, readerApi } from '../api.js';
 import BookCard from '../components/BookCard.jsx';
+import { useReaderMarks } from '../readerMarks.js';
 import SearchBox from '../components/SearchBox.jsx';
 import ViewerHeader from '../components/ViewerHeader.jsx';
 import { useSession } from '../session.jsx';
@@ -8,6 +9,7 @@ import { useSession } from '../session.jsx';
 // Cari lalu baca: ketik, pilih hasil, tombol Baca membuka reader.
 // Reader masih stub engine (placeholder jujur) sampai engine asli dipasang.
 export default function Search({ onRead }) {
+    const { votes, saves, sendVote, toggleSave } = useReaderMarks();
     const { token } = useSession();
     const [library, setLibrary] = useState('Perpustakaan WBS');
     const [query, setQuery] = useState('');
@@ -81,7 +83,18 @@ export default function Search({ onRead }) {
                         {results.map((b) => (
                             <div key={b.id} className="book-row">
                                 <div className="book-row-main">
-                                    <BookCard book={b} />
+                                    <BookCard
+                                        book={b}
+                                        myVote={votes[b.id] || 0}
+                                        onVote={(id, v) =>
+                                            sendVote(id, v, (bid, likes, dislikes) =>
+                                                setResults((rs) => (rs || []).map((x) => (x.id === bid ? { ...x, likes, dislikes } : x))),
+                                            )
+                                        }
+                                        showSave
+                                        saved={!!saves[b.id]}
+                                        onToggleSave={toggleSave}
+                                    />
                                 </div>
                                 <button
                                     type="button"
