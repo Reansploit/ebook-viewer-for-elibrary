@@ -2,7 +2,8 @@
 // implementasi asli selama bentuk kembaliannya sama. `source` bebas
 // bentuknya; yang dipakai: title, pageCount, dan fileUrl (URL absolut
 // berkas PDF/EPUB dari API elibrary, engine asli membacanya di sini).
-// Stub hanya membaca title dan pageCount.
+// Bila source.ir (Document IR Reo) terisi, ReoPage yang render.
+import ReoPage from './ReoPage.jsx';
 //
 import { useCallback, useState } from 'react';
 
@@ -21,13 +22,16 @@ export function useStubEngine(source = {}, startPage = 1) {
     const prev = useCallback(() => goTo(page - 1), [goTo, page]);
 
     const renderPage = useCallback(
-        (n) => (
-            <div className="page-placeholder">
-                <p>Halaman {n}</p>
-                <p className="page-placeholder-sub">Engine asli belum dipasang.</p>
-            </div>
-        ),
-        [],
+        (n) => {
+            if (source.ir) return <ReoPage ir={source.ir} theme={source.theme} />;
+            return (
+                <div className="page-placeholder">
+                    <p>Halaman {n}</p>
+                    <p className="page-placeholder-sub">Engine asli belum dipasang.</p>
+                </div>
+            );
+        },
+        [source.ir, source.theme],
     );
 
     return { title, pageCount, page, status: 'ready', error: null, goTo, next, prev, renderPage };

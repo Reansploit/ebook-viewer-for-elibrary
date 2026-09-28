@@ -1,0 +1,4 @@
+[submodule "vendor/reo-engine"]
+	path = vendor/reo-engine
+	url = https://github.com/kuntuut/Reo-Engine
+	branch = main
