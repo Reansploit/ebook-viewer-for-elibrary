@@ -1171,11 +1171,14 @@ body {
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 0.75rem;
-    border: 0;
     background: transparent;
     position: relative;
     color: var(--cyber-accent);
     cursor: pointer;
+    /* Border dasar selalu terlihat (mask snippet tidak jalan di semua
+       browser); clip-path menjaga sudut potong. */
+    border: 1px solid rgb(0 242 234 / 0.55);
+    clip-path: var(--cyber-clip);
 }
 
 .cyber-btn > * {
