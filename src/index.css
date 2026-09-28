@@ -1,7 +1,7 @@
 /* Palet elibrary (R-01: dari identitas produk, bukan tren): latar hangat,
-   tinta stone, aksen oranye. Isi tombol memakai oranye tua (#9A3412),
-   bukan primary #EA580C, karena teks terang di atas #EA580C hanya 3.35:1
-   dan gagal WCAG AA (R-25). Fokus ring tetap primary sebagai aksen. */
+   tinta stone, aksen oranye. Tombol pakai primary terang (#EA580C) dengan
+   teks tinta gelap: kontras 4.91:1 lolos WCAG AA (R-25), tidak seperti
+   teks terang elibrary yang hanya 3.35:1. Fokus ring tetap primary. */
 :root {
     --paper: #f9f8f6;
     --ink: #1c1917;
@@ -11,8 +11,8 @@
     --soft: #ece6da;
     --soft-ink: #9a3412;
     --accent: #ea580c;
-    --btn-bg: #9a3412;
-    --btn-ink: #fff7ed;
+    --btn-bg: #ea580c;
+    --btn-ink: #1c1917;
     --danger: #e7000b;
     --radius: 0.625rem;
     --sans: Inter, system-ui, 'Segoe UI', Roboto, sans-serif;
@@ -27,9 +27,9 @@
     --ink: #f1f5f9;
     --muted: #94a3b8;
     --line: #232d45;
-    --accent: #f97316;
-    --btn-bg: #fdba74;
-    --btn-ink: #0b0f19;
+        --accent: #f97316;
+        --btn-bg: #f97316;
+        --btn-ink: #0b0f19;
     --card: #121826;
     --soft: #1a2238;
     --soft-ink: #fdba74;
@@ -85,6 +85,13 @@ body {
 .page-placeholder {
     text-align: center;
     color: var(--muted);
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: 0 1px 2px rgb(28 25 23 / 0.06);
+    padding: 3rem 2rem;
+    width: 100%;
+    max-width: 40rem;
 }
 
 .page-placeholder p {
@@ -303,6 +310,10 @@ body {
 
 .portal-card:hover {
     border-color: var(--accent);
+}
+
+.portal-card:hover .portal-card-title {
+    color: var(--accent);
 }
 
 .section {
