@@ -546,7 +546,7 @@ body {
 
 .kiosk-custom {
     background-image:
-        linear-gradient(rgb(255 255 255 / 0.9), rgb(255 255 255 / 0.9)),
+        linear-gradient(rgb(255 255 255 / 0.72), rgb(255 255 255 / 0.72)),
         var(--wp);
     background-size: cover;
     background-position: center;
@@ -554,7 +554,7 @@ body {
 
 .dark .kiosk-custom {
     background-image:
-        linear-gradient(rgb(11 15 25 / 0.92), rgb(11 15 25 / 0.92)),
+        linear-gradient(rgb(11 15 25 / 0.82), rgb(11 15 25 / 0.82)),
         var(--wp);
 }
 
