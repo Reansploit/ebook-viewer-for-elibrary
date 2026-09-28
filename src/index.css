@@ -1,6 +1,6 @@
-/* Palet elibrary kecuali aksen: pemilik minta oranye #FFA500 menggantikan
+/* Palet elibrary kecuali aksen: pemilik minta oranye #FF7F00 menggantikan
    primary #EA580C (override R-01, dicatat di sini). Tombol pakai aksen
-   dengan teks tinta gelap: kontras 8.86:1 lolos WCAG AA (R-25). */
+   dengan teks tinta gelap: kontras 6.9:1 lolos WCAG AA (R-25). */
 :root {
     --paper: #f9f8f6;
     --ink: #1c1917;
@@ -9,8 +9,8 @@
     --card: #fffdf6;
     --soft: #ece6da;
     --soft-ink: #9a3412;
-    --accent: #ffa500;
-    --btn-bg: #ffa500;
+    --accent: #ff7f00;
+    --btn-bg: #ff7f00;
     --btn-ink: #1c1917;
     --danger: #e7000b;
     --radius: 0.625rem;
