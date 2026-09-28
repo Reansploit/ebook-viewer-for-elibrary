@@ -32,7 +32,7 @@ export default function Gate({ onEnter }) {
     };
 
     return (
-        <div className="reader">
+        <div className="reader gate-dark">
             <main className="portal">
                 <h1 className="portal-title">Perpustakaan WBS</h1>
                 {!member ? (
