@@ -1221,6 +1221,61 @@ body {
     padding: 1rem 1.25rem;
 }
 
+/* Quill di atas kertas: toolbar + area tulis menyatu dengan lembar. */
+.paper-quill {
+    padding: 0;
+    overflow: hidden;
+}
+
+.paper-quill .ql-toolbar.ql-snow {
+    border: none;
+    border-bottom: 1px solid var(--line);
+    background: var(--card);
+    font-family: inherit;
+}
+
+.paper-quill .ql-container.ql-snow {
+    border: none;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #111;
+}
+
+.paper-quill .ql-editor {
+    min-height: 14rem;
+    padding: 2rem 1.75rem;
+}
+
+.paper-quill .ql-editor.ql-blank::before {
+    color: #a8a29e;
+    font-style: normal;
+}
+
+.paper-quill .ql-snow .ql-stroke {
+    stroke: currentColor;
+}
+
+.paper-quill .ql-snow .ql-fill {
+    fill: currentColor;
+}
+
+.paper-quill .ql-snow.ql-toolbar button:hover,
+.paper-quill .ql-snow.ql-toolbar button:focus-visible {
+    color: var(--accent);
+}
+
+.paper-quill .ql-snow.ql-toolbar button.ql-active,
+.paper-quill .ql-snow.ql-toolbar .ql-picker-label.ql-active,
+.paper-quill .ql-snow.ql-toolbar .ql-picker-item.ql-selected {
+    color: var(--accent);
+}
+
+.paper-quill .ql-snow.ql-toolbar button.ql-active .ql-stroke,
+.paper-quill .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke {
+    stroke: var(--accent);
+}
+
 /* Gerbang RFID: selalu hitam pekat (arahan pemilik), teks terang.
    Berlaku di kedua tema karena ini layar gerbang, bukan konten. */
 .gate-dark {
