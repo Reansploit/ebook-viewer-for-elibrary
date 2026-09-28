@@ -1,30 +1,35 @@
 import { useEffect, useRef, useState } from 'react';
 import { api, readerApi } from '../api.js';
 import ViewerHeader from '../components/ViewerHeader.jsx';
-import { renderMiniMd } from '../miniMd.js';
+import { sanitizeNoteHtml } from '../sanitize.js';
 import { useSession } from '../session.jsx';
 
-// Catatan bebas ala word sederhana: toolbar Tebal, Miring, Coret, Judul,
-// Daftar, Kutip + pratinjau. Bisa terikat buku (dari pencarian) atau bebas.
+// Kertas ala word untuk naskah (mis. muhadhoroh): toolbar Tebal, Miring,
+// Garis bawah, Judul, Rata kiri/tengah/kanan, Daftar, Bersihkan format.
+// Simpan HTML tersanitasi; Cetak mengeluarkan kertasnya. Bisa terikat
+// buku atau bebas.
 const TOOLS = [
-    { id: 'bold', label: 'Tebal', before: '**', after: '**' },
-    { id: 'italic', label: 'Miring', before: '*', after: '*' },
-    { id: 'strike', label: 'Coret', before: '~~', after: '~~' },
-    { id: 'code', label: 'Kode', before: '`', after: '`' },
-    { id: 'heading', label: 'Judul', prefix: '## ' },
-    { id: 'list', label: 'Daftar', prefix: '- ' },
-    { id: 'quote', label: 'Kutip', prefix: '> ' },
+    { id: 'bold', label: 'Tebal', run: () => document.execCommand('bold') },
+    { id: 'italic', label: 'Miring', run: () => document.execCommand('italic') },
+    { id: 'underline', label: 'Garis bawah', run: () => document.execCommand('underline') },
+    { id: 'h1', label: 'Judul', run: () => document.execCommand('formatBlock', false, 'h2') },
+    { id: 'left', label: 'Kiri', run: () => document.execCommand('justifyLeft') },
+    { id: 'center', label: 'Tengah', run: () => document.execCommand('justifyCenter') },
+    { id: 'right', label: 'Kanan', run: () => document.execCommand('justifyRight') },
+    { id: 'justify', label: 'Rata', run: () => document.execCommand('justifyFull') },
+    { id: 'ul', label: 'Daftar', run: () => document.execCommand('insertUnorderedList') },
+    { id: 'ol', label: 'Nomor', run: () => document.execCommand('insertOrderedList') },
+    { id: 'clear', label: 'Bersih', run: () => document.execCommand('removeFormat') },
 ];
 
 export default function Notes() {
     const { member, token } = useSession();
     const [notes, setNotes] = useState([]);
-    const [text, setText] = useState('');
     const [book, setBook] = useState(null);
     const [query, setQuery] = useState('');
     const [found, setFound] = useState(null);
-    const [preview, setPreview] = useState(false);
-    const areaRef = useRef(null);
+    const [editingId, setEditingId] = useState(null);
+    const paperRef = useRef(null);
     const timer = useRef(null);
 
     const reload = () => {
@@ -47,48 +52,63 @@ export default function Notes() {
         }, 350);
     };
 
-    const surround = (before, after) => {
-        const el = areaRef.current;
-        if (!el) return;
-        const { selectionStart: s, selectionEnd: e, value } = el;
-        const next = value.slice(0, s) + before + value.slice(s, e) + after + value.slice(e);
-        setText(next);
-        requestAnimationFrame(() => {
-            el.focus();
-            el.setSelectionRange(s + before.length, e + before.length);
-        });
+    const tool = (fn) => (e) => {
+        e.preventDefault();
+        paperRef.current?.focus();
+        fn();
     };
 
-    const prefixLines = (prefix) => {
-        const el = areaRef.current;
-        if (!el) return;
-        const { selectionStart: s, value } = el;
-        const lineStart = value.lastIndexOf('\n', s - 1) + 1;
-        const next = value.slice(0, lineStart) + prefix + value.slice(lineStart);
-        setText(next);
-        requestAnimationFrame(() => {
-            el.focus();
-            el.setSelectionRange(s + prefix.length, s + prefix.length);
-        });
+    const readPaper = () => sanitizeNoteHtml(paperRef.current?.innerHTML || '');
+
+    const resetPaper = () => {
+        if (paperRef.current) paperRef.current.innerHTML = '';
+        setBook(null);
+        setEditingId(null);
     };
 
     const save = (e) => {
         e.preventDefault();
-        const catatan = text.trim();
-        if (!catatan) return;
-        readerApi(token, 'POST', '/api/v1/reader/notes', {
-            id_buku: book?.id || null,
-            catatan,
-        }).then(() => {
-            setText('');
-            setBook(null);
-            setPreview(false);
+        const catatan = readPaper();
+        if (!paperRef.current?.innerText.trim()) return;
+        const payload = { id_buku: book?.id || null, catatan };
+        const done = () => {
+            resetPaper();
             reload();
-        });
+        };
+        if (editingId) {
+            // API belum ada ubah: hapus lalu simpan baru.
+            readerApi(token, 'DELETE', `/api/v1/reader/notes/${editingId}`)
+                .then(() => readerApi(token, 'POST', '/api/v1/reader/notes', payload))
+                .then(done);
+        } else {
+            readerApi(token, 'POST', '/api/v1/reader/notes', payload).then(done);
+        }
+    };
+
+    const edit = (n) => {
+        if (paperRef.current) paperRef.current.innerHTML = sanitizeNoteHtml(n.catatan);
+        setBook(n.book ? { id: n.book.id ?? null, title: n.book.title } : null);
+        setEditingId(n.id);
+        paperRef.current?.focus();
     };
 
     const drop = (id) => {
         readerApi(token, 'DELETE', `/api/v1/reader/notes/${id}`).then(reload);
+    };
+
+    const print = () => {
+        const html = readPaper();
+        if (!paperRef.current?.innerText.trim()) return;
+        const w = window.open('', '_blank', 'width=800,height=600');
+        if (!w) return;
+        w.document.write(
+            `<!doctype html><html lang="id"><head><meta charset="utf-8"><title>Naskah</title>` +
+                `<style>body{font-family:Georgia,serif;line-height:1.8;max-width:42rem;margin:2rem auto;padding:0 1rem;color:#111}h1,h2,h3{line-height:1.3}blockquote{border-left:3px solid #999;margin-left:0;padding-left:1rem;color:#444}</style>` +
+                `</head><body>${html}</body></html>`,
+        );
+        w.document.close();
+        w.focus();
+        w.print();
     };
 
     return (
@@ -97,20 +117,11 @@ export default function Notes() {
             <main className="page">
                 <form className="note-editor" onSubmit={save}>
                     <div className="md-toolbar" role="toolbar" aria-label="Alat tulis">
-                        {TOOLS.map((t) =>
-                            t.prefix ? (
-                                <button key={t.id} type="button" className="mini-btn" onClick={() => prefixLines(t.prefix)}>
-                                    {t.label}
-                                </button>
-                            ) : (
-                                <button key={t.id} type="button" className="mini-btn" onClick={() => surround(t.before, t.after)}>
-                                    {t.label}
-                                </button>
-                            ),
-                        )}
-                        <button type="button" className="mini-btn" onClick={() => setPreview((p) => !p)} aria-pressed={preview}>
-                            {preview ? 'Tulis' : 'Pratinjau'}
-                        </button>
+                        {TOOLS.map((t) => (
+                            <button key={t.id} type="button" className="mini-btn" onMouseDown={tool(t.run)}>
+                                {t.label}
+                            </button>
+                        ))}
                     </div>
 
                     {book && (
@@ -121,21 +132,18 @@ export default function Notes() {
                             </button>
                         </p>
                     )}
+                    {editingId && <p className="book-meta">Mengubah catatan lama.</p>}
 
-                    {preview ? (
-                        <div className="md-preview" dangerouslySetInnerHTML={{ __html: renderMiniMd(text) || '<p class="md-p">Kosong.</p>' }} />
-                    ) : (
-                        <textarea
-                            ref={areaRef}
-                            className="md-area"
-                            rows={6}
-                            placeholder="Tulis catatan bebas..."
-                            value={text}
-                            onChange={(e) => setText(e.target.value)}
-                        />
-                    )}
+                    <div
+                        ref={paperRef}
+                        className="paper"
+                        contentEditable
+                        role="textbox"
+                        aria-label="Kertas naskah"
+                        data-placeholder="Tulis naskah di sini..."
+                    />
 
-                    {!book && (
+                    {!book && !editingId && (
                         <>
                             <input
                                 className="search-input"
@@ -156,9 +164,19 @@ export default function Notes() {
                         </>
                     )}
 
-                    <button type="submit" className="btn-solid" disabled={!text.trim()}>
-                        Simpan catatan
-                    </button>
+                    <div className="gate-actions">
+                        <button type="submit" className="btn-solid" disabled={false}>
+                            Simpan
+                        </button>
+                        <button type="button" className="btn-outline" onClick={print}>
+                            Cetak
+                        </button>
+                        {(editingId || book) && (
+                            <button type="button" className="btn-outline" onClick={resetPaper}>
+                                Baru
+                            </button>
+                        )}
+                    </div>
                 </form>
 
                 <section className="section">
@@ -169,10 +187,15 @@ export default function Notes() {
                             <div key={n.id} className="note-card">
                                 {n.book && <p className="note-book">{n.book.title}</p>}
                                 {n.page && <p className="book-meta">Halaman {n.page}</p>}
-                                <div className="md-preview" dangerouslySetInnerHTML={{ __html: renderMiniMd(n.catatan) }} />
-                                <button type="button" className="note-drop" onClick={() => drop(n.id)}>
-                                    Hapus
-                                </button>
+                                <div className="paper paper-read" dangerouslySetInnerHTML={{ __html: sanitizeNoteHtml(n.catatan) }} />
+                                <span className="list-item-actions">
+                                    <button type="button" className="mini-btn" onClick={() => edit(n)}>
+                                        Ubah
+                                    </button>
+                                    <button type="button" className="mini-btn" onClick={() => drop(n.id)}>
+                                        Hapus
+                                    </button>
+                                </span>
                             </div>
                         ))}
                     </div>
