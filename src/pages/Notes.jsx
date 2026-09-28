@@ -104,7 +104,25 @@ export default function Notes() {
     const tool = (id, fn) => (e) => {
         e.preventDefault();
         paperRef.current?.focus();
-        fn();
+        // Klik saat aktif = nonaktifkan. Rata kembali ke kiri,
+        // judul kembali ke paragraf biasa, sisanya toggle bawaan.
+        if (id === 'h1') {
+            try {
+                const isH = document.queryCommandValue('formatBlock').toLowerCase() === 'h2';
+                document.execCommand('formatBlock', false, isH ? 'p' : 'h2');
+            } catch {
+                fn();
+            }
+        } else if (['left', 'center', 'right', 'justify'].includes(id) && lastExclusive.current.align === id) {
+            try {
+                document.execCommand('justifyLeft');
+            } catch {
+                fn();
+            }
+            lastExclusive.current.align = 'left';
+        } else {
+            fn();
+        }
         // Baca ulang setelah perintah jalan (state berubah sesudahnya).
         setTimeout(() => {
             try {
