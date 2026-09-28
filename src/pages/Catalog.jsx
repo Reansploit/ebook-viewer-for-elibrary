@@ -8,7 +8,7 @@ import ViewerHeader from '../components/ViewerHeader.jsx';
 
 // Beranda katalog: cari cepat + kategori + koleksi terbaru.
 // Cermin halaman Katalog elibrary yang dipindah ke sini.
-export default function Catalog({ go }) {
+export default function Catalog({ go, theme, toggle }) {
     const [data, setData] = useState(null);
     const [error, setError] = useState(false);
     const [query, setQuery] = useState('');
@@ -43,7 +43,7 @@ export default function Catalog({ go }) {
 
     return (
         <div className="reader">
-            <ViewerHeader library={data?.library || 'Perpustakaan WBS'} right="Katalog" />
+            <ViewerHeader library={data?.library || 'Perpustakaan WBS'} right="Katalog" theme={theme} toggle={toggle} />
             <main className="page">
                 <h1 className="page-title">Cari buku</h1>
                 <p className="page-sub">Cek ketersediaan koleksi tanpa perlu login.</p>

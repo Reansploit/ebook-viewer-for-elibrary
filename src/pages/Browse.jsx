@@ -7,7 +7,7 @@ import SearchBox from '../components/SearchBox.jsx';
 import ViewerHeader from '../components/ViewerHeader.jsx';
 
 // Semua buku: saring kategori + kata kunci + paginasi server 20/halaman.
-export default function Browse({ params, go }) {
+export default function Browse({ params, go, theme, toggle }) {
     const kategori = params.get('kategori') || '';
     const q = params.get('q') || '';
     const [page, setPage] = useState(1);
@@ -45,7 +45,7 @@ export default function Browse({ params, go }) {
 
     return (
         <div className="reader">
-            <ViewerHeader library={library} backTo="/katalog" backLabel="Katalog" right="Semua buku" />
+            <ViewerHeader library={library} backTo="/katalog" backLabel="Katalog" right="Semua buku" theme={theme} toggle={toggle} />
             <main className="page">
                 <SearchBox
                     initial={q}

@@ -1,11 +1,17 @@
-// Bilah atas: judul + posisi halaman. Tanpa tombol.
-export default function Header({ title, page, pageCount }) {
+import { ThemeToggle } from '../theme.jsx';
+
+// Bilah atas reader: judul + posisi halaman. Toggle tema ikut di sini
+// agar pembaca bisa gelapkan layar saat baca tanpa keluar halaman.
+export default function Header({ title, page, pageCount, theme, toggle }) {
     return (
         <header className="reader-header">
             <h1 className="reader-title">{title}</h1>
-            <p className="reader-position" aria-live="polite">
-                Halaman {page} dari {pageCount}
-            </p>
+            <div className="header-right">
+                <p className="reader-position" aria-live="polite">
+                    Halaman {page} dari {pageCount}
+                </p>
+                {theme && <ThemeToggle theme={theme} toggle={toggle} />}
+            </div>
         </header>
     );
 }

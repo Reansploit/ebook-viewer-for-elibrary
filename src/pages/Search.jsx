@@ -6,7 +6,7 @@ import ViewerHeader from '../components/ViewerHeader.jsx';
 
 // Cari lalu baca: ketik, pilih hasil, tombol Baca membuka reader.
 // Reader masih stub engine (placeholder jujur) sampai engine asli dipasang.
-export default function Search({ onRead }) {
+export default function Search({ onRead, theme, toggle }) {
     const [library, setLibrary] = useState('Perpustakaan WBS');
     const [query, setQuery] = useState('');
     const [results, setResults] = useState(null);
@@ -38,7 +38,7 @@ export default function Search({ onRead }) {
 
     return (
         <div className="reader">
-            <ViewerHeader library={library} right="Cari buku" />
+            <ViewerHeader library={library} right="Cari buku" theme={theme} toggle={toggle} />
             <main className="page">
                 <SearchBox placeholder="Ketik judul, pengarang, atau ID buku" onSearch={liveSearch} />
                 {query.length < 1 && (

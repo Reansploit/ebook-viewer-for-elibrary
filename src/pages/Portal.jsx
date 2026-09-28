@@ -25,7 +25,7 @@ function SearchIcon() {
 
 // Portal: dua jalan sesuai kebutuhan nyata. Jelajahi untuk lihat-lihat
 // koleksi, Cari untuk langsung ke buku tertentu lalu baca.
-export default function Portal() {
+export default function Portal({ theme, toggle }) {
     const [library, setLibrary] = useState('Perpustakaan WBS');
 
     useEffect(() => {
@@ -34,7 +34,7 @@ export default function Portal() {
 
     return (
         <div className="reader">
-            <ViewerHeader library={library} />
+            <ViewerHeader library={library} theme={theme} toggle={toggle} />
             <main className="portal">
                 <h1 className="portal-title">Mau baca apa hari ini?</h1>
                 <div className="portal-options">
