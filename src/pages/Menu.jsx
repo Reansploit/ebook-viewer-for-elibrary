@@ -14,10 +14,12 @@ function Icon({ d }) {
 }
 
 const CARDS = [
-    { to: '/cari', title: 'Baca', desc: 'Cari ebook dan langsung baca', icon: 'M12 6c-2-1.5-4.5-2-8-2v14c3.5 0 6 .5 8 2 2-1.5 4.5-2 8-2V4c-3.5 0-6 .5-8 2Zm0 0v14' },
+    { to: '/lanjutkan', title: 'Lanjutkan', desc: 'Teruskan bacaan berjalan', icon: 'M12 6c-2-1.5-4.5-2-8-2v14c3.5 0 6 .5 8 2 2-1.5 4.5-2 8-2V4c-3.5 0-6 .5-8 2Zm0 0v14' },
+    { to: '/cari', title: 'Baca', desc: 'Cari ebook dan langsung baca', icon: 'M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14ZM21 21l-4.3-4.3' },
     { to: '/playlist', title: 'Playlist Buku', desc: 'Daftar bacaanmu', icon: 'M4 6h16M4 12h16M4 18h10' },
     { to: '/riwayat', title: 'Riwayat', desc: 'Buku yang dibuka', icon: 'M12 8v4l3 2m6-2a9 9 0 1 1-9-9 9 9 0 0 1 9 9Z' },
     { to: '/profil', title: 'Profil Akun', desc: 'Data diri + catatan', icon: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 9a7 7 0 0 1 14 0' },
+    { to: '/catatan', title: 'Catatan', desc: 'Corat-coret bebas', icon: 'M5 4h14v12H5zM5 16l-2 5 5-2M9 9h6M9 12h6' },
     { to: '/wallpaper', title: 'Wallpaper', desc: 'Latar foto custom', icon: 'M4 5h16v14H4zM4 15l4-4 3 3 3-3 6 6M9 9h.01' },
 ];
 

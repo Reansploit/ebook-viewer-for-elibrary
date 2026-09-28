@@ -12,8 +12,10 @@ import Browse from './pages/Browse.jsx';
 import Catalog from './pages/Catalog.jsx';
 import Wallpaper from './pages/Wallpaper.jsx';
 import Gate from './pages/Gate.jsx';
+import Continue from './pages/Continue.jsx';
 import History from './pages/History.jsx';
 import Menu from './pages/Menu.jsx';
+import Notes from './pages/Notes.jsx';
 import Playlists from './pages/Playlists.jsx';
 import Profile from './pages/Profile.jsx';
 import Search from './pages/Search.jsx';
@@ -28,6 +30,9 @@ const demoSource = { title: 'Contoh Kitab', pageCount: 24 };
 function Reader({ source, bookId, startPage }) {
     const { token } = useSession();
     const engine = useEngine(source, startPage);
+    // Mode baca: chrome disembunyikan, tinggal halaman. Satu tombol
+    // melayang untuk keluar. Alasan: baca kitab butuh fokus penuh.
+    const [focus, setFocus] = useState(false);
     const [noteOpen, setNoteOpen] = useState(false);
     const [note, setNote] = useState('');
     const [noteSaved, setNoteSaved] = useState(false);
@@ -101,39 +106,58 @@ function Reader({ source, bookId, startPage }) {
 
     return (
         <div className="reader">
-            <Header title={engine.title} page={engine.page} pageCount={engine.pageCount} />
+            {!focus && (
+                <Header title={engine.title} page={engine.page} pageCount={engine.pageCount} />
+            )}
             <Viewport page={engine.page} renderPage={engine.renderPage} />
-            <Controls
-                page={engine.page}
-                pageCount={engine.pageCount}
-                onPrev={engine.prev}
-                onNext={engine.next}
-                onGoTo={engine.goTo}
-            />
-            {token && bookId && (
-                <div className="note-bar">
-                    {!noteOpen ? (
-                        <button type="button" className="btn-outline" onClick={() => setNoteOpen(true)}>
-                            Catat halaman ini
+            {!focus ? (
+                <>
+                    <Controls
+                        page={engine.page}
+                        pageCount={engine.pageCount}
+                        onPrev={engine.prev}
+                        onNext={engine.next}
+                        onGoTo={engine.goTo}
+                    />
+                    <div className="note-bar">
+                        <button type="button" className="btn-outline" onClick={() => setFocus(true)}>
+                            Mode baca
                         </button>
-                    ) : (
-                        <form className="note-form" onSubmit={saveNote}>
-                            <label className="reader-jump-label" htmlFor="note-text">
-                                Catatan halaman {engine.page}
-                            </label>
-                            <input
-                                id="note-text"
-                                className="search-input"
-                                type="text"
-                                placeholder={`Catatan halaman ${engine.page}`}
-                                value={note}
-                                onChange={(e) => setNote(e.target.value)}
-                            />
-                            <button type="submit" className="btn-solid">
-                                Simpan
+                        {token && bookId && !noteOpen && (
+                            <button type="button" className="btn-outline" onClick={() => setNoteOpen(true)}>
+                                Catat halaman ini
                             </button>
-                        </form>
-                    )}
+                        )}
+                    </div>
+                </>
+            ) : (
+                <button
+                    type="button"
+                    className="focus-exit"
+                    onClick={() => setFocus(false)}
+                    aria-label="Keluar mode baca"
+                >
+                    ✕
+                </button>
+            )}
+            {!focus && token && bookId && noteOpen && (
+                <div className="note-bar">
+                    <form className="note-form" onSubmit={saveNote}>
+                        <label className="reader-jump-label" htmlFor="note-text">
+                            Catatan halaman {engine.page}
+                        </label>
+                        <input
+                            id="note-text"
+                            className="search-input"
+                            type="text"
+                            placeholder={`Catatan halaman ${engine.page}`}
+                            value={note}
+                            onChange={(e) => setNote(e.target.value)}
+                        />
+                        <button type="submit" className="btn-solid">
+                            Simpan
+                        </button>
+                    </form>
                     {noteSaved && <p className="reader-state">Catatan tersimpan.</p>}
                 </div>
             )}
@@ -212,9 +236,12 @@ function Shell() {
         );
     } else if (path === '/playlist')
         page = authedRoute(<Playlists onRead={openBook} />);
+    else if (path === '/lanjutkan')
+        page = authedRoute(<Continue onRead={openBook} />);
     else if (path === '/riwayat')
         page = authedRoute(<History onRead={openBook} />);
     else if (path === '/profil') page = authedRoute(<Profile />);
+    else if (path === '/catatan') page = authedRoute(<Notes />);
     else if (path === '/wallpaper')
         page = authedRoute(
             <Wallpaper wallpaper={wallpaper} setWallpaper={setWallpaper} />,

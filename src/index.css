@@ -1090,6 +1090,78 @@ body {
     border-radius: var(--radius);
 }
 
+/* Editor catatan markdown */
+.note-editor {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--card);
+}
+
+.md-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.md-area {
+    font: inherit;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 8rem;
+    padding: 0.625rem 0.875rem;
+    border: 1px solid var(--line);
+    border-radius: 0.5rem;
+    background: transparent;
+    color: var(--ink);
+    resize: vertical;
+}
+
+.md-area:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.md-preview {
+    font-size: 0.875rem;
+    padding: 0.625rem 0.875rem;
+    border: 1px dashed var(--line);
+    border-radius: 0.5rem;
+    min-height: 4rem;
+}
+
+.md-preview .md-p {
+    margin: 0.25rem 0;
+}
+
+.md-preview .md-h {
+    margin: 0.5rem 0 0.25rem;
+    font-weight: 700;
+}
+
+.md-preview .md-ul {
+    margin: 0.25rem 0;
+    padding-left: 1.25rem;
+}
+
+.md-preview .md-quote {
+    margin: 0.25rem 0;
+    padding-left: 0.75rem;
+    border-left: 3px solid var(--accent);
+    color: var(--muted);
+}
+
+.md-preview code {
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: 0.8em;
+    background: var(--soft, var(--paper));
+    padding: 0.1em 0.3em;
+    border-radius: 0.25rem;
+}
+
 /* Gerbang RFID: selalu hitam pekat (arahan pemilik), teks terang.
    Berlaku di kedua tema karena ini layar gerbang, bukan konten. */
 .gate-dark {
@@ -1666,6 +1738,27 @@ body {
 
 .note-form .search-input {
     flex: 1;
+}
+
+/* Mode baca: tombol keluar melayang, selalu dijangkau ibu jari. */
+.focus-exit {
+    position: fixed;
+    bottom: 1.25rem;
+    right: 1.25rem;
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--ink);
+    font-size: 1.125rem;
+    cursor: pointer;
+    z-index: 50;
+}
+
+.focus-exit:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
 }
 
 
