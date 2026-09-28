@@ -1176,7 +1176,7 @@ body {
     --ink: #e5e5e5;
     --ink-2: #ff4fd8;
     --ink-3: #4ff8ff;
-    font: 600 26px/1.2 'JetBrains Mono', Consolas, monospace;
+    font: 600 16px/1.2 'JetBrains Mono', Consolas, monospace;
     letter-spacing: 0.08em;
     margin-top: 1.5rem;
     background: radial-gradient(3.5ch 100% at 50% 50%,
