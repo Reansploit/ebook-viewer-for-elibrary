@@ -1920,6 +1920,25 @@ body {
     padding: 1rem;
 }
 
+/* Layar hangat saat mode baca: sepia tipis meredam biru agar betah lama.
+   Alasan: dibaca berjam-jam, bukan sekilas. */
+.reading-fit .reo-pdf canvas,
+.reading-fit .page-placeholder {
+    filter: sepia(0.35) brightness(1.01);
+}
+
+.btn-icon {
+    width: 1.125rem;
+    height: 1.125rem;
+    vertical-align: -0.2em;
+    margin-right: 0.375rem;
+}
+
+.note-bar .btn-outline {
+    display: inline-flex;
+    align-items: center;
+}
+
 .reading-fit .reo-pdf {
     display: flex;
     justify-content: center;

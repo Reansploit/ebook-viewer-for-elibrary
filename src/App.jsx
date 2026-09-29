@@ -123,6 +123,10 @@ function Reader({ source, bookId, startPage }) {
                     />
                     <div className="note-bar">
                         <button type="button" className="btn-outline" onClick={() => setFocus(true)}>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true" className="btn-icon">
+                                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
+                                <circle cx="12" cy="12" r="3" />
+                            </svg>
                             Mode baca
                         </button>
                         {token && bookId && !noteOpen && (
