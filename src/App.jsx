@@ -187,8 +187,14 @@ function Shell() {
     };
     // Wallpaper milik akun: 'polos' atau URL foto. Polos = latar putih.
     const [wallpaper, setWallpaper] = useState('polos');
-    // Buku yang dibuka dari hasil cari / riwayat / playlist.
-    const [reading, setReading] = useState(null);
+    // Buku yang dibuka: bertahan lewat refresh (kalau tidak, jatuh ke demo).
+    const [reading, setReading] = useState(() => {
+        try {
+            return JSON.parse(localStorage.getItem('reading_book') || 'null');
+        } catch {
+            return null;
+        }
+    });
 
     // Keluar = kembali ke gerbang.
     useEffect(() => {
@@ -227,7 +233,13 @@ function Shell() {
     }, [token]);
 
     const openBook = (book, startPage) => {
-        setReading({ ...book, startPage: startPage || 1 });
+        const next = { id: book.id, title: book.title, file: book.file || null, startPage: startPage || 1 };
+        setReading(next);
+        try {
+            localStorage.setItem('reading_book', JSON.stringify(next));
+        } catch {
+            // abaikan
+        }
         go('/baca');
     };
 
