@@ -82,7 +82,7 @@ function Reader({ source, bookId, startPage }) {
     if (engine.status === 'loading') {
         return (
             <div className="reader">
-                <Header title={engine.title} page={engine.page} pageCount={engine.pageCount} />
+                <Header title={engine.title} page={engine.page} pageCount={engine.pageCount} onFocus={() => setFocus(true)} />
                 <main className="reader-viewport">
                     <p className="reader-state">
                         Menyiapkan dokumen{engine.progress !== null && engine.progress !== undefined ? `... ${engine.progress}%` : '...'}
@@ -95,7 +95,7 @@ function Reader({ source, bookId, startPage }) {
     if (engine.status === 'error') {
         return (
             <div className="reader">
-                <Header title={engine.title} page={engine.page} pageCount={engine.pageCount} />
+                <Header title={engine.title} page={engine.page} pageCount={engine.pageCount} onFocus={() => setFocus(true)} />
                 <main className="reader-viewport">
                     <div className="reader-state">
                         <p>Dokumen gagal dibuka{engine.error ? `: ${engine.error}` : '.'}</p>
@@ -109,7 +109,7 @@ function Reader({ source, bookId, startPage }) {
     return (
         <div className={focus ? 'reader reading-fit' : 'reader'}>
             {!focus && (
-                <Header title={engine.title} page={engine.page} pageCount={engine.pageCount} />
+                <Header title={engine.title} page={engine.page} pageCount={engine.pageCount} onFocus={() => setFocus(true)} />
             )}
             <Viewport page={engine.page} renderPage={engine.renderPage} onPrev={engine.prev} onNext={engine.next} />
             {!focus ? (
@@ -122,13 +122,6 @@ function Reader({ source, bookId, startPage }) {
                         onGoTo={engine.goTo}
                     />
                     <div className="note-bar">
-                        <button type="button" className="btn-outline" onClick={() => setFocus(true)}>
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true" className="btn-icon">
-                                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
-                                <circle cx="12" cy="12" r="3" />
-                            </svg>
-                            Mode baca
-                        </button>
                         {token && bookId && !noteOpen && (
                             <button type="button" className="btn-outline" onClick={() => setNoteOpen(true)}>
                                 Catat halaman ini
