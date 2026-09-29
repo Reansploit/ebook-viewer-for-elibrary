@@ -105,11 +105,11 @@ function Reader({ source, bookId, startPage }) {
     }
 
     return (
-        <div className="reader">
+        <div className={focus ? 'reader reading-fit' : 'reader'}>
             {!focus && (
                 <Header title={engine.title} page={engine.page} pageCount={engine.pageCount} />
             )}
-            <Viewport page={engine.page} renderPage={engine.renderPage} />
+            <Viewport page={engine.page} renderPage={engine.renderPage} onPrev={engine.prev} onNext={engine.next} />
             {!focus ? (
                 <>
                     <Controls

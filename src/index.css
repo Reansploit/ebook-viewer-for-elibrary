@@ -1915,7 +1915,21 @@ body {
     flex: 1;
 }
 
-/* Mode baca: tombol keluar melayang, selalu dijangkau ibu jari. */
+/* Mode baca: halaman pas seukuran layar (ikut bentuk halaman). */
+.reading-fit .reader-viewport {
+    padding: 1rem;
+}
+
+.reading-fit .reo-pdf {
+    display: flex;
+    justify-content: center;
+}
+
+.reading-fit .reo-pdf canvas {
+    width: auto;
+    max-width: 100%;
+    max-height: calc(100svh - 6rem);
+}
 .focus-exit {
     position: fixed;
     bottom: 1.25rem;
