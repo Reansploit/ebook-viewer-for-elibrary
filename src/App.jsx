@@ -271,7 +271,7 @@ function Shell() {
         );
     else if (!authed) page = <Gate onEnter={enter} />;
     else if (!entered) page = <Gate onEnter={enter} />;
-    else page = <Menu onRead={openBook} wallpaper={wallpaper} />;
+    else page = <Menu onRead={openBook} wallpaper={wallpaper} route={path} onLock={() => setEntered(false)} />;
 
     return <>{page}</>;
 }

@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { readerApi } from '../api.js';
 import { Link } from '../router.jsx';
 import { useSession } from '../session.jsx';
-import { detectTones } from '../wp.js';
 
 // Ikon garis oranye per aplikasi (R-04): bentuk mengikuti isi.
 function Icon({ d }) {
@@ -22,10 +21,9 @@ const APPS = [
     { to: '/wallpaper', title: 'Wallpaper', icon: 'M4 5h16v14H4zM4 15l4-4 3 3 3-3 6 6M9 9h.01' },
 ];
 
-// Layar utama gaya OS kios: bar atas (merek + jam live), grid ikon
-// aplikasi di atas wallpaper, lanjutkan sebagai jendela kecil.
-// Alasan (R-31): santri sudah paham bahasa HP (ikon diketuk),
-// tidak perlu belajar tampilan menu baru.
+// Layar utama gaya Ubuntu: bar atas (Activities, jam live, daya),
+// dock kiri (ikon aplikasi + titik aktif), desktop wallpaper.
+// Alasan (R-31): santri warnet/lab sekolah sudah hafal pola ini.
 function useClock() {
     const [now, setNow] = useState(() => new Date());
     useEffect(() => {
@@ -37,11 +35,12 @@ function useClock() {
     return { date, time };
 }
 
-export default function Menu({ onRead, wallpaper }) {
+export default function Menu({ onRead, wallpaper, route, onLock }) {
     const { member, token, logout } = useSession();
     const { date, time } = useClock();
     const [resume, setResume] = useState(null);
     const [dismissed, setDismissed] = useState([]);
+    const [powerOpen, setPowerOpen] = useState(false);
 
     const dismiss = (bookId) => {
         setDismissed((d) => (d.includes(bookId) ? d : [...d, bookId]));
@@ -60,60 +59,84 @@ export default function Menu({ onRead, wallpaper }) {
             .catch(() => {});
     }, [token]);
 
-    // Tanpa wallpaper custom = base.jpg bawaan (bukan putih polos).
     const bg = wallpaper && wallpaper !== 'polos' ? wallpaper : '/base.jpg';
-    const [tones, setTones] = useState({ top: 'light', mid: 'light', bottom: 'light' });
-
-    useEffect(() => {
-        detectTones(bg).then(setTones);
-    }, [bg]);
 
     return (
-        <div
-            className={`kiosk kiosk-custom wp-top-${tones.top} wp-mid-${tones.mid} wp-bottom-${tones.bottom}`}
-            style={{ '--wp': `url("${bg}")` }}
-        >
+        <div className="kiosk kiosk-custom" style={{ '--wp': `url("${bg}")` }}>
             <header className="os-bar">
-                <span className="os-brand">
-                    <img src="/images/logo-wbs.png" alt="" className="site-logo" />
-                    <span className="site-name">elibrary</span>
-                </span>
+                <span className="os-activities">Activities</span>
                 <span className="os-clock">
                     {date} • {time}
                 </span>
-                <button type="button" className="os-exit" onClick={logout} aria-label="Keluar">
-                    ⏻
-                </button>
+                <span className="os-power">
+                    <button
+                        type="button"
+                        className="os-exit"
+                        onClick={() => setPowerOpen((o) => !o)}
+                        aria-expanded={powerOpen}
+                        aria-label="Menu daya"
+                    >
+                        ⏻
+                    </button>
+                    {powerOpen && (
+                        <span className="os-menu">
+                            <button type="button" onClick={() => { setPowerOpen(false); onLock(); }}>
+                                Kunci
+                            </button>
+                            <button type="button" onClick={logout}>
+                                Keluar
+                            </button>
+                        </span>
+                    )}
+                </span>
             </header>
 
-            <main className="os-desktop">
-                <p className="os-hello">Halo, {member?.name || 'Santri'}</p>
-                {resume && (
-                    <div className="kiosk-resume" role="group" aria-label="Lanjutkan bacaan">
-                        <button type="button" className="kiosk-resume-main" onClick={() => onRead(resume.book, resume.page)}>
-                            Lanjutkan: {resume.book.title} (halaman {resume.page})
-                        </button>
-                        <button
-                            type="button"
-                            className="kiosk-resume-x"
-                            onClick={() => dismiss(resume.book.id)}
-                            aria-label="Tutup notifikasi lanjutan"
-                        >
-                            ✕
-                        </button>
-                    </div>
-                )}
-                <nav className="os-grid" aria-label="Aplikasi">
+            <div className="os-body">
+                <nav className="os-dock" aria-label="Aplikasi">
                     {APPS.map((a) => (
-                        <Link key={a.to} to={a.to} className="os-app">
-                            <span className="os-icon">
+                        <Link
+                            key={a.to}
+                            to={a.to}
+                            className={route === a.to ? 'os-dock-app os-active' : 'os-dock-app'}
+                            aria-label={a.title}
+                            title={a.title}
+                        >
+                            <span className="os-dock-icon">
                                 <Icon d={a.icon} />
                             </span>
-                            <span className="os-label">{a.title}</span>
                         </Link>
                     ))}
                 </nav>
-            </main>
+
+                <main className="os-desktop">
+                    <p className="os-hello">Halo, {member?.name || 'Santri'}</p>
+                    {resume && (
+                        <div className="kiosk-resume" role="group" aria-label="Lanjutkan bacaan">
+                            <button type="button" className="kiosk-resume-main" onClick={() => onRead(resume.book, resume.page)}>
+                                Lanjutkan: {resume.book.title} (halaman {resume.page})
+                            </button>
+                            <button
+                                type="button"
+                                className="kiosk-resume-x"
+                                onClick={() => dismiss(resume.book.id)}
+                                aria-label="Tutup notifikasi lanjutan"
+                            >
+                                ✕
+                            </button>
+                        </div>
+                    )}
+                    <nav className="os-grid" aria-label="Aplikasi">
+                        {APPS.map((a) => (
+                            <Link key={a.to} to={a.to} className="os-app">
+                                <span className="os-icon">
+                                    <Icon d={a.icon} />
+                                </span>
+                                <span className="os-label">{a.title}</span>
+                            </Link>
+                        ))}
+                    </nav>
+                </main>
+            </div>
         </div>
     );
 }

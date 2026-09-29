@@ -1995,10 +1995,15 @@ body {
 }
 
 .os-clock {
-    margin-left: auto;
+    margin: 0 auto;
     font-size: 0.875rem;
     font-variant-numeric: tabular-nums;
     text-shadow: 0 1px 4px rgb(0 0 0 / 0.6);
+}
+
+.os-activities {
+    font-size: 0.875rem;
+    font-weight: 700;
 }
 
 .os-exit {
@@ -2097,4 +2102,99 @@ body {
     color: #fff;
     text-shadow: 0 1px 4px rgb(0 0 0 / 0.7);
     text-align: center;
+}
+
+/* Ubuntu: dock kiri + menu daya. Titik oranye = aplikasi aktif. */
+.os-body {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+    position: relative;
+}
+
+.os-dock {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.75rem 0.5rem;
+    background: rgb(0 0 0 / 0.45);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    z-index: 2;
+}
+
+.os-dock-app {
+    position: relative;
+    display: flex;
+    min-height: 44px;
+    text-decoration: none;
+}
+
+.os-dock-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 0.75rem;
+    background: rgb(255 253 246 / 0.72);
+    backdrop-filter: blur(18px) saturate(1.5);
+    -webkit-backdrop-filter: blur(18px) saturate(1.5);
+    border: 1px solid rgb(255 255 255 / 0.6);
+    color: var(--accent);
+}
+
+.os-dock-icon svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    display: block;
+}
+
+.os-dock-app.os-active::after {
+    content: '';
+    position: absolute;
+    left: -0.5rem;
+    top: 50%;
+    translate: 0 -50%;
+    width: 4px;
+    height: 1.5rem;
+    border-radius: 2px;
+    background: var(--accent);
+}
+
+.os-power {
+    position: relative;
+    display: inline-flex;
+}
+
+.os-menu {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    min-width: 10rem;
+    background: rgb(0 0 0 / 0.8);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgb(255 255 255 / 0.2);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    z-index: 10;
+}
+
+.os-menu button {
+    font: inherit;
+    text-align: left;
+    padding: 0.625rem 1rem;
+    min-height: 44px;
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+}
+
+.os-menu button:hover,
+.os-menu button:focus-visible {
+    background: rgb(255 255 255 / 0.12);
 }
