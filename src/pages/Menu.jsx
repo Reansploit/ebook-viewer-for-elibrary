@@ -21,16 +21,16 @@ const APPS = [
     { to: '/wallpaper', title: 'Wallpaper', icon: 'M4 5h16v14H4zM4 15l4-4 3 3 3-3 6 6M9 9h.01' },
 ];
 
-// Layar utama gaya Ubuntu: bar atas (Activities, jam live, daya),
-// dock kiri (ikon aplikasi + titik aktif), desktop wallpaper.
-// Alasan (R-31): santri warnet/lab sekolah sudah hafal pola ini.
+// Layar utama gaya macOS: bar menu atas (logo, jam live, daya),
+// dock bawah tengah (ikon + titik aktif), desktop wallpaper.
+// Alasan (R-31): pola yang dikenal, tidak perlu dipelajari.
 function useClock() {
     const [now, setNow] = useState(() => new Date());
     useEffect(() => {
         const t = setInterval(() => setNow(new Date()), 1000);
         return () => clearInterval(t);
     }, []);
-    const date = now.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' });
+    const date = now.toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short' });
     const time = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
     return { date, time };
 }
@@ -63,12 +63,15 @@ export default function Menu({ onRead, wallpaper, route, onLock }) {
 
     return (
         <div className="kiosk kiosk-custom" style={{ '--wp': `url("${bg}")` }}>
-            <header className="os-bar">
-                <span className="os-activities">Activities</span>
-                <span className="os-clock">
-                    {date} • {time}
+            <header className="mac-bar">
+                <span className="mac-brand">
+                    <img src="/images/logo-wbs.png" alt="" className="site-logo" />
+                    <span className="site-name">elibrary</span>
                 </span>
                 <span className="os-power">
+                    <span className="mac-clock">
+                        {date} {time}
+                    </span>
                     <button
                         type="button"
                         className="os-exit"
@@ -91,52 +94,40 @@ export default function Menu({ onRead, wallpaper, route, onLock }) {
                 </span>
             </header>
 
-            <div className="os-body">
-                <nav className="os-dock" aria-label="Aplikasi">
-                    {APPS.map((a) => (
-                        <Link
-                            key={a.to}
-                            to={a.to}
-                            className={route === a.to ? 'os-dock-app os-active' : 'os-dock-app'}
-                            aria-label={a.title}
-                            title={a.title}
+            <main className="os-desktop">
+                <p className="os-hello">Halo, {member?.name || 'Santri'}</p>
+                {resume && (
+                    <div className="kiosk-resume" role="group" aria-label="Lanjutkan bacaan">
+                        <button type="button" className="kiosk-resume-main" onClick={() => onRead(resume.book, resume.page)}>
+                            Lanjutkan: {resume.book.title} (halaman {resume.page})
+                        </button>
+                        <button
+                            type="button"
+                            className="kiosk-resume-x"
+                            onClick={() => dismiss(resume.book.id)}
+                            aria-label="Tutup notifikasi lanjutan"
                         >
-                            <span className="os-dock-icon">
-                                <Icon d={a.icon} />
-                            </span>
-                        </Link>
-                    ))}
-                </nav>
+                            ✕
+                        </button>
+                    </div>
+                )}
+            </main>
 
-                <main className="os-desktop">
-                    <p className="os-hello">Halo, {member?.name || 'Santri'}</p>
-                    {resume && (
-                        <div className="kiosk-resume" role="group" aria-label="Lanjutkan bacaan">
-                            <button type="button" className="kiosk-resume-main" onClick={() => onRead(resume.book, resume.page)}>
-                                Lanjutkan: {resume.book.title} (halaman {resume.page})
-                            </button>
-                            <button
-                                type="button"
-                                className="kiosk-resume-x"
-                                onClick={() => dismiss(resume.book.id)}
-                                aria-label="Tutup notifikasi lanjutan"
-                            >
-                                ✕
-                            </button>
-                        </div>
-                    )}
-                    <nav className="os-grid" aria-label="Aplikasi">
-                        {APPS.map((a) => (
-                            <Link key={a.to} to={a.to} className="os-app">
-                                <span className="os-icon">
-                                    <Icon d={a.icon} />
-                                </span>
-                                <span className="os-label">{a.title}</span>
-                            </Link>
-                        ))}
-                    </nav>
-                </main>
-            </div>
+            <nav className="mac-dock" aria-label="Aplikasi">
+                {APPS.map((a) => (
+                    <Link
+                        key={a.to}
+                        to={a.to}
+                        className={route === a.to ? 'mac-app mac-active' : 'mac-app'}
+                        aria-label={a.title}
+                        title={a.title}
+                    >
+                        <span className="mac-icon">
+                            <Icon d={a.icon} />
+                        </span>
+                    </Link>
+                ))}
+            </nav>
         </div>
     );
 }
