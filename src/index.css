@@ -2312,6 +2312,11 @@ body {
     transition: opacity 0.15s ease, translate 0.15s ease;
 }
 
+.mac-app:hover,
+.mac-app:focus-visible {
+    z-index: 5;
+}
+
 .mac-app:hover .mac-tip,
 .mac-app:focus-visible .mac-tip {
     opacity: 1;
