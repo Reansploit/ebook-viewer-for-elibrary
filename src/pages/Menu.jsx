@@ -41,6 +41,9 @@ export default function Menu({ onRead, wallpaper, route, onLock }) {
     const [resume, setResume] = useState(null);
     const [dismissed, setDismissed] = useState([]);
     const [powerOpen, setPowerOpen] = useState(false);
+    // Jendela lanjutkan: minimize = ciutkan isi, zoom = lebarkan.
+    const [winMin, setWinMin] = useState(false);
+    const [winZoom, setWinZoom] = useState(false);
 
     const dismiss = (bookId) => {
         setDismissed((d) => (d.includes(bookId) ? d : [...d, bookId]));
@@ -68,6 +71,7 @@ export default function Menu({ onRead, wallpaper, route, onLock }) {
                     <img src="/images/logo-wbs.png" alt="" className="site-logo" />
                     <span className="site-name">elibrary</span>
                 </span>
+                <span className="mac-appname">Menu</span>
                 <span className="os-power">
                     <span className="mac-clock">
                         {date} {time}
@@ -97,18 +101,39 @@ export default function Menu({ onRead, wallpaper, route, onLock }) {
             <main className="os-desktop">
                 <p className="os-hello">Halo, {member?.name || 'Santri'}</p>
                 {resume && (
-                    <div className="kiosk-resume" role="group" aria-label="Lanjutkan bacaan">
-                        <button type="button" className="kiosk-resume-main" onClick={() => onRead(resume.book, resume.page)}>
-                            Lanjutkan: {resume.book.title} (halaman {resume.page})
-                        </button>
-                        <button
-                            type="button"
-                            className="kiosk-resume-x"
-                            onClick={() => dismiss(resume.book.id)}
-                            aria-label="Tutup notifikasi lanjutan"
-                        >
-                            ✕
-                        </button>
+                    <div className={winZoom ? 'mac-window mac-zoom' : 'mac-window'} role="group" aria-label="Lanjutkan bacaan">
+                        <div className="mac-titlebar">
+                            <span className="mac-traffic">
+                                <button type="button" className="mac-dot mac-close" onClick={() => dismiss(resume.book.id)} aria-label="Tutup">
+                                    <span aria-hidden="true">✕</span>
+                                </button>
+                                <button
+                                    type="button"
+                                    className="mac-dot mac-min"
+                                    onClick={() => setWinMin((m) => !m)}
+                                    aria-label={winMin ? 'Buka jendela' : 'Ciutkan jendela'}
+                                    aria-pressed={winMin}
+                                >
+                                    <span aria-hidden="true">–</span>
+                                </button>
+                                <button
+                                    type="button"
+                                    className="mac-dot mac-zoom-btn"
+                                    onClick={() => setWinZoom((z) => !z)}
+                                    aria-label={winZoom ? 'Kecilkan jendela' : 'Lebarkan jendela'}
+                                    aria-pressed={winZoom}
+                                >
+                                    <span aria-hidden="true">+</span>
+                                </button>
+                            </span>
+                            <span className="mac-wintitle">Lanjutkan</span>
+                        </div>
+                        {!winMin && (
+                            <button type="button" className="mac-winbody" onClick={() => onRead(resume.book, resume.page)}>
+                                <span className="resume-title">{resume.book.title}</span>
+                                <span className="resume-meta">Halaman {resume.page}</span>
+                            </button>
+                        )}
                     </div>
                 )}
             </main>
