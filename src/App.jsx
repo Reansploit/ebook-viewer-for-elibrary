@@ -202,7 +202,15 @@ function Shell() {
         }
     };
     // Wallpaper milik akun: 'polos' atau URL foto. Polos = latar putih.
-    const [wallpaper, setWallpaper] = useState('polos');
+    const [wallpaper, setWallpaperState] = useState('polos');
+    // Bawaan viewer (/wallpapers/*) tidak pernah absolut ke elibrary:
+    // normalkan URL basi dari sesi sebelum perbaikan backend.
+    const setWallpaper = (v) => {
+        if (typeof v === 'string' && v.includes('/wallpapers/')) {
+            v = '/wallpapers/' + v.split('/wallpapers/').pop();
+        }
+        setWallpaperState(v);
+    };
     // Buku yang dibuka: bertahan lewat refresh (kalau tidak, jatuh ke demo).
     const [reading, setReading] = useState(() => {
         try {
