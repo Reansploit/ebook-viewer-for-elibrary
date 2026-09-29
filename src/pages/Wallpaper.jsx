@@ -1,15 +1,37 @@
 import { useState } from 'react';
-import { deleteWallpaper, uploadWallpaper } from '../api.js';
+import { deleteWallpaper, readerApi, uploadWallpaper } from '../api.js';
 import ViewerHeader from '../components/ViewerHeader.jsx';
 import { useSession } from '../session.jsx';
 
-// Wallpaper milik akun: foto custom (maks 2MB), tersimpan di backend
-// sehingga berlaku di semua perangkat. Polos = latar putih.
+// Wallpaper milik akun: bawaan (2 gelap, 2 terang, SVG ringan buatan
+// sendiri agar offline + bebas lisensi) atau foto custom (maks 8MB).
+// Tersimpan di backend sehingga berlaku semua perangkat. Polos = base.jpg.
+const BUILT_IN = [
+    { id: '/wallpapers/midnight.svg', name: 'Midnight (gelap)' },
+    { id: '/wallpapers/ember.svg', name: 'Ember (gelap)' },
+    { id: '/wallpapers/dawn.svg', name: 'Dawn (terang)' },
+    { id: '/wallpapers/lagoon.svg', name: 'Lagoon (terang)' },
+];
 export default function Wallpaper({ wallpaper, setWallpaper }) {
     const { member, token } = useSession();
     const [file, setFile] = useState(null);
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState('');
+
+    // Wallpaper bawaan = simpan path-nya seperti custom (backend terima).
+    const useBuiltIn = async (id) => {
+        if (busy) return;
+        setBusy(true);
+        setError('');
+        try {
+            const data = await readerApi(token, 'PUT', '/api/v1/reader/settings', { wallpaper: id });
+            setWallpaper(data.wallpaper);
+        } catch {
+            setError('Gagal menyimpan wallpaper.');
+        } finally {
+            setBusy(false);
+        }
+    };
 
     const save = async (e) => {
         e.preventDefault();
@@ -49,7 +71,24 @@ export default function Wallpaper({ wallpaper, setWallpaper }) {
                
             />
             <main className="page">
-                {wallpaper !== 'polos' && (
+                <section className="section">
+                    <h2 className="section-title">Bawaan</h2>
+                    <div className="wp-builtin">
+                        {BUILT_IN.map((w) => (
+                            <button
+                                key={w.id}
+                                type="button"
+                                className={String(wallpaper || '').endsWith(w.id) ? 'wp-thumb wp-active' : 'wp-thumb'}
+                                onClick={() => useBuiltIn(w.id)}
+                                aria-pressed={String(wallpaper || '').endsWith(w.id)}
+                            >
+                                <img src={w.id} alt={w.name} loading="lazy" />
+                                <span>{w.name}</span>
+                            </button>
+                        ))}
+                    </div>
+                </section>
+                {wallpaper !== 'polos' && !BUILT_IN.some((w) => String(wallpaper || '').endsWith(w.id)) && (
                     <img src={wallpaper} alt="Wallpaper saat ini" className="wp-preview" />
                 )}
                 <form className="section" onSubmit={save}>
