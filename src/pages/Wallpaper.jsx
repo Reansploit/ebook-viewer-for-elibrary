@@ -7,6 +7,7 @@ import { useSession } from '../session.jsx';
 // sendiri agar offline + bebas lisensi) atau foto custom (maks 8MB).
 // Tersimpan di backend sehingga berlaku semua perangkat. Polos = base.jpg.
 const BUILT_IN = [
+    { id: '/mac.jpg', name: 'Mac (bawaan)' },
     { id: '/wallpapers/malham.jpg', name: 'Malham (gelap)' },
     { id: '/wallpapers/golden.jpg', name: 'Golden (terang)' },
     { id: '/wallpapers/sur.jpg', name: 'Sur (terang)' },
