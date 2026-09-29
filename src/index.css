@@ -104,8 +104,9 @@ body {
 /* Halaman PDF adaptif: kanvas + lapisan engine, selebar viewport. */
 .reo-pdf {
     position: relative;
-    width: 100%;
-    max-width: 48rem;
+    width: fit-content;
+    max-width: 100%;
+    margin: 0 auto;
 }
 
 .reo-pdf canvas {
