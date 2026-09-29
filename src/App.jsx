@@ -12,6 +12,7 @@ import Browse from './pages/Browse.jsx';
 import Catalog from './pages/Catalog.jsx';
 import Wallpaper from './pages/Wallpaper.jsx';
 import Gate from './pages/Gate.jsx';
+import TextShimmer from './components/TextShimmer.jsx';
 import Continue from './pages/Continue.jsx';
 import History from './pages/History.jsx';
 import Menu from './pages/Menu.jsx';
@@ -193,8 +194,15 @@ function Shell() {
             return false;
         }
     });
+    // Masuk = layar shimmer 10 detik dulu, baru menu dibuka.
+    const [entering, setEntering] = useState(false);
     const enter = () => {
-        setEntered(true);
+        if (entered || entering) return;
+        setEntering(true);
+        setTimeout(() => {
+            setEntering(false);
+            setEntered(true);
+        }, 10000);
         try {
             localStorage.setItem('reader_entered', '1');
         } catch {
@@ -308,6 +316,14 @@ function Shell() {
             <Wallpaper wallpaper={wallpaper} setWallpaper={setWallpaper} />,
         );
     else if (!authed) page = <Gate onEnter={enter} />;
+    else if (entering)
+        page = (
+            <div className="reader gate-dark gate-cyber">
+                <main className="portal">
+                    <TextShimmer>Cooking up your best experience…</TextShimmer>
+                </main>
+            </div>
+        );
     else if (!entered) page = <Gate onEnter={enter} />;
     else page = <Menu onRead={openBook} wallpaper={wallpaper} route={path} onLock={() => setEntered(false)} />;
 

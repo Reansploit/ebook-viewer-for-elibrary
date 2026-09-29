@@ -2601,3 +2601,22 @@ body {
     opacity: 1;
     translate: -50% 0;
 }
+
+/* Kilau teks layar masuk (snippet pemilik). */
+.text-shimmer {
+    font-size: 1.25rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: #e5e5e5;
+    background: linear-gradient(110deg, #525252 30%, #fff 50%, #525252 70%);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: text-shimmer 2.5s linear infinite;
+}
+
+@keyframes text-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
