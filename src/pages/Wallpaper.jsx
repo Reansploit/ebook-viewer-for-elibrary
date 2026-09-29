@@ -7,10 +7,9 @@ import { useSession } from '../session.jsx';
 // sendiri agar offline + bebas lisensi) atau foto custom (maks 8MB).
 // Tersimpan di backend sehingga berlaku semua perangkat. Polos = base.jpg.
 const BUILT_IN = [
-    { id: '/wallpapers/midnight.svg', name: 'Midnight (gelap)' },
-    { id: '/wallpapers/ember.svg', name: 'Ember (gelap)' },
-    { id: '/wallpapers/dawn.svg', name: 'Dawn (terang)' },
-    { id: '/wallpapers/lagoon.svg', name: 'Lagoon (terang)' },
+    { id: '/wallpapers/malham.jpg', name: 'Malham (gelap)' },
+    { id: '/wallpapers/golden.jpg', name: 'Golden (terang)' },
+    { id: '/wallpapers/sur.jpg', name: 'Sur (terang)' },
 ];
 export default function Wallpaper({ wallpaper, setWallpaper }) {
     const { member, token } = useSession();

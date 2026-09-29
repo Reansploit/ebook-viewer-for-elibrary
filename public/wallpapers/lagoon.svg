@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
-<defs><filter id="b" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="120"/></filter>
-<linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d8f0f2"/><stop offset="1" stop-color="#bfe3ee"/></linearGradient></defs>
-<rect width="1920" height="1080" fill="url(#g)"/>
-<g filter="url(#b)"><ellipse cx="1400" cy="750" rx="460" ry="345.0" fill="#4aa8c0" opacity="0.85"/><ellipse cx="400" cy="300" rx="430" ry="322.5" fill="#8fd6a0" opacity="0.85"/><ellipse cx="950" cy="500" rx="300" ry="225.0" fill="#fff8e1" opacity="0.9"/></g>
-</svg>
