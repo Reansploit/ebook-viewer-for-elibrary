@@ -96,11 +96,32 @@ export default function Gate({ onEnter }) {
             </div>
             {fsAsk && !fs && !member && (
                 <div className="fs-dialog" role="alertdialog" aria-label="Layar penuh">
-                    <p className="fs-title">please press f11 before enter</p>
-                    {fsFailed && <p className="fs-hint">Otomatis ditolak browser: tekan F11 manual.</p>}
-                    <div className="gate-actions">
-                        <CyberBtn kbd="⛶" label="proceed" action="Proceed" onClick={goFull} />
-                        <CyberBtn kbd="✕" label="cancel" action="Cancel" onClick={() => setFsAsk(false)} />
+                    <div className="fs-modal">
+                        <span className="fs-backdrop" aria-hidden="true">
+                            <span className="fs-corner" aria-hidden="true" />
+                        </span>
+                        <span className="fs-version" aria-hidden="true">
+                            v001
+                        </span>
+                        <h2 className="fs-title">
+                            <span>please press f11 before enter</span>
+                        </h2>
+                        <div className="fs-text">
+                            <p>Kios butuh layar penuh. Otomatis dalam 5 detik, atau proceed sekarang.</p>
+                            {fsFailed && <p>otomatis ditolak browser: tekan F11 manual.</p>}
+                        </div>
+                        <div className="fs-glitch" aria-hidden="true">
+                            <h2>
+                                <span>please press f11 before enter</span>
+                            </h2>
+                            <div className="fs-text">
+                                <p>Kios butuh layar penuh. Otomatis dalam 5 detik, atau proceed sekarang.</p>
+                            </div>
+                        </div>
+                        <div className="fs-actions">
+                            <CyberBtn kbd="⛶" label="proceed" action="Proceed" onClick={goFull} />
+                            <CyberBtn kbd="✕" label="cancel" action="Cancel" onClick={() => setFsAsk(false)} />
+                        </div>
                     </div>
                 </div>
             )}

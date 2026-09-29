@@ -1422,34 +1422,149 @@ body {
     text-shadow: 0 0 12px rgb(0 242 234 / 0.5);
 }
 
-/* Dialog layar penuh kios: di tengah, di atas segalanya. */
+/* Dialog layar penuh kios: modal glitch game (snippet pemilik tanpa
+   popover/audio/demo, override R-01/R-19). Glitch meledak sekali saat
+   dibuka + flicker masuk. */
 .fs-dialog {
     position: fixed;
     inset: 0;
     z-index: 100;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 1rem;
     background: rgb(0 0 0 / 0.72);
     padding: 1.25rem;
-    text-align: center;
+}
+
+.fs-modal {
+    --fs-corner: 12px;
+    --fs-accent: #00f2ea;
+    position: relative;
+    width: min(26rem, 100%);
+    padding: 1rem;
+    color: var(--fs-accent);
+    font-family: Consolas, 'Courier New', Courier, monospace;
+    animation: fs-flicker-in 0.4s ease-out;
+}
+
+.fs-backdrop {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    background: rgb(0 0 0 / 0.65);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--fs-corner)), calc(100% - var(--fs-corner)) 100%, 0% 100%);
+}
+
+.fs-backdrop::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--fs-accent);
+    border: 1px solid #0000;
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--fs-corner)), calc(100% - var(--fs-corner)) 100%, 0% 100%);
+    mask: linear-gradient(#0000 0% 100%), linear-gradient(#fff 0% 100%);
+    mask-clip: padding-box, border-box;
+    mask-repeat: no-repeat;
+    mask-composite: intersect;
+    opacity: 0.8;
+}
+
+.fs-corner {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: var(--fs-corner);
+    width: var(--fs-corner);
+}
+
+.fs-corner::after {
+    content: '';
+    height: 2px;
+    width: 200%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    transform: rotate(135deg);
+    background: var(--fs-accent);
+}
+
+.fs-version {
+    position: absolute;
+    right: 6px;
+    top: 4px;
+    font-size: 8px;
+    opacity: 0.5;
 }
 
 .fs-title {
     margin: 0;
-    font-family: 'Fira Code', Consolas, monospace;
+    padding-bottom: 0.5rem;
     text-transform: uppercase;
-    letter-spacing: 0.15em;
-    color: #fff;
-    text-shadow: 0 0 12px rgb(0 242 234 / 0.6);
+    position: relative;
+    font-size: 1.1rem;
+    letter-spacing: 0.08em;
 }
 
-.fs-hint {
-    margin: 0;
+.fs-title::after {
+    content: '';
+    height: 1px;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--fs-accent);
+    position: absolute;
+}
+
+.fs-text {
     font-size: 0.875rem;
-    color: #a3a3a3;
+}
+
+.fs-text p {
+    margin: 0.5rem 0;
+}
+
+.fs-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding-top: 0.75rem;
+}
+
+.fs-glitch {
+    position: absolute;
+    inset: 1rem;
+    color: #ff4fd8;
+    pointer-events: none;
+    animation: fs-glitch 2s 1;
+    opacity: 0;
+}
+
+.fs-glitch h2 {
+    margin: 0;
+    padding-bottom: 0.5rem;
+    text-transform: uppercase;
+    font-size: 1.1rem;
+    letter-spacing: 0.08em;
+}
+
+@keyframes fs-glitch {
+    0% { opacity: 1; clip-path: polygon(0 2%, 100% 2%, 100% 95%, 8% 95%, 0 70%); }
+    20% { opacity: 1; clip-path: polygon(0 78%, 100% 78%, 100% 100%, 8% 100%, 0 78%); transform: translate(-2%, 0); }
+    40% { opacity: 1; clip-path: polygon(0 44%, 100% 44%, 100% 54%, 8% 54%, 0 54%); transform: translate(2%, 0); }
+    60% { opacity: 1; clip-path: polygon(0 40%, 100% 40%, 100% 85%, 8% 85%, 0 70%); transform: translate(-2%, 0); }
+    80%, 100% { opacity: 0; clip-path: polygon(0 0, 100% 0, 100% 0, 0 0); transform: translate(0, 0); }
+}
+
+@keyframes fs-flicker-in {
+    0% { opacity: 0; }
+    30% { opacity: 0.6; }
+    45% { opacity: 0.2; }
+    60% { opacity: 1; }
+    75% { opacity: 0.7; }
+    100% { opacity: 1; }
 }
 
 /* Cyberpunk beneran (arahan pemilik, override R-07/R-19): grid redup +
