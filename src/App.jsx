@@ -84,7 +84,9 @@ function Reader({ source, bookId, startPage }) {
             <div className="reader">
                 <Header title={engine.title} page={engine.page} pageCount={engine.pageCount} />
                 <main className="reader-viewport">
-                    <p className="reader-state">Menyiapkan dokumen...</p>
+                    <p className="reader-state">
+                        Menyiapkan dokumen{engine.progress !== null && engine.progress !== undefined ? `... ${engine.progress}%` : '...'}
+                    </p>
                 </main>
             </div>
         );
