@@ -107,7 +107,6 @@ export default function Gate({ onEnter }) {
                             <span>please f11 before it</span>
                         </h2>
                         <div className="fs-text">
-                            <p>Kios butuh layar penuh. Otomatis dalam 5 detik, atau proceed sekarang.</p>
                             {fsFailed && <p>otomatis ditolak browser: tekan F11 manual.</p>}
                         </div>
                         <div className="fs-glitch" aria-hidden="true">
@@ -115,8 +114,7 @@ export default function Gate({ onEnter }) {
                                 <span>please f11 before it</span>
                             </h2>
                             <div className="fs-text">
-                                <p>Kios butuh layar penuh. Otomatis dalam 5 detik, atau proceed sekarang.</p>
-                            </div>
+                                </div>
                         </div>
                         <div className="fs-actions">
                             <CyberBtn kbd="⛶" label="proceed" action="Proceed" onClick={goFull} />
