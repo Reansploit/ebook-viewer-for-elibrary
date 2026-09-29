@@ -49,6 +49,8 @@ export default function Menu({ onRead, wallpaper, route, onLock }) {
     // Jendela lanjutkan: minimize = ciutkan isi, zoom = lebarkan.
     const [winMin, setWinMin] = useState(false);
     const [winZoom, setWinZoom] = useState(false);
+    // Seret jendela lewat titlebar seperti OS beneran.
+    const [winPos, setWinPos] = useState(null);
 
     const dismiss = (bookId) => {
         setDismissed((d) => (d.includes(bookId) ? d : [...d, bookId]));
@@ -67,7 +69,24 @@ export default function Menu({ onRead, wallpaper, route, onLock }) {
             .catch(() => {});
     }, [token]);
 
+    // Tanpa wallpaper custom = mac.jpg bawaan (bukan putih polos).
     const bg = wallpaper && wallpaper !== 'polos' ? wallpaper : '/mac.jpg';
+
+    const dragStart = (e) => {
+        if (winZoom || e.button !== undefined && e.button !== 0) return;
+        const startX = e.clientX;
+        const startY = e.clientY;
+        const orig = winPos || { x: 0, y: 0 };
+        const move = (ev) => {
+            setWinPos({ x: orig.x + ev.clientX - startX, y: orig.y + ev.clientY - startY });
+        };
+        const up = () => {
+            window.removeEventListener('pointermove', move);
+            window.removeEventListener('pointerup', up);
+        };
+        window.addEventListener('pointermove', move);
+        window.addEventListener('pointerup', up);
+    };
 
     return (
         <div className="kiosk kiosk-custom" style={{ '--wp': `url("${bg}")` }}>
@@ -105,8 +124,13 @@ export default function Menu({ onRead, wallpaper, route, onLock }) {
 
             <main className="os-desktop">
                 {resume && (
-                    <div className={winZoom ? 'mac-window mac-zoom' : 'mac-window'} role="group" aria-label="Lanjutkan bacaan">
-                        <div className="mac-titlebar">
+                    <div
+                        className={winZoom ? 'mac-window mac-zoom' : 'mac-window'}
+                        role="group"
+                        aria-label="Lanjutkan bacaan"
+                        style={winPos && !winZoom ? { position: 'fixed', left: `calc(50% + ${winPos.x}px)`, top: `calc(30% + ${winPos.y}px)`, translate: '-50% 0', zIndex: 5, margin: 0 } : undefined}
+                    >
+                        <div className="mac-titlebar" onPointerDown={dragStart} style={{ touchAction: 'none', cursor: 'move' }}>
                             <span className="mac-traffic">
                                 <button type="button" className="mac-dot mac-close" onClick={() => dismiss(resume.book.id)} aria-label="Tutup">
                                     <span aria-hidden="true">✕</span>
