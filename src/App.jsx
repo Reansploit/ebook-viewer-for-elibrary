@@ -203,11 +203,14 @@ function Shell() {
     };
     // Wallpaper milik akun: 'polos' atau URL foto. Polos = latar putih.
     const [wallpaper, setWallpaperState] = useState('polos');
-    // Bawaan viewer (/wallpapers/*) tidak pernah absolut ke elibrary:
-    // normalkan URL basi dari sesi sebelum perbaikan backend.
+    // Aset milik viewer (mac.jpg, base.jpg, wallpapers/*) tidak pernah
+    // absolut ke elibrary: normalkan URL basi dari sesi lama.
     const setWallpaper = (v) => {
-        if (typeof v === 'string' && v.includes('/wallpapers/')) {
-            v = '/wallpapers/' + v.split('/wallpapers/').pop();
+        if (typeof v === 'string') {
+            const path = v.includes('://') ? new URL(v).pathname : v;
+            if (path === '/mac.jpg' || path === '/base.jpg' || path.startsWith('/wallpapers/')) {
+                v = path;
+            }
         }
         setWallpaperState(v);
     };
