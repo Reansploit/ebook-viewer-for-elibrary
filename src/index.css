@@ -1919,8 +1919,10 @@ body {
 
 
 /* Mata = layar hangat saja (sepia sedang, biru diredam agar betah lama).
-   Transisi mulus 0.4 detik saat dinyalakan/dimatikan. */
+   Transisi mulus 0.4 detik saat dinyalakan/dimatikan. Latar viewport ikut
+   hangat supaya full satu halaman, bukan cuma kanvasnya. */
 .reading-warm .reader-viewport {
+    background: #f3e5c3;
     filter: sepia(0.6) brightness(1.0);
 }
 
