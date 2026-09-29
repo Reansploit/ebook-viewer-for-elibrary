@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { readerApi } from '../api.js';
 import { Link } from '../router.jsx';
 import { useSession } from '../session.jsx';
@@ -43,6 +43,9 @@ export default function Menu({ onRead, wallpaper, route, onLock }) {
     const [resume, setResume] = useState(null);
     const [dismissed, setDismissed] = useState([]);
     const [powerOpen, setPowerOpen] = useState(false);
+    // Pembesaran dock ala macOS: ikon dekat kursor membesar mulus.
+    const [mouseX, setMouseX] = useState(null);
+    const dockRef = useRef(null);
     // Jendela lanjutkan: minimize = ciutkan isi, zoom = lebarkan.
     const [winMin, setWinMin] = useState(false);
     const [winZoom, setWinZoom] = useState(false);
@@ -140,20 +143,38 @@ export default function Menu({ onRead, wallpaper, route, onLock }) {
                 )}
             </main>
 
-            <nav className="mac-dock" aria-label="Aplikasi">
-                {APPS.map((a) => (
-                    <Link
-                        key={a.to}
-                        to={a.to}
-                        className={route === a.to ? 'mac-app mac-active' : 'mac-app'}
-                        aria-label={a.title}
-                        title={a.title}
-                    >
-                        <span className="mac-icon" style={{ background: a.tile }}>
-                            <Icon d={a.icon} />
-                        </span>
-                    </Link>
-                ))}
+            <nav
+                className="mac-dock"
+                aria-label="Aplikasi"
+                ref={dockRef}
+                onMouseMove={(e) => setMouseX(e.clientX)}
+                onMouseLeave={() => setMouseX(null)}
+            >
+                {APPS.map((a, i) => {
+                    let scale = 1;
+                    if (mouseX !== null && dockRef.current) {
+                        const kids = dockRef.current.children;
+                        const el = kids[i];
+                        if (el) {
+                            const r = el.getBoundingClientRect();
+                            const dist = Math.abs(mouseX - (r.left + r.width / 2));
+                            scale = 1 + 0.6 * Math.max(0, 1 - dist / 120);
+                        }
+                    }
+                    return (
+                        <Link
+                            key={a.to}
+                            to={a.to}
+                            className={route === a.to ? 'mac-app mac-active' : 'mac-app'}
+                            aria-label={a.title}
+                            title={a.title}
+                        >
+                            <span className="mac-icon" style={{ scale }}>
+                                <Icon d={a.icon} />
+                            </span>
+                        </Link>
+                    );
+                })}
             </nav>
         </div>
     );
