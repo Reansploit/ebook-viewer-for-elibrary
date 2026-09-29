@@ -238,13 +238,18 @@ export default function Menu({ onRead, wallpaper, route, onLock }) {
             >
                 {APPS.map((a, i) => {
                     let scale = 1;
+                    let push = 0;
                     if (mouseX !== null && dockRef.current) {
                         const kids = dockRef.current.children;
                         const el = kids[i];
                         if (el) {
                             const r = el.getBoundingClientRect();
-                            const dist = Math.abs(mouseX - (r.left + r.width / 2));
-                            scale = 1 + 0.6 * Math.max(0, 1 - dist / 120);
+                            const center = r.left + r.width / 2;
+                            const dist = Math.abs(mouseX - center);
+                            const near = Math.max(0, 1 - dist / 120);
+                            scale = 1 + 0.6 * near;
+                            // Ikon tetangga minggir menjauhi kursor.
+                            push = Math.sign(center - mouseX || 1) * 14 * Math.max(0, 1 - dist / 140);
                         }
                     }
                     return (
@@ -258,7 +263,7 @@ export default function Menu({ onRead, wallpaper, route, onLock }) {
                             <span className="mac-tip" aria-hidden="true">
                                 {a.title}
                             </span>
-                            <span className="mac-icon" style={{ background: a.tile, scale }}>
+                            <span className="mac-icon" style={{ background: a.tile, scale, translate: `${push}px 0` }}>
                                 <a.Art />
                             </span>
                         </Link>
