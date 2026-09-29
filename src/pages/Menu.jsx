@@ -255,6 +255,9 @@ export default function Menu({ onRead, wallpaper, route, onLock }) {
                             aria-label={a.title}
                             title={a.title}
                         >
+                            <span className="mac-tip" aria-hidden="true">
+                                {a.title}
+                            </span>
                             <span className="mac-icon" style={{ background: a.tile, scale }}>
                                 <a.Art />
                             </span>
