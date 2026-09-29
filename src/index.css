@@ -1918,25 +1918,24 @@ body {
 /* Mode baca: halaman pas seukuran layar (ikut bentuk halaman). */
 
 
-/* Mata = seluruh halaman /baca menghangat. Putih jadi #F4ECD8 via
-   multiply (putih × krem = krem, gelap tetap), transisi 0.4 detik. */
+/* Mata = satu warna rata #F4ECD8 di seluruh /baca: dasar body + root
+   krem, kanvas putih engine disamakan via multiply setempat. */
 .reading-warm {
-    background: #f3e5c3;
+    background: #f4ecd8;
 }
 
 .reading-warm .reader-viewport {
-    position: relative;
     background: transparent;
 }
 
-.reading-warm .reader-viewport::after {
+.reading-warm .reo-pdf::after {
     content: '';
     position: absolute;
     inset: 0;
     background: #f4ecd8;
     mix-blend-mode: multiply;
     pointer-events: none;
-    transition: opacity 0.4s ease;
+    border-radius: var(--radius);
 }
 
 .reader-viewport {

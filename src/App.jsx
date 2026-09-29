@@ -65,7 +65,7 @@ function Reader({ source, bookId, startPage }) {
     }, [token, bookId, engine.page]);
 
     useEffect(() => {
-        document.body.style.background = warm ? '#f3e5c3' : '';
+        document.body.style.background = warm ? '#F4ECD8' : '';
         return () => {
             document.body.style.background = '';
         };
