@@ -1949,6 +1949,10 @@ body {
     overflow-y: auto;
 }
 
+.reading-warm.reader:fullscreen {
+    background: #f3e5c3;
+}
+
 .reader:fullscreen .reader-viewport {
     padding: 1rem;
 }

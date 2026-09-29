@@ -65,6 +65,13 @@ function Reader({ source, bookId, startPage }) {
     }, [token, bookId, engine.page]);
 
     useEffect(() => {
+        document.body.style.background = warm ? '#f3e5c3' : '';
+        return () => {
+            document.body.style.background = '';
+        };
+    }, [warm]);
+
+    useEffect(() => {
         const onChange = () => setFull(!!document.fullscreenElement);
         document.addEventListener('fullscreenchange', onChange);
         return () => document.removeEventListener('fullscreenchange', onChange);
