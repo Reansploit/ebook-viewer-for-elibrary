@@ -3,11 +3,74 @@ import { readerApi } from '../api.js';
 import { Link } from '../router.jsx';
 import { useSession } from '../session.jsx';
 
-// Ikon garis oranye per aplikasi (R-04): bentuk mengikuti isi.
-function Icon({ d }) {
+// Ikon ala app macOS: ubin solid identitas + glyph putih. Bukan kaca
+// (kaca + zoom terlihat ngebug), jadi tile solid dengan bayangan.
+function BooksArt() {
     return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden="true">
-            <path d={d} />
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" aria-hidden="true">
+            <path d="M12 6c-2-1.5-4.5-2-8-2v14c3.5 0 6 .5 8 2 2-1.5 4.5-2 8-2V4c-3.5 0-6 .5-8 2Zm0 0v14" />
+        </svg>
+    );
+}
+
+function MusicArt() {
+    return (
+        <svg viewBox="0 0 24 24" fill="#fff" aria-hidden="true">
+            <circle cx="8" cy="17" r="3.2" />
+            <circle cx="19" cy="14" r="3.2" />
+            <path d="M11 17V6l8-2.5V14h-2.2V6.4L13 7.5V17h-2Z" />
+        </svg>
+    );
+}
+
+function CompassArt() {
+    return (
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" fill="#fff" />
+            <polygon points="15.5,8.5 13.2,13.2 8.5,15.5 10.8,10.8" fill="#ff3b30" />
+            <polygon points="15.5,8.5 13.2,13.2 10.8,10.8" fill="#fff" />
+        </svg>
+    );
+}
+
+function PersonArt() {
+    return (
+        <svg viewBox="0 0 24 24" fill="#fff" aria-hidden="true">
+            <circle cx="12" cy="8" r="4" />
+            <path d="M4 20c1.5-3.5 4.5-5 8-5s6.5 1.5 8 5v1H4v-1Z" />
+        </svg>
+    );
+}
+
+function NotesArt() {
+    return (
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="5" y="3" width="14" height="18" rx="2" fill="#fff" />
+            <rect x="5" y="3" width="14" height="6" rx="2" fill="#ffd60a" />
+            <rect x="8" y="12" width="8" height="1.6" rx="0.8" fill="#c7c7cc" />
+            <rect x="8" y="15" width="8" height="1.6" rx="0.8" fill="#c7c7cc" />
+            <rect x="8" y="18" width="5" height="1.6" rx="0.8" fill="#c7c7cc" />
+        </svg>
+    );
+}
+
+function PhotosArt() {
+    const petals = [0, 45, 90, 135, 180, 225, 270, 315];
+    const colors = ['#ff9f0a', '#ffd60a', '#34c759', '#64d2ff', '#0a84ff', '#bf5af2', '#ff375f', '#ff6482'];
+    return (
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            {petals.map((r, i) => (
+                <ellipse
+                    key={r}
+                    cx="12"
+                    cy="7.5"
+                    rx="2.6"
+                    ry="4.2"
+                    fill={colors[i]}
+                    opacity="0.85"
+                    transform={`rotate(${r} 12 12)`}
+                />
+            ))}
         </svg>
     );
 }
@@ -15,12 +78,12 @@ function Icon({ d }) {
 // Ubin warna per aplikasi seperti dock macOS (bukan seragam):
 // tiap app punya identitas warna sendiri.
 const APPS = [
-    { to: '/cari', title: 'Baca', tile: '#ea580c', icon: 'M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14ZM21 21l-4.3-4.3' },
-    { to: '/playlist', title: 'Playlist', tile: '#e11d48', icon: 'M4 6h16M4 12h16M4 18h10' },
-    { to: '/riwayat', title: 'Riwayat', tile: '#2563eb', icon: 'M12 8v4l3 2m6-2a9 9 0 1 1-9-9 9 9 0 0 1 9 9Z' },
-    { to: '/profil', title: 'Profil', tile: '#6b7280', icon: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 9a7 7 0 0 1 14 0' },
-    { to: '/catatan', title: 'Catatan', tile: '#ca8a04', icon: 'M5 4h14v12H5zM5 16l-2 5 5-2M9 9h6M9 12h6' },
-    { to: '/wallpaper', title: 'Wallpaper', tile: '#16a34a', icon: 'M4 5h16v14H4zM4 15l4-4 3 3 3-3 6 6M9 9h.01' },
+    { to: '/cari', title: 'Baca', tile: 'linear-gradient(180deg,#ff9f0a,#ff6b00)', Art: BooksArt },
+    { to: '/playlist', title: 'Playlist', tile: 'linear-gradient(180deg,#ff6482,#fc3c44)', Art: MusicArt },
+    { to: '/riwayat', title: 'Riwayat', tile: 'linear-gradient(180deg,#0a84ff,#0060d0)', Art: CompassArt },
+    { to: '/profil', title: 'Profil', tile: 'linear-gradient(180deg,#8e8e93,#636366)', Art: PersonArt },
+    { to: '/catatan', title: 'Catatan', tile: 'linear-gradient(180deg,#ffffff,#e5e5ea)', Art: NotesArt },
+    { to: '/wallpaper', title: 'Wallpaper', tile: 'linear-gradient(180deg,#ffffff,#d1d1d6)', Art: PhotosArt },
 ];
 
 // Layar utama gaya macOS: bar menu atas (logo, jam live, daya),
@@ -192,8 +255,8 @@ export default function Menu({ onRead, wallpaper, route, onLock }) {
                             aria-label={a.title}
                             title={a.title}
                         >
-                            <span className="mac-icon" style={{ scale }}>
-                                <Icon d={a.icon} />
+                            <span className="mac-icon" style={{ background: a.tile, scale }}>
+                                <a.Art />
                             </span>
                         </Link>
                     );
