@@ -116,8 +116,11 @@ export function useEngine(source = {}, startPage = 1) {
     const renderPage = useCallback(
         (n) => {
             // PDF lewat kanvas adaptif (piksel asli kitab scan tetap utuh).
+            // Tanpa key per halaman: kanvas diperbarui di tempat agar
+            // pindah halaman tidak terasa refresh (halaman lama tampil
+            // sampai yang baru siap).
             if (doc?.format === 'pdf' && doc?.source) {
-                return <ReoPdfPage key={`${source.fileUrl}#${n}`} source={doc.source} page={n} theme={source.theme} />;
+                return <ReoPdfPage key={source.fileUrl} source={doc.source} page={n} theme={source.theme} />;
             }
             if (doc?.ir) return <ReoPage key={source.fileUrl} ir={doc.ir} theme={source.theme} />;
             if (source.ir) return <ReoPage ir={source.ir} theme={source.theme} />;
