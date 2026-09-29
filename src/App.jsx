@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Controls from './components/Controls.jsx';
 import Header from './components/Header.jsx';
 import Viewport from './components/Viewport.jsx';
@@ -30,9 +30,11 @@ const demoSource = { title: 'Contoh Kitab', pageCount: 24 };
 function Reader({ source, bookId, startPage }) {
     const { token } = useSession();
     const engine = useEngine(source, startPage);
-    // Mode baca: chrome disembunyikan, tinggal halaman. Satu tombol
-    // melayang untuk keluar. Alasan: baca kitab butuh fokus penuh.
-    const [focus, setFocus] = useState(false);
+    // Mata = layar hangat saja. Penuh = fullscreen browser beneran.
+    // Dua mode terpisah sesuai permintaan.
+    const [warm, setWarm] = useState(false);
+    const [full, setFull] = useState(false);
+    const readerRef = useRef(null);
     const [noteOpen, setNoteOpen] = useState(false);
     const [note, setNote] = useState('');
     const [noteSaved, setNoteSaved] = useState(false);
@@ -62,6 +64,20 @@ function Reader({ source, bookId, startPage }) {
         return () => clearTimeout(timer);
     }, [token, bookId, engine.page]);
 
+    useEffect(() => {
+        const onChange = () => setFull(!!document.fullscreenElement);
+        document.addEventListener('fullscreenchange', onChange);
+        return () => document.removeEventListener('fullscreenchange', onChange);
+    }, []);
+
+    const toggleFull = () => {
+        if (document.fullscreenElement) {
+            document.exitFullscreen().catch(() => {});
+        } else {
+            readerRef.current?.requestFullscreen?.().catch(() => {});
+        }
+    };
+
     const saveNote = (e) => {
         e.preventDefault();
         const text = note.trim();
@@ -82,7 +98,7 @@ function Reader({ source, bookId, startPage }) {
     if (engine.status === 'loading') {
         return (
             <div className="reader">
-                <Header title={engine.title} page={engine.page} pageCount={engine.pageCount} onFocus={() => setFocus(true)} />
+                <Header title={engine.title} page={engine.page} pageCount={engine.pageCount} warm={warm} onWarm={() => setWarm((w) => !w)} onFull={toggleFull} full={full} />
                 <main className="reader-viewport">
                     <p className="reader-state">
                         Menyiapkan dokumen{engine.progress !== null && engine.progress !== undefined ? `... ${engine.progress}%` : '...'}
@@ -95,7 +111,7 @@ function Reader({ source, bookId, startPage }) {
     if (engine.status === 'error') {
         return (
             <div className="reader">
-                <Header title={engine.title} page={engine.page} pageCount={engine.pageCount} onFocus={() => setFocus(true)} />
+                <Header title={engine.title} page={engine.page} pageCount={engine.pageCount} warm={warm} onWarm={() => setWarm((w) => !w)} onFull={toggleFull} full={full} />
                 <main className="reader-viewport">
                     <div className="reader-state">
                         <p>Dokumen gagal dibuka{engine.error ? `: ${engine.error}` : '.'}</p>
@@ -107,39 +123,32 @@ function Reader({ source, bookId, startPage }) {
     }
 
     return (
-        <div className={focus ? 'reader reading-fit' : 'reader'}>
-            {!focus && (
-                <Header title={engine.title} page={engine.page} pageCount={engine.pageCount} onFocus={() => setFocus(true)} />
-            )}
+        <div ref={readerRef} className={warm ? 'reader reading-warm' : 'reader'}>
+            <Header
+                title={engine.title}
+                page={engine.page}
+                pageCount={engine.pageCount}
+                warm={warm}
+                onWarm={() => setWarm((w) => !w)}
+                onFull={toggleFull}
+                full={full}
+            />
             <Viewport page={engine.page} renderPage={engine.renderPage} onPrev={engine.prev} onNext={engine.next} />
-            {!focus ? (
-                <>
-                    <Controls
-                        page={engine.page}
-                        pageCount={engine.pageCount}
-                        onPrev={engine.prev}
-                        onNext={engine.next}
-                        onGoTo={engine.goTo}
-                    />
-                    <div className="note-bar">
-                        {token && bookId && !noteOpen && (
-                            <button type="button" className="btn-outline" onClick={() => setNoteOpen(true)}>
-                                Catat halaman ini
-                            </button>
-                        )}
-                    </div>
-                </>
-            ) : (
-                <button
-                    type="button"
-                    className="focus-exit"
-                    onClick={() => setFocus(false)}
-                    aria-label="Keluar mode baca"
-                >
-                    ✕
-                </button>
-            )}
-            {!focus && token && bookId && noteOpen && (
+            <Controls
+                page={engine.page}
+                pageCount={engine.pageCount}
+                onPrev={engine.prev}
+                onNext={engine.next}
+                onGoTo={engine.goTo}
+            />
+            <div className="note-bar">
+                {token && bookId && !noteOpen && (
+                    <button type="button" className="btn-outline" onClick={() => setNoteOpen(true)}>
+                        Catat halaman ini
+                    </button>
+                )}
+            </div>
+            {token && bookId && noteOpen && (
                 <div className="note-bar">
                     <form className="note-form" onSubmit={saveNote}>
                         <label className="reader-jump-label" htmlFor="note-text">

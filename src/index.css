@@ -1916,15 +1916,32 @@ body {
 }
 
 /* Mode baca: halaman pas seukuran layar (ikut bentuk halaman). */
-.reading-fit .reader-viewport {
+
+
+/* Mata = layar hangat saja (sepia tipis, biru diredam agar betah lama). */
+.reading-warm .reader-viewport {
+    filter: sepia(0.35) brightness(1.01);
+}
+
+/* Fullscreen beneran: halaman pas seukuran layar. */
+.reader:fullscreen {
+    background: var(--paper);
+    overflow-y: auto;
+}
+
+.reader:fullscreen .reader-viewport {
     padding: 1rem;
 }
 
-/* Layar hangat saat mode baca: sepia tipis meredam biru agar betah lama.
-   Nempel di seluruh halaman (kanvas + lapisan engine), bukan kanvas saja. */
-.reading-fit .reo-pdf,
-.reading-fit .page-placeholder {
-    filter: sepia(0.35) brightness(1.01);
+.reader:fullscreen .reo-pdf {
+    display: flex;
+    justify-content: center;
+}
+
+.reader:fullscreen .reo-pdf canvas {
+    width: auto;
+    max-width: 100%;
+    max-height: calc(100svh - 3rem);
 }
 
 .btn-icon {
@@ -1962,37 +1979,6 @@ body {
     display: inline-flex;
     align-items: center;
 }
-
-.reading-fit .reo-pdf {
-    display: flex;
-    justify-content: center;
-}
-
-.reading-fit .reo-pdf canvas {
-    width: auto;
-    max-width: 100%;
-    max-height: calc(100svh - 6rem);
-}
-.focus-exit {
-    position: fixed;
-    bottom: 1.25rem;
-    right: 1.25rem;
-    width: 44px;
-    height: 44px;
-    border-radius: 999px;
-    border: 1px solid var(--line);
-    background: var(--card);
-    color: var(--ink);
-    font-size: 1.125rem;
-    cursor: pointer;
-    z-index: 50;
-}
-
-.focus-exit:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-}
-
 
 
 
