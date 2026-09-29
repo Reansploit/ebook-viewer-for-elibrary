@@ -67,7 +67,7 @@ export default function Menu({ onRead, wallpaper, route, onLock }) {
             .catch(() => {});
     }, [token]);
 
-    const bg = wallpaper && wallpaper !== 'polos' ? wallpaper : '/base.jpg';
+    const bg = wallpaper && wallpaper !== 'polos' ? wallpaper : '/mac.jpg';
 
     return (
         <div className="kiosk kiosk-custom" style={{ '--wp': `url("${bg}")` }}>
