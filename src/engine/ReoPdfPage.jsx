@@ -18,9 +18,13 @@ export default function ReoPdfPage({ source, page, theme }) {
                 if (cancelled) return;
                 const analysis = await source.getPageAnalysis(page);
                 if (cancelled) return;
-                mounted = mountAdaptivePage(overlayRef.current, canvasRef.current, analysis, {
-                    theme: theme === 'dark' ? 'dark' : 'light',
-                });
+                // Tanpa region teks dan bukan halaman scan, sheet kosong
+                // hanya menutupi kanvas asli: tampilkan kanvas apa adanya.
+                if (analysis.textRegions.length > 0 || analysis.rasterCoverage >= 0.7) {
+                    mounted = mountAdaptivePage(overlayRef.current, canvasRef.current, analysis, {
+                        theme: theme === 'dark' ? 'dark' : 'light',
+                    });
+                }
             } catch {
                 if (!cancelled) setFailed(true);
             }
