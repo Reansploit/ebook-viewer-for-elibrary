@@ -42,25 +42,11 @@ export default function Menu({ onRead, wallpaper }) {
     const { member, token, logout } = useSession();
     const { date, time } = useClock();
     const [resume, setResume] = useState(null);
-    // Notifikasi lanjutkan bisa disilang; yang disilang tidak muncul lagi.
-    const [dismissed, setDismissed] = useState(() => {
-        try {
-            return JSON.parse(localStorage.getItem('resume_dismissed') || '[]');
-        } catch {
-            return [];
-        }
-    });
+    // Silang hanya untuk sesi ini; refresh = muncul lagi.
+    const [dismissed, setDismissed] = useState([]);
 
     const dismiss = (bookId) => {
-        setDismissed((d) => {
-            const next = [...d, bookId];
-            try {
-                localStorage.setItem('resume_dismissed', JSON.stringify(next));
-            } catch {
-                // abaikan
-            }
-            return next;
-        });
+        setDismissed((d) => (d.includes(bookId) ? d : [...d, bookId]));
         setResume(null);
     };
 
@@ -106,13 +92,13 @@ export default function Menu({ onRead, wallpaper }) {
 
             <main className="kiosk-main">
                 {resume && (
-                    <div className="resume-wrap">
-                        <button type="button" className="kiosk-resume" onClick={() => onRead(resume.book, resume.page)}>
+                    <div className="kiosk-resume" role="group" aria-label="Lanjutkan bacaan">
+                        <button type="button" className="kiosk-resume-main" onClick={() => onRead(resume.book, resume.page)}>
                             Lanjutkan: {resume.book.title} (halaman {resume.page})
                         </button>
                         <button
                             type="button"
-                            className="resume-x"
+                            className="kiosk-resume-x"
                             onClick={() => dismiss(resume.book.id)}
                             aria-label="Tutup notifikasi lanjutan"
                         >
