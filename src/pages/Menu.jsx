@@ -107,8 +107,18 @@ export default function Menu({ onRead, wallpaper, route, onLock }) {
     const [dismissed, setDismissed] = useState([]);
     const [powerOpen, setPowerOpen] = useState(false);
     // Pembesaran dock ala macOS: ikon dekat kursor membesar mulus.
+    // Mousemove dibatasi satu per frame agar tidak patah-patah.
     const [mouseX, setMouseX] = useState(null);
     const dockRef = useRef(null);
+    const rafRef = useRef(0);
+
+    useEffect(() => () => cancelAnimationFrame(rafRef.current), []);
+
+    const trackMouse = (e) => {
+        const x = e.clientX;
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = requestAnimationFrame(() => setMouseX(x));
+    };
     // Jendela lanjutkan: minimize = ciutkan isi, zoom = lebarkan.
     const [winMin, setWinMin] = useState(false);
     const [winZoom, setWinZoom] = useState(false);
@@ -233,7 +243,7 @@ export default function Menu({ onRead, wallpaper, route, onLock }) {
                 className="mac-dock"
                 aria-label="Aplikasi"
                 ref={dockRef}
-                onMouseMove={(e) => setMouseX(e.clientX)}
+                onMouseMove={trackMouse}
                 onMouseLeave={() => setMouseX(null)}
             >
                 {APPS.map((a, i) => {

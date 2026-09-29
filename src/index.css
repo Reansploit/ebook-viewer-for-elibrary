@@ -2170,7 +2170,7 @@ body {
     border: 1px solid rgb(255 255 255 / 0.35);
     box-shadow: 0 4px 12px rgb(0 0 0 / 0.25);
     color: #fff;
-    transition: transform 0.15s ease;
+    transition: scale 0.1s linear, translate 0.1s linear, transform 0.15s ease;
 }
 
 .mac-icon svg {
