@@ -1918,9 +1918,14 @@ body {
 /* Mode baca: halaman pas seukuran layar (ikut bentuk halaman). */
 
 
-/* Mata = layar hangat saja (sepia sedang, biru diredam agar betah lama). */
+/* Mata = layar hangat saja (sepia sedang, biru diredam agar betah lama).
+   Transisi mulus 0.4 detik saat dinyalakan/dimatikan. */
 .reading-warm .reader-viewport {
     filter: sepia(0.6) brightness(1.0);
+}
+
+.reader-viewport {
+    transition: filter 0.4s ease;
 }
 
 /* Fullscreen beneran: halaman pas seukuran layar. */
