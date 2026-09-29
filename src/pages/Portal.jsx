@@ -34,7 +34,7 @@ export default function Portal() {
 
     return (
         <div className="reader">
-            <ViewerHeader library={library} />
+            <ViewerHeader library={library} backTo={null} />
             <main className="portal">
                 <h1 className="portal-title">Mau baca apa hari ini?</h1>
                 <div className="portal-options">
