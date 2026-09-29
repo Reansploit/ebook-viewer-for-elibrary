@@ -23,7 +23,9 @@ export function useEngine(source = {}, startPage = 1) {
         parseFile(source.fileUrl, {
             title: source.title,
             signal: controller.signal,
-            pdf: { workerSrc: workerUrl },
+            // Decoder gambar scan (JBIG2/JPEG2000) + worker dibundel lokal
+            // agar jalan offline di pondok.
+            pdf: { workerSrc: workerUrl, wasmUrl: '/wasm/' },
         })
             .then((handle) => {
                 if (controller.signal.aborted) {
