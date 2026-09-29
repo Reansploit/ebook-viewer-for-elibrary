@@ -101,6 +101,25 @@ body {
     font-size: 0.875rem;
 }
 
+/* Halaman PDF adaptif: kanvas + lapisan engine, selebar viewport. */
+.reo-pdf {
+    position: relative;
+    width: 100%;
+    max-width: 48rem;
+}
+
+.reo-pdf canvas {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: var(--radius);
+}
+
+.reo-pdf .reo-adaptive-layer {
+    position: absolute;
+    inset: 0;
+}
+
 .reader-state {
     text-align: center;
     color: var(--muted);

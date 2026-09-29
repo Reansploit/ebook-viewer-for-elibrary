@@ -6,6 +6,7 @@ import { parseFile } from '@reo-engine/loader';
 import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import ReoPage from './ReoPage.jsx';
+import ReoPdfPage from './ReoPdfPage.jsx';
 
 export function useEngine(source = {}, startPage = 1) {
     const title = source.title || 'Dokumen tanpa judul';
@@ -31,7 +32,7 @@ export function useEngine(source = {}, startPage = 1) {
                 }
                 handleRef.current?.close().catch(() => {});
                 handleRef.current = handle;
-                setDoc({ ir: handle.ir, pageCount: handle.pageCount });
+                setDoc({ ir: handle.ir, pageCount: handle.pageCount, format: handle.format, source: handle.source });
                 setStatus('ready');
             })
             .catch((err) => {
@@ -60,6 +61,10 @@ export function useEngine(source = {}, startPage = 1) {
 
     const renderPage = useCallback(
         (n) => {
+            // PDF lewat kanvas adaptif (piksel asli kitab scan tetap utuh).
+            if (doc?.format === 'pdf' && doc?.source) {
+                return <ReoPdfPage key={`${source.fileUrl}#${n}`} source={doc.source} page={n} theme={source.theme} />;
+            }
             if (doc?.ir) return <ReoPage key={source.fileUrl} ir={doc.ir} theme={source.theme} />;
             if (source.ir) return <ReoPage ir={source.ir} theme={source.theme} />;
             return (
