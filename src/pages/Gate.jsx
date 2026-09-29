@@ -104,7 +104,7 @@ export default function Gate({ onEnter }) {
                             v001
                         </span>
                         <h2 className="fs-title">
-                            <span>please press f11 before enter</span>
+                            <span>please f11 before it</span>
                         </h2>
                         <div className="fs-text">
                             <p>Kios butuh layar penuh. Otomatis dalam 5 detik, atau proceed sekarang.</p>
@@ -112,7 +112,7 @@ export default function Gate({ onEnter }) {
                         </div>
                         <div className="fs-glitch" aria-hidden="true">
                             <h2>
-                                <span>please press f11 before enter</span>
+                                <span>please f11 before it</span>
                             </h2>
                             <div className="fs-text">
                                 <p>Kios butuh layar penuh. Otomatis dalam 5 detik, atau proceed sekarang.</p>
