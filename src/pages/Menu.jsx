@@ -74,7 +74,7 @@ export default function Menu({ onRead, wallpaper, route, onLock }) {
                     <span className="site-name">elibrary</span>
                 </span>
                 <span className="mac-appname">Menu</span>
-                <span className="os-power">
+                <span className="os-power os-right">
                     <span className="mac-clock">
                         {date} {time}
                     </span>
