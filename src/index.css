@@ -1918,15 +1918,25 @@ body {
 /* Mode baca: halaman pas seukuran layar (ikut bentuk halaman). */
 
 
-/* Mata = seluruh halaman /baca menghangat (latar + isi), bukan cuma kanvas.
-   Transisi mulus 0.4 detik saat dinyalakan/dimatikan. */
+/* Mata = seluruh halaman /baca menghangat. Putih jadi #F4ECD8 via
+   multiply (putih × krem = krem, gelap tetap), transisi 0.4 detik. */
 .reading-warm {
     background: #f3e5c3;
 }
 
 .reading-warm .reader-viewport {
+    position: relative;
     background: transparent;
-    filter: sepia(0.6) brightness(1.0);
+}
+
+.reading-warm .reader-viewport::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: #f4ecd8;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
 }
 
 .reader-viewport {
