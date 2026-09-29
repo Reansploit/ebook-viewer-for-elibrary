@@ -4,29 +4,28 @@ import { Link } from '../router.jsx';
 import { useSession } from '../session.jsx';
 import { detectTones } from '../wp.js';
 
-// Ikon garis oranye per layanan (R-04): bentuk mengikuti isi kartu.
+// Ikon garis oranye per aplikasi (R-04): bentuk mengikuti isi.
 function Icon({ d }) {
     return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden="true">
             <path d={d} />
         </svg>
     );
 }
 
-const CARDS = [
-    { to: '/lanjutkan', title: 'Lanjutkan', desc: 'Teruskan bacaan berjalan', icon: 'M12 6c-2-1.5-4.5-2-8-2v14c3.5 0 6 .5 8 2 2-1.5 4.5-2 8-2V4c-3.5 0-6 .5-8 2Zm0 0v14' },
-    { to: '/cari', title: 'Baca', desc: 'Cari ebook dan langsung baca', icon: 'M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14ZM21 21l-4.3-4.3' },
-    { to: '/playlist', title: 'Playlist Buku', desc: 'Daftar bacaanmu', icon: 'M4 6h16M4 12h16M4 18h10' },
-    { to: '/riwayat', title: 'Riwayat', desc: 'Buku yang dibuka', icon: 'M12 8v4l3 2m6-2a9 9 0 1 1-9-9 9 9 0 0 1 9 9Z' },
-    { to: '/profil', title: 'Profil Akun', desc: 'Data diri + catatan', icon: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 9a7 7 0 0 1 14 0' },
-    { to: '/catatan', title: 'Catatan', desc: 'Corat-coret bebas', icon: 'M5 4h14v12H5zM5 16l-2 5 5-2M9 9h6M9 12h6' },
-    { to: '/wallpaper', title: 'Wallpaper', desc: 'Latar foto custom', icon: 'M4 5h16v14H4zM4 15l4-4 3 3 3-3 6 6M9 9h.01' },
+const APPS = [
+    { to: '/cari', title: 'Baca', icon: 'M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14ZM21 21l-4.3-4.3' },
+    { to: '/playlist', title: 'Playlist', icon: 'M4 6h16M4 12h16M4 18h10' },
+    { to: '/riwayat', title: 'Riwayat', icon: 'M12 8v4l3 2m6-2a9 9 0 1 1-9-9 9 9 0 0 1 9 9Z' },
+    { to: '/profil', title: 'Profil', icon: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 9a7 7 0 0 1 14 0' },
+    { to: '/catatan', title: 'Catatan', icon: 'M5 4h14v12H5zM5 16l-2 5 5-2M9 9h6M9 12h6' },
+    { to: '/wallpaper', title: 'Wallpaper', icon: 'M4 5h16v14H4zM4 15l4-4 3 3 3-3 6 6M9 9h.01' },
 ];
 
-// Menu utama akun, gaya kios layanan ala referensi SALAM PAY milik yayasan:
-// ombak merah-oranye sebagai identitas, kartu putih, ikon oranye, jam live.
-// Alasan (R-01, R-31): santri sudah kenal bahasa visual ini dari layanan
-// yayasan lain, jadi menu langsung terasa familiar.
+// Layar utama gaya OS kios: bar atas (merek + jam live), grid ikon
+// aplikasi di atas wallpaper, lanjutkan sebagai jendela kecil.
+// Alasan (R-31): santri sudah paham bahasa HP (ikon diketuk),
+// tidak perlu belajar tampilan menu baru.
 function useClock() {
     const [now, setNow] = useState(() => new Date());
     useEffect(() => {
@@ -34,7 +33,7 @@ function useClock() {
         return () => clearInterval(t);
     }, []);
     const date = now.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' });
-    const time = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const time = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
     return { date, time };
 }
 
@@ -42,7 +41,6 @@ export default function Menu({ onRead, wallpaper }) {
     const { member, token, logout } = useSession();
     const { date, time } = useClock();
     const [resume, setResume] = useState(null);
-    // Silang hanya untuk sesi ini; refresh = muncul lagi.
     const [dismissed, setDismissed] = useState([]);
 
     const dismiss = (bookId) => {
@@ -63,7 +61,6 @@ export default function Menu({ onRead, wallpaper }) {
     }, [token]);
 
     // Tanpa wallpaper custom = base.jpg bawaan (bukan putih polos).
-    // Nada teks tetap dideteksi dari foto yang tampil.
     const bg = wallpaper && wallpaper !== 'polos' ? wallpaper : '/base.jpg';
     const [tones, setTones] = useState({ top: 'light', mid: 'light', bottom: 'light' });
 
@@ -76,21 +73,21 @@ export default function Menu({ onRead, wallpaper }) {
             className={`kiosk kiosk-custom wp-top-${tones.top} wp-mid-${tones.mid} wp-bottom-${tones.bottom}`}
             style={{ '--wp': `url("${bg}")` }}
         >
-            <header className="kiosk-head">
-                <div className="kiosk-brand">
+            <header className="os-bar">
+                <span className="os-brand">
                     <img src="/images/logo-wbs.png" alt="" className="site-logo" />
-                    <div>
-                        <p className="kiosk-title">Perpustakaan WBS</p>
-                        <p className="kiosk-user">Halo, {member?.name || 'Santri'}</p>
-                    </div>
-                </div>
-                <div className="kiosk-clock">
-                    <p className="kiosk-date">{date}</p>
-                    <p className="kiosk-time">{time}</p>
-                </div>
+                    <span className="site-name">elibrary</span>
+                </span>
+                <span className="os-clock">
+                    {date} • {time}
+                </span>
+                <button type="button" className="os-exit" onClick={logout} aria-label="Keluar">
+                    ⏻
+                </button>
             </header>
 
-            <main className="kiosk-main">
+            <main className="os-desktop">
+                <p className="os-hello">Halo, {member?.name || 'Santri'}</p>
                 {resume && (
                     <div className="kiosk-resume" role="group" aria-label="Lanjutkan bacaan">
                         <button type="button" className="kiosk-resume-main" onClick={() => onRead(resume.book, resume.page)}>
@@ -106,20 +103,16 @@ export default function Menu({ onRead, wallpaper }) {
                         </button>
                     </div>
                 )}
-                <nav className="kiosk-grid" aria-label="Layanan">
-                    {CARDS.map((c) => (
-                        <Link key={c.to} to={c.to} className="kiosk-card">
-                            <span className="kiosk-icon">
-                                <Icon d={c.icon} />
+                <nav className="os-grid" aria-label="Aplikasi">
+                    {APPS.map((a) => (
+                        <Link key={a.to} to={a.to} className="os-app">
+                            <span className="os-icon">
+                                <Icon d={a.icon} />
                             </span>
-                            <span className="kiosk-card-title">{c.title}</span>
-                            <span className="kiosk-card-desc">{c.desc}</span>
+                            <span className="os-label">{a.title}</span>
                         </Link>
                     ))}
                 </nav>
-                <button type="button" className="kiosk-exit" onClick={logout}>
-                    Keluar
-                </button>
             </main>
         </div>
     );
