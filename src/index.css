@@ -1422,6 +1422,36 @@ body {
     text-shadow: 0 0 12px rgb(0 242 234 / 0.5);
 }
 
+/* Dialog layar penuh kios: di tengah, di atas segalanya. */
+.fs-dialog {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    background: rgb(0 0 0 / 0.72);
+    padding: 1.25rem;
+    text-align: center;
+}
+
+.fs-title {
+    margin: 0;
+    font-family: 'Fira Code', Consolas, monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #fff;
+    text-shadow: 0 0 12px rgb(0 242 234 / 0.6);
+}
+
+.fs-hint {
+    margin: 0;
+    font-size: 0.875rem;
+    color: #a3a3a3;
+}
+
 /* Cyberpunk beneran (arahan pemilik, override R-07/R-19): grid redup +
    vignette sebagai tekstur identitas gerbang. Animasi hanya di input holo
    (saat fokus); halaman sendiri statis. */
