@@ -2066,8 +2066,12 @@ body {
 }
 
 @media (min-width: 40rem) {
-    .os-app:hover .os-icon,
-.os-app:focus-visible .os-power {
+    .os-grid {
+        grid-template-columns: repeat(6, 1fr);
+    }
+}
+
+.os-power {
     position: relative;
     display: inline-flex;
 }
