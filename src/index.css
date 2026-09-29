@@ -1921,8 +1921,8 @@ body {
 }
 
 /* Layar hangat saat mode baca: sepia tipis meredam biru agar betah lama.
-   Alasan: dibaca berjam-jam, bukan sekilas. */
-.reading-fit .reo-pdf canvas,
+   Nempel di seluruh halaman (kanvas + lapisan engine), bukan kanvas saja. */
+.reading-fit .reo-pdf,
 .reading-fit .page-placeholder {
     filter: sepia(0.35) brightness(1.01);
 }
