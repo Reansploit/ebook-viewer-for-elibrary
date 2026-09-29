@@ -12,13 +12,15 @@ function Icon({ d }) {
     );
 }
 
+// Ubin warna per aplikasi seperti dock macOS (bukan seragam):
+// tiap app punya identitas warna sendiri.
 const APPS = [
-    { to: '/cari', title: 'Baca', icon: 'M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14ZM21 21l-4.3-4.3' },
-    { to: '/playlist', title: 'Playlist', icon: 'M4 6h16M4 12h16M4 18h10' },
-    { to: '/riwayat', title: 'Riwayat', icon: 'M12 8v4l3 2m6-2a9 9 0 1 1-9-9 9 9 0 0 1 9 9Z' },
-    { to: '/profil', title: 'Profil', icon: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 9a7 7 0 0 1 14 0' },
-    { to: '/catatan', title: 'Catatan', icon: 'M5 4h14v12H5zM5 16l-2 5 5-2M9 9h6M9 12h6' },
-    { to: '/wallpaper', title: 'Wallpaper', icon: 'M4 5h16v14H4zM4 15l4-4 3 3 3-3 6 6M9 9h.01' },
+    { to: '/cari', title: 'Baca', tile: '#ea580c', icon: 'M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14ZM21 21l-4.3-4.3' },
+    { to: '/playlist', title: 'Playlist', tile: '#e11d48', icon: 'M4 6h16M4 12h16M4 18h10' },
+    { to: '/riwayat', title: 'Riwayat', tile: '#2563eb', icon: 'M12 8v4l3 2m6-2a9 9 0 1 1-9-9 9 9 0 0 1 9 9Z' },
+    { to: '/profil', title: 'Profil', tile: '#6b7280', icon: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 9a7 7 0 0 1 14 0' },
+    { to: '/catatan', title: 'Catatan', tile: '#ca8a04', icon: 'M5 4h14v12H5zM5 16l-2 5 5-2M9 9h6M9 12h6' },
+    { to: '/wallpaper', title: 'Wallpaper', tile: '#16a34a', icon: 'M4 5h16v14H4zM4 15l4-4 3 3 3-3 6 6M9 9h.01' },
 ];
 
 // Layar utama gaya macOS: bar menu atas (logo, jam live, daya),
@@ -147,7 +149,7 @@ export default function Menu({ onRead, wallpaper, route, onLock }) {
                         aria-label={a.title}
                         title={a.title}
                     >
-                        <span className="mac-icon">
+                        <span className="mac-icon" style={{ background: a.tile }}>
                             <Icon d={a.icon} />
                         </span>
                     </Link>
