@@ -42,12 +42,35 @@ export default function Menu({ onRead, wallpaper }) {
     const { member, token, logout } = useSession();
     const { date, time } = useClock();
     const [resume, setResume] = useState(null);
+    // Notifikasi lanjutkan bisa disilang; yang disilang tidak muncul lagi.
+    const [dismissed, setDismissed] = useState(() => {
+        try {
+            return JSON.parse(localStorage.getItem('resume_dismissed') || '[]');
+        } catch {
+            return [];
+        }
+    });
+
+    const dismiss = (bookId) => {
+        setDismissed((d) => {
+            const next = [...d, bookId];
+            try {
+                localStorage.setItem('resume_dismissed', JSON.stringify(next));
+            } catch {
+                // abaikan
+            }
+            return next;
+        });
+        setResume(null);
+    };
 
     useEffect(() => {
         if (!token) return;
         readerApi(token, 'GET', '/api/v1/reader/progress')
             .then((d) => {
-                const current = (d.progress || []).find((p) => p.status === 'baca' && p.book);
+                const current = (d.progress || []).find(
+                    (p) => p.status === 'baca' && p.book && !dismissed.includes(p.book.id),
+                );
                 setResume(current || null);
             })
             .catch(() => {});
@@ -83,9 +106,19 @@ export default function Menu({ onRead, wallpaper }) {
 
             <main className="kiosk-main">
                 {resume && (
-                    <button type="button" className="kiosk-resume" onClick={() => onRead(resume.book, resume.page)}>
-                        Lanjutkan: {resume.book.title} (halaman {resume.page})
-                    </button>
+                    <div className="resume-wrap">
+                        <button type="button" className="kiosk-resume" onClick={() => onRead(resume.book, resume.page)}>
+                            Lanjutkan: {resume.book.title} (halaman {resume.page})
+                        </button>
+                        <button
+                            type="button"
+                            className="resume-x"
+                            onClick={() => dismiss(resume.book.id)}
+                            aria-label="Tutup notifikasi lanjutan"
+                        >
+                            ✕
+                        </button>
+                    </div>
                 )}
                 <nav className="kiosk-grid" aria-label="Layanan">
                     {CARDS.map((c) => (

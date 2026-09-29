@@ -1656,19 +1656,27 @@ body {
     margin-top: 0;
 }
 
-.resume-card {
+.resume-wrap {
     display: flex;
-    flex-direction: column;
-    gap: 0.125rem;
-    text-align: left;
+    gap: 0.5rem;
+    align-items: stretch;
+}
+
+.resume-wrap .kiosk-resume {
+    flex: 1;
+}
+
+.resume-x {
     font: inherit;
-    color: var(--ink);
-    padding: 1.25rem 1.5rem;
-    border: 1px solid var(--accent);
+    font-weight: 700;
+    width: 44px;
+    min-height: 44px;
+    flex-shrink: 0;
+    border: 1px solid var(--line);
     border-radius: var(--radius);
     background: var(--card);
+    color: var(--muted);
     cursor: pointer;
-    width: 100%;
 }
 
 .resume-label {
