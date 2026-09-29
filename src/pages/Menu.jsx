@@ -104,7 +104,6 @@ export default function Menu({ onRead, wallpaper, route, onLock }) {
             </header>
 
             <main className="os-desktop">
-                <p className="os-hello">Halo, {member?.name || 'Santri'}</p>
                 {resume && (
                     <div className={winZoom ? 'mac-window mac-zoom' : 'mac-window'} role="group" aria-label="Lanjutkan bacaan">
                         <div className="mac-titlebar">
