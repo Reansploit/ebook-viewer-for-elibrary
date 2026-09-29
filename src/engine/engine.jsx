@@ -1,15 +1,52 @@
-// Kontrak engine viewer. Tim engine mengganti `useStubEngine` dengan
-// implementasi asli selama bentuk kembaliannya sama. `source` bebas
-// bentuknya; yang dipakai: title, pageCount, dan fileUrl (URL absolut
-// berkas PDF/EPUB dari API elibrary, engine asli membacanya di sini).
-// Bila source.ir (Document IR Reo) terisi, ReoPage yang render.
+// Kontrak engine viewer: useEngine(source) -> {
+//   title, pageCount, page, status, error, goTo, next, prev, renderPage }.
+// source.fileUrl (URL absolut PDF/EPUB dari API) dibuka via Reo-Engine
+// parseFile. Tanpa fileUrl = demo stub (buka langsung #/baca).
+import { parseFile } from '@reo-engine/loader';
+import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import ReoPage from './ReoPage.jsx';
-//
-import { useCallback, useState } from 'react';
 
-export function useStubEngine(source = {}, startPage = 1) {
+export function useEngine(source = {}, startPage = 1) {
     const title = source.title || 'Dokumen tanpa judul';
-    const pageCount = Math.max(1, source.pageCount || 1);
+    const [doc, setDoc] = useState(null);
+    const [status, setStatus] = useState(source.fileUrl ? 'loading' : 'ready');
+    const [error, setError] = useState(null);
+    const handleRef = useRef(null);
+
+    useEffect(() => {
+        if (!source.fileUrl) return;
+        const controller = new AbortController();
+        setStatus('loading');
+        setError(null);
+        parseFile(source.fileUrl, {
+            title: source.title,
+            signal: controller.signal,
+            pdf: { workerSrc: workerUrl },
+        })
+            .then((handle) => {
+                if (controller.signal.aborted) {
+                    handle.close();
+                    return;
+                }
+                handleRef.current?.close().catch(() => {});
+                handleRef.current = handle;
+                setDoc({ ir: handle.ir, pageCount: handle.pageCount });
+                setStatus('ready');
+            })
+            .catch((err) => {
+                if (controller.signal.aborted) return;
+                setError(err?.message || 'Gagal membuka berkas.');
+                setStatus('error');
+            });
+        return () => {
+            controller.abort();
+            handleRef.current?.close().catch(() => {});
+            handleRef.current = null;
+        };
+    }, [source.fileUrl]);
+
+    const pageCount = Math.max(1, doc?.pageCount || source.pageCount || 1);
     const [page, setPage] = useState(Math.min(pageCount, Math.max(1, startPage || 1)));
 
     const goTo = useCallback(
@@ -23,19 +60,19 @@ export function useStubEngine(source = {}, startPage = 1) {
 
     const renderPage = useCallback(
         (n) => {
+            if (doc?.ir) return <ReoPage key={source.fileUrl} ir={doc.ir} theme={source.theme} />;
             if (source.ir) return <ReoPage ir={source.ir} theme={source.theme} />;
             return (
                 <div className="page-placeholder">
                     <p>Halaman {n}</p>
-                    <p className="page-placeholder-sub">Engine asli belum dipasang.</p>
+                    <p className="page-placeholder-sub">
+                        {status === 'loading' ? 'Menyiapkan dokumen...' : 'Engine asli belum dipasang.'}
+                    </p>
                 </div>
             );
         },
-        [source.ir, source.theme],
+        [doc, source.ir, source.theme, source.fileUrl, status],
     );
 
-    return { title, pageCount, page, status: 'ready', error: null, goTo, next, prev, renderPage };
+    return { title, pageCount, page, status, error, goTo, next, prev, renderPage };
 }
-
-// Alias yang dipakai UI. Tim engine: arahkan ke hook asli di sini.
-export const useEngine = useStubEngine;

@@ -20,15 +20,17 @@ versi engine yang dipakai selalu ketahuan (lihat `git ls-files -s`).
 - `src/engine/ReoPage.jsx` memakai `mountDocumentReader` asli untuk
   `source.ir` (Document IR). Kontrak UI tidak berubah.
 
-## Yang belum bisa (ke tim engine)
+## Status: tersambung penuh (engine e68209e)
 
-1. **Berkas PDF/EPUB mentah belum dirender.** Viewer memberi
-   `source.fileUrl` (URL absolut dari API elibrary). Yang dibutuhkan:
-   pintu masuk berkas-ke-IR (`parseFile(url) -> DocumentIR`) atau
-   contoh pemakaian `mountAdaptivePage` + analisis dari pdf.js.
-2. **EPUB belum ada parser.** Berkas yang diunggah petugas bisa EPUB.
-3. **Nomor halaman.** Kontrak UI butuh `pageCount` nyata dan lompat ke
-   halaman N. Perlu API engine: total halaman + render halaman ke-N.
-4. **Cabang yang dilacak `main` (produksi).** Kalau ingin viewer ikut
-   lebih cepat, pindahkan submodule ke `develop`:
-   `git submodule set-branch -b develop vendor/reo-engine`.
+- `parseFile(url)` dari paket `loader` membuka PDF/EPUB → `{ ir,
+  pageCount }`. Viewer memanggilnya di `src/engine/engine.jsx`
+  (butuh `pdfjs-dist` + `fflate` di viewer).
+- PDF dirender sebagai IR via `ReoPage`; `mountAdaptivePage` (kanvas
+  adaptif) belum dipakai — langkah berikutnya bila IR kurang pas
+  untuk kitab scan.
+- EPUB dihitung sebagai dokumen spine (tanpa konsep halaman).
+
+## Catatan
+
+- Cabang yang dilacak `main` (produksi). Untuk ikut lebih cepat:
+  `git submodule set-branch -b develop vendor/reo-engine`.

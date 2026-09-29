@@ -13,6 +13,8 @@ export default defineConfig({
       { find: '@reo-engine/parser-html', replacement: path.resolve(__dirname, 'vendor/reo-engine/packages/parser-html/src/index.ts') },
       { find: '@reo-engine/parser-markdown', replacement: path.resolve(__dirname, 'vendor/reo-engine/packages/parser-markdown/src/index.ts') },
       { find: '@reo-engine/parser-pdf', replacement: path.resolve(__dirname, 'vendor/reo-engine/packages/parser-pdf/src/index.ts') },
+      { find: '@reo-engine/parser-epub', replacement: path.resolve(__dirname, 'vendor/reo-engine/packages/parser-epub/src/index.ts') },
+      { find: '@reo-engine/loader', replacement: path.resolve(__dirname, 'vendor/reo-engine/packages/loader/src/index.ts') },
       { find: '@reo-engine/layout-engine', replacement: path.resolve(__dirname, 'vendor/reo-engine/packages/layout-engine/src/index.ts') },
       { find: '@reo-engine/style-adaptation', replacement: path.resolve(__dirname, 'vendor/reo-engine/packages/style-adaptation/src/index.ts') },
       { find: '@reo-engine/renderer-web', replacement: path.resolve(__dirname, 'vendor/reo-engine/packages/renderer-web/src/index.ts') },
