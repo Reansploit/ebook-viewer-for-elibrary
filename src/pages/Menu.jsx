@@ -126,6 +126,8 @@ export default function Menu({ onRead, wallpaper, route, onLock }) {
     // saat mulai diseret agar tidak menciut.
     const [winPos, setWinPos] = useState(null);
     const [winW, setWinW] = useState(null);
+    // Lebar normal terakhir (untuk kembali dari zoom saat diseret).
+    const normalW = useRef(null);
     const winRef = useRef(null);
 
     const dismiss = (bookId) => {
@@ -149,11 +151,27 @@ export default function Menu({ onRead, wallpaper, route, onLock }) {
     const bg = wallpaper && wallpaper !== 'polos' ? wallpaper : '/mac.jpg';
 
     const dragStart = (e) => {
-        if (winZoom || e.button !== undefined && e.button !== 0) return;
-        if (winRef.current) setWinW(winRef.current.offsetWidth);
+        if (e.button !== undefined && e.button !== 0) return;
+        const el = winRef.current;
+        if (!el) return;
+        // Maximize ikut bisa diseret ala macOS: keluar zoom dulu.
+        if (winZoom) {
+            setWinZoom(false);
+            if (normalW.current) setWinW(normalW.current);
+        } else {
+            setWinW(el.offsetWidth);
+        }
+        // Jangkar dari posisi visual saat ini (bukan 0,0) agar tidak teleport.
+        const rect = el.getBoundingClientRect();
+        const base = {
+            x: rect.left + rect.width / 2 - window.innerWidth / 2,
+            y: rect.top - window.innerHeight * 0.3,
+        };
+        setWinPos(base);
+        normalW.current = el.offsetWidth;
         const startX = e.clientX;
         const startY = e.clientY;
-        const orig = winPos || { x: 0, y: 0 };
+        const orig = base;
         // Containment ala jQuery UI: jendela tidak boleh hilang dari layar.
         const clamp = (x, y) => {
             const vw = window.innerWidth;
