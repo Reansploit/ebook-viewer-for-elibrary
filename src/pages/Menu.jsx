@@ -154,8 +154,17 @@ export default function Menu({ onRead, wallpaper, route, onLock }) {
         const startX = e.clientX;
         const startY = e.clientY;
         const orig = winPos || { x: 0, y: 0 };
+        // Containment ala jQuery UI: jendela tidak boleh hilang dari layar.
+        const clamp = (x, y) => {
+            const vw = window.innerWidth;
+            const vh = window.innerHeight;
+            return {
+                x: Math.min(vw / 2 - 140, Math.max(-(vw / 2 - 140), x)),
+                y: Math.min(vh * 0.7 - 120, Math.max(-(vh * 0.3 - 80), y)),
+            };
+        };
         const move = (ev) => {
-            setWinPos({ x: orig.x + ev.clientX - startX, y: orig.y + ev.clientY - startY });
+            setWinPos(clamp(orig.x + ev.clientX - startX, orig.y + ev.clientY - startY));
         };
         const up = () => {
             window.removeEventListener('pointermove', move);
