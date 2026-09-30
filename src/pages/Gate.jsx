@@ -117,8 +117,8 @@ export default function Gate({ onEnter }) {
                                 </div>
                         </div>
                         <div className="fs-actions">
-                            <CyberBtn kbd="⛶" label="proceed" action="Proceed" onClick={goFull} />
-                            <CyberBtn kbd="✕" label="cancel" action="Cancel" onClick={() => setFsAsk(false)} />
+                            <CyberBtn kbd="→" label="proceed" action="Proceed" onClick={goFull} />
+                            <CyberBtn kbd="×" label="cancel" action="Cancel" onClick={() => setFsAsk(false)} />
                         </div>
                     </div>
                 </div>
@@ -129,7 +129,7 @@ export default function Gate({ onEnter }) {
                         <form className="gate-form" onSubmit={submit}>
                             <HoloRfid value={rfid} onChange={setRfid} disabled={busy} />
                             <div className="gate-next">
-                                <CyberBtn type="submit" kbd="⏎" label="Next" action="Next" />
+                                <CyberBtn type="submit" kbd="→" label="Next" action="Next" />
                             </div>
                         </form>
                         {busy && <div className="fx-spotlight">mencari...</div>}
@@ -153,8 +153,8 @@ export default function Gate({ onEnter }) {
                             <p className="profile-meta">Kelas {member.class}</p>
                         </div>
                         <div className="gate-actions">
-                            <CyberBtn kbd="⏎" label="Next" action="Masuk" onClick={onEnter} />
-                            <CyberBtn kbd="✕" label="Bukan kamu" action="Batal" onClick={cancel} />
+                            <CyberBtn kbd="→" label="Next" action="Masuk" onClick={onEnter} />
+                            <CyberBtn kbd="×" label="Bukan kamu" action="Batal" onClick={cancel} />
                         </div>
                     </>
                 )}

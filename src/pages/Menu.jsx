@@ -180,7 +180,10 @@ export default function Menu({ onRead, wallpaper, route, onLock }) {
                         aria-expanded={powerOpen}
                         aria-label="Menu daya"
                     >
-                        ⏻
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                            <path d="M12 3v9" strokeLinecap="round" />
+                            <path d="M6.3 6.5a8 8 0 1 0 11.4 0" strokeLinecap="round" />
+                        </svg>
                     </button>
                     {powerOpen && (
                         <span className="os-menu">
@@ -206,7 +209,7 @@ export default function Menu({ onRead, wallpaper, route, onLock }) {
                         <div className="mac-titlebar" onPointerDown={dragStart} style={{ touchAction: 'none', cursor: 'move' }}>
                             <span className="mac-traffic">
                                 <button type="button" className="mac-dot mac-close" onClick={() => dismiss(resume.book.id)} aria-label="Tutup">
-                                    <span aria-hidden="true">✕</span>
+                                    <span aria-hidden="true">×</span>
                                 </button>
                                 <button
                                     type="button"
