@@ -122,8 +122,11 @@ export default function Menu({ onRead, wallpaper, route, onLock }) {
     // Jendela lanjutkan: minimize = ciutkan isi, zoom = lebarkan.
     const [winMin, setWinMin] = useState(false);
     const [winZoom, setWinZoom] = useState(false);
-    // Seret jendela lewat titlebar seperti OS beneran.
+    // Seret jendela lewat titlebar seperti OS beneran. Lebar dikunci
+    // saat mulai diseret agar tidak menciut.
     const [winPos, setWinPos] = useState(null);
+    const [winW, setWinW] = useState(null);
+    const winRef = useRef(null);
 
     const dismiss = (bookId) => {
         setDismissed((d) => (d.includes(bookId) ? d : [...d, bookId]));
@@ -147,6 +150,7 @@ export default function Menu({ onRead, wallpaper, route, onLock }) {
 
     const dragStart = (e) => {
         if (winZoom || e.button !== undefined && e.button !== 0) return;
+        if (winRef.current) setWinW(winRef.current.offsetWidth);
         const startX = e.clientX;
         const startY = e.clientY;
         const orig = winPos || { x: 0, y: 0 };
@@ -201,10 +205,23 @@ export default function Menu({ onRead, wallpaper, route, onLock }) {
             <main className="os-desktop">
                 {resume && (
                     <div
+                        ref={winRef}
                         className={winZoom ? 'mac-window mac-zoom' : 'mac-window'}
                         role="group"
                         aria-label="Lanjutkan bacaan"
-                        style={winPos && !winZoom ? { position: 'fixed', left: `calc(50% + ${winPos.x}px)`, top: `calc(30% + ${winPos.y}px)`, translate: '-50% 0', zIndex: 5, margin: 0 } : undefined}
+                        style={
+                            winPos && !winZoom
+                                ? {
+                                    position: 'fixed',
+                                    left: `calc(50% + ${winPos.x}px)`,
+                                    top: `calc(30% + ${winPos.y}px)`,
+                                    translate: '-50% 0',
+                                    zIndex: 5,
+                                    margin: 0,
+                                    width: winW || undefined,
+                                }
+                                : undefined
+                        }
                     >
                         <div className="mac-titlebar" onPointerDown={dragStart} style={{ touchAction: 'none', cursor: 'move' }}>
                             <span className="mac-traffic">

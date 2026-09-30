@@ -2507,7 +2507,7 @@ body {
 }
 
 .mac-window.mac-zoom {
-    max-width: none;
+    max-width: 44rem;
 }
 
 .mac-titlebar {
