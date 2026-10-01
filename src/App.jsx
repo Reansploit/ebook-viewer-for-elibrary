@@ -189,7 +189,7 @@ function Shell() {
     // Keluar benar = tombol Keluar di Profil (logout menghapus ini).
     const [entered, setEntered] = useState(() => {
         try {
-            return localStorage.getItem('reader_entered') === '1';
+            return sessionStorage.getItem('reader_entered') === '1';
         } catch {
             return false;
         }
@@ -217,7 +217,7 @@ function Shell() {
         // Pengaman: API/halaman lambat pun maksimal 25 detik.
         setTimeout(() => setBooted(true), 25000);
         try {
-            localStorage.setItem('reader_entered', '1');
+            sessionStorage.setItem('reader_entered', '1');
         } catch {
             // abaikan
         }
@@ -255,7 +255,7 @@ function Shell() {
                 setEntered(false);
                 setEntering(false);
                 try {
-                    localStorage.removeItem('reader_entered');
+                    sessionStorage.removeItem('reader_entered');
                 } catch {
                     // abaikan
                 }
