@@ -969,7 +969,19 @@ export default function Menu({ onRead, wallpaper, setWallpaper, route, onLock })
                                 {a.title}
                             </span>
                             <span className="mac-icon" style={{ background: a.tile, scale, translate: `${push}px 0` }}>
-                                <a.Art />
+                                {a.to === '/profil' && member ? (
+                                    member.photo ? (
+                                        <img src={member.photo} alt="" className="mac-icon-photo" />
+                                    ) : (
+                                        <span className="mac-icon-initial" aria-hidden="true">
+                                            {(member.name || '?').trim().charAt(0).toUpperCase()}
+                                        </span>
+                                    )
+                                ) : a.to === '/wallpaper' && wallpaper && wallpaper !== 'polos' ? (
+                                    <img src={wallpaper} alt="" className="mac-icon-photo" />
+                                ) : (
+                                    <a.Art />
+                                )}
                             </span>
                             {a.to === '/playlist' && plCount > 0 && (
                                 <span className="mac-badge" aria-hidden="true">
