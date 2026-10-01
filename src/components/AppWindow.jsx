@@ -239,12 +239,51 @@ export function WinOpen({ onZoom, children }) {
 }
 
 // Pratayang halaman asli di dalam jendela (seperti thumbnail OS):
-// rute yang sama dimuat dalam bingkai, digambar setengah ukuran,
-// klik = buka penuh. Interaksi dalam pratayang dimatikan.
+// rute yang sama dimuat dalam bingkai, skala mengikuti lebar tombol,
+// tinggi mengisi sisa jendela. Klik = buka penuh.
+const PREVIEW_W = 800;
+
 export function WinPreview({ to, title, onZoom }) {
+    const btnRef = useRef(null);
+    const [scale, setScale] = useState(0.5);
+    const [frameH, setFrameH] = useState(448);
+
+    useEffect(() => {
+        const el = btnRef.current;
+        if (!el || typeof ResizeObserver === 'undefined') return undefined;
+        const update = () => {
+            const w = el.clientWidth;
+            const h = el.clientHeight;
+            if (!w || !h) return;
+            const s = Math.min(1, Math.max(0.3, w / PREVIEW_W));
+            setScale((prev) => (Math.abs(prev - s) < 0.005 ? prev : s));
+            setFrameH((prev) => {
+                const next = Math.round(h / s);
+                return Math.abs(prev - next) < 1 ? prev : next;
+            });
+        };
+        update();
+        const ro = new ResizeObserver(update);
+        ro.observe(el);
+        return () => ro.disconnect();
+    }, []);
+
     return (
-        <button type="button" className="win-preview" onClick={onZoom} aria-label={`Buka penuh ${title}`}>
-            <iframe src={`#${to}`} title={`Pratayang ${title}`} loading="lazy" tabIndex={-1} aria-hidden="true" />
+        <button
+            ref={btnRef}
+            type="button"
+            className="win-preview"
+            onClick={onZoom}
+            aria-label={`Buka penuh ${title}`}
+        >
+            <iframe
+                src={`#${to}`}
+                title={`Pratayang ${title}`}
+                loading="lazy"
+                tabIndex={-1}
+                aria-hidden="true"
+                style={{ width: PREVIEW_W, height: frameH, transform: `scale(${scale})` }}
+            />
         </button>
     );
 }
