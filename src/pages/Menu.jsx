@@ -380,7 +380,7 @@ function ControlCenter({ open, wallpaper, setWallpaper, onLock, onSpotlight }) {
     );
 }
 
-export default function Menu({ onRead, wallpaper, setWallpaper, route, onLock }) {
+export default function Menu({ onRead, wallpaper, wpSrc, setWallpaper, route, onLock }) {
     const { member, token, logout } = useSession();
     const { date, time, now } = useClock();
     const [resume, setResume] = useState(null);
@@ -534,7 +534,7 @@ export default function Menu({ onRead, wallpaper, setWallpaper, route, onLock })
     }, [resume]);
 
     // Tanpa wallpaper custom = mac.jpg bawaan (bukan putih polos).
-    const bg = wallpaper && wallpaper !== 'polos' ? wallpaper : '/mac.jpg';
+    const bg = wpSrc && wpSrc !== 'polos' ? wpSrc : '/mac.jpg';
 
     const dragStart = (e) => {
         if (e.button !== undefined && e.button !== 0) return;
@@ -689,7 +689,7 @@ export default function Menu({ onRead, wallpaper, setWallpaper, route, onLock })
             body: (
                 <>
                     <img
-                        src={wallpaper === 'polos' ? '/mac.jpg' : wallpaper}
+                        src={wpSrc === 'polos' ? '/mac.jpg' : wpSrc}
                         alt={`Wallpaper ${wpName}`}
                         className="win-wp"
                         loading="lazy"
@@ -972,8 +972,8 @@ export default function Menu({ onRead, wallpaper, setWallpaper, route, onLock })
                                             {(member.name || '?').trim().charAt(0).toUpperCase()}
                                         </span>
                                     )
-                                ) : a.to === '/wallpaper' && wallpaper && wallpaper !== 'polos' ? (
-                                    <img src={wallpaper} alt="" className="mac-icon-photo" />
+                                ) : a.to === '/wallpaper' && wpSrc && wpSrc !== 'polos' ? (
+                                    <img src={wpSrc} alt="" className="mac-icon-photo" />
                                 ) : (
                                     <a.Art />
                                 )}

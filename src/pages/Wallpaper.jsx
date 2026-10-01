@@ -12,7 +12,7 @@ const BUILT_IN = [
     { id: '/wallpapers/golden.jpg', name: 'Golden (terang)' },
     { id: '/wallpapers/sur.jpg', name: 'Sur (terang)' },
 ];
-export default function Wallpaper({ wallpaper, setWallpaper }) {
+export default function Wallpaper({ wallpaper, wpSrc, setWallpaper }) {
     const { member, token } = useSession();
     const [file, setFile] = useState(null);
     const [busy, setBusy] = useState(false);
@@ -89,7 +89,7 @@ export default function Wallpaper({ wallpaper, setWallpaper }) {
                     </div>
                 </section>
                 {wallpaper !== 'polos' && !BUILT_IN.some((w) => String(wallpaper || '').endsWith(w.id)) && (
-                    <img src={wallpaper} alt="Wallpaper saat ini" className="wp-preview" />
+                    <img src={wpSrc !== 'polos' ? wpSrc : wallpaper} alt="Wallpaper saat ini" className="wp-preview" />
                 )}
                 <form className="section" onSubmit={save}>
                     <label className="section-title" htmlFor="wp-file">

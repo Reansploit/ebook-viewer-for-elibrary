@@ -7,6 +7,7 @@ import { readerApi } from './api.js';
 import { useHashRoute } from './router.jsx';
 import { SessionProvider, useSession } from './session.jsx';
 import { detectTone } from './wp.js';
+import { clearWallpaperCache, fetchWallpaperBlob, getWallpaperBlob } from './wpCache.js';
 import { useTheme } from './theme.jsx';
 import Browse from './pages/Browse.jsx';
 import Catalog from './pages/Catalog.jsx';
@@ -299,6 +300,7 @@ function Shell() {
             } catch {
                 // abaikan
             }
+            clearWallpaperCache();
             setTheme('light');
             setSettingsDone(true);
             return;
@@ -322,8 +324,41 @@ function Shell() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token]);
 
-    // Praunduh gambar wallpaper agar menu dibuka saat gambar sudah ada.
-    // Gambar rusak (otorisasi basi, 404) = jatuh ke bawaan, bukan putih.
+    // Sumber tampil wallpaper: URL objek dari cache disk bila ada,
+    // kalau tidak URL aslinya. Logika (perbandingan, PUT) tetap pakai URL.
+    const [wpSrc, setWpSrc] = useState(wallpaper);
+    useEffect(() => {
+        if (wallpaper === 'polos') {
+            setWpSrc('polos');
+            return;
+        }
+        let live = true;
+        let obj = null;
+        getWallpaperBlob(wallpaper)
+            .then(async (blob) => {
+                if (!live) return;
+                if (blob) {
+                    obj = URL.createObjectURL(blob);
+                    setWpSrc(obj);
+                }
+                const fresh = await fetchWallpaperBlob(wallpaper);
+                if (!live) return;
+                if (!fresh) {
+                    if (!blob) setWpSrc(wallpaper);
+                    return;
+                }
+                if (obj) URL.revokeObjectURL(obj);
+                obj = URL.createObjectURL(fresh);
+                setWpSrc(obj);
+            })
+            .catch(() => {
+                if (live) setWpSrc(wallpaper);
+            });
+        return () => {
+            live = false;
+            if (obj) URL.revokeObjectURL(obj);
+        };
+    }, [wallpaper]);
     const fallbackWp = () => {
         setWallpaperState('/mac.jpg');
         setTheme('dark');
@@ -335,7 +370,7 @@ function Shell() {
         setImgDone(true);
     };
     useEffect(() => {
-        if (wallpaper === 'polos') {
+        if (wpSrc === 'polos') {
             setImgDone(true);
             return;
         }
@@ -350,12 +385,12 @@ function Shell() {
         img.onerror = () => {
             if (live) fallbackWp();
         };
-        img.src = wallpaper;
+        img.src = wpSrc;
         return () => {
             live = false;
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [wallpaper]);
+    }, [wpSrc]);
 
     // Pengaman refresh: tanpa enter(), boot tetap dibatasi 25 detik.
     useEffect(() => {
@@ -409,7 +444,7 @@ function Shell() {
     else if (path === '/catatan') page = authedRoute(<Notes />);
     else if (path === '/wallpaper')
         page = authedRoute(
-            <Wallpaper wallpaper={wallpaper} setWallpaper={setWallpaper} />,
+            <Wallpaper wallpaper={wallpaper} wpSrc={wpSrc} setWallpaper={setWallpaper} />,
         );
     else if (!authed) page = <Gate onEnter={enter} />;
     else if (!entered && !entering) page = <Gate onEnter={enter} />;
@@ -421,7 +456,7 @@ function Shell() {
                 </main>
             </div>
         );
-    else page = <Menu onRead={openBook} wallpaper={wallpaper} setWallpaper={setWallpaper} route={path} onLock={() => setEntered(false)} />;
+    else page = <Menu onRead={openBook} wallpaper={wallpaper} wpSrc={wpSrc} setWallpaper={setWallpaper} route={path} onLock={() => setEntered(false)} />;
 
     return <>{page}</>;
 }
