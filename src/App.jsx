@@ -363,7 +363,7 @@ function Shell() {
         page = (
             <div className="reader entering-black">
                 <main className="portal">
-                    <TextShimmer>Cooking up your best experience…</TextShimmer>
+                    <TextShimmer>Cooking...</TextShimmer>
                 </main>
             </div>
         );
