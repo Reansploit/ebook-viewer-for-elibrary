@@ -1,6 +1,4 @@
 import { useEffect, useState } from 'react';
-import CyberBtn from '../components/CyberBtn.jsx';
-import HoloRfid from '../components/HoloRfid.jsx';
 import { useSession } from '../session.jsx';
 
 // Layar penuh kios: F11 browser atau Fullscreen API sama-sama dihitung.
@@ -26,13 +24,29 @@ function useKioskFullscreen() {
     return fs;
 }
 
-// Gerbang portal: tempel kartu RFID lalu Enter (scanner mengetik + Enter,
-// halaman tidak pindah). Cocok = tampilkan profil + tombol Masuk.
+// Jam besar ala login macOS.
+function useLoginClock() {
+    const [now, setNow] = useState(() => new Date());
+    useEffect(() => {
+        const t = setInterval(() => setNow(new Date()), 1000);
+        return () => clearInterval(t);
+    }, []);
+    return {
+        time: now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+        date: now.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long' }),
+    };
+}
+
+// Gerbang ala login macOS: jam besar, avatar, pil RFID + Enter
+// (scanner mengetik + Enter, halaman tidak pindah). Kartu salah =
+// avatar bergoyang seperti password salah. Cocok = tombol Masuk.
 export default function Gate({ onEnter }) {
     const { member, login, logout } = useSession();
     const [rfid, setRfid] = useState('');
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState('');
+    const [errKey, setErrKey] = useState(0);
+    const { time, date } = useLoginClock();
     const fs = useKioskFullscreen();
     // Dialog fullscreen: tampil bila belum penuh. Hitung 5 detik,
     // habis = coba penuh sendiri. Batal = diam sampai refresh.
@@ -76,6 +90,7 @@ export default function Gate({ onEnter }) {
             } else {
                 setError('Kartu tidak dikenal. Tempelkan kartu santri yang terdaftar.');
             }
+            setErrKey((k) => k + 1);
         } finally {
             clearTimeout(timer);
             setBusy(false);
@@ -89,76 +104,89 @@ export default function Gate({ onEnter }) {
     };
 
     return (
-        <div className="reader gate-dark gate-cyber">
-            <div className="gate-brand">
-                <img src="/images/logo-wbs.png" alt="" className="site-logo" />
-                <span className="gate-brand-name">elibrary</span>
-            </div>
+        <div className="mac-login">
+            <div className="mac-login-bg" aria-hidden="true" />
+            <header className="mac-login-clock">
+                <span className="mac-login-time">{time}</span>
+                <span className="mac-login-date">{date}</span>
+            </header>
             {fsAsk && !fs && !member && (
-                <div className="fs-dialog" role="alertdialog" aria-label="Layar penuh">
-                    <div className="fs-modal">
-                        <span className="fs-backdrop" aria-hidden="true">
-                            <span className="fs-corner" aria-hidden="true" />
-                        </span>
-                        <span className="fs-version" aria-hidden="true">
-                            v001
-                        </span>
-                        <h2 className="fs-title">
-                            <span>please f11 before it</span>
-                        </h2>
-                        <div className="fs-text">
-                            {fsFailed && <p>otomatis ditolak browser: tekan F11 manual.</p>}
-                        </div>
-                        <div className="fs-glitch" aria-hidden="true">
-                            <h2>
-                                <span>please f11 before it</span>
-                            </h2>
-                            <div className="fs-text">
-                                </div>
-                        </div>
-                        <div className="fs-actions">
-                            <CyberBtn kbd="→" label="proceed" action="Proceed" onClick={goFull} />
-                            <CyberBtn kbd="×" label="cancel" action="Cancel" onClick={() => setFsAsk(false)} />
-                        </div>
+                <div className="mac-login-fs" role="alertdialog" aria-label="Layar penuh">
+                    <p className="mac-login-fs-title">Mode kios</p>
+                    <p className="mac-login-fs-text">
+                        Tekan F11 atau tombol di bawah untuk layar penuh.
+                        {fsFailed && ' Otomatis ditolak browser.'}
+                    </p>
+                    <div className="mac-login-row">
+                        <button type="button" className="login-pill" onClick={goFull}>
+                            Layar penuh
+                        </button>
+                        <button type="button" className="login-ghost" onClick={() => setFsAsk(false)}>
+                            Nanti
+                        </button>
                     </div>
                 </div>
             )}
-            <main className="portal">
+            <main className="mac-login-main">
                 {!member ? (
-                    <>
-                        <form className="gate-form" onSubmit={submit}>
-                            <HoloRfid value={rfid} onChange={setRfid} disabled={busy} />
-                            <div className="gate-next">
-                                <CyberBtn type="submit" kbd="→" label="Next" action="Next" />
-                            </div>
+                    <div key={errKey} className={error ? 'login-shake' : undefined}>
+                        <div className="mac-login-avatar" aria-hidden="true">
+                            <img src="/images/logo-wbs.png" alt="" />
+                        </div>
+                        <p className="mac-login-name">Perpustakaan</p>
+                        <form className="mac-login-form" onSubmit={submit}>
+                            <input
+                                type="password"
+                                className="mac-login-input"
+                                value={rfid}
+                                onChange={(e) => setRfid(e.target.value)}
+                                disabled={busy}
+                                autoFocus
+                                autoComplete="off"
+                                placeholder="Tempel kartu santri"
+                                aria-label="Tempel kartu santri lalu tekan Enter"
+                            />
+                            <p className="mac-login-hint">
+                                {busy ? 'Mencari...' : 'Tempel kartu lalu tekan Enter'}
+                            </p>
                         </form>
-                        {busy && <div className="fx-spotlight">mencari...</div>}
                         {error && (
-                            <div className="reader-state">
-                                <p>{error}</p>
-                            </div>
+                            <p className="mac-login-error" role="alert">
+                                {error}
+                            </p>
                         )}
-                    </>
+                    </div>
                 ) : (
                     <>
-                        <div className="profile-card">
+                        <div className="mac-login-avatar">
                             {member.photo ? (
-                                <img src={member.photo} alt={member.name} className="profile-photo" />
+                                <img src={member.photo} alt="" />
                             ) : (
-                                <div className="profile-photo profile-photo-empty" aria-hidden="true">
+                                <span aria-hidden="true">
                                     {(member.name || '?').trim().charAt(0).toUpperCase()}
-                                </div>
+                                </span>
                             )}
-                            <p className="profile-name">{member.name}</p>
-                            <p className="profile-meta">Kelas {member.class}</p>
                         </div>
-                        <div className="gate-actions">
-                            <CyberBtn kbd="→" label="Next" action="Masuk" onClick={onEnter} />
-                            <CyberBtn kbd="×" label="Bukan kamu" action="Batal" onClick={cancel} />
+                        <p className="mac-login-name">{member.name}</p>
+                        <p className="mac-login-sub">Kelas {member.class}</p>
+                        <div className="mac-login-row">
+                            <button type="button" className="login-pill" onClick={onEnter} autoFocus>
+                                Masuk
+                            </button>
+                            <button type="button" className="login-ghost" onClick={cancel}>
+                                Bukan kamu
+                            </button>
                         </div>
                     </>
                 )}
             </main>
+            <footer className="mac-login-foot">
+                {!fs && (
+                    <button type="button" className="login-ghost" onClick={goFull}>
+                        Layar penuh
+                    </button>
+                )}
+            </footer>
         </div>
     );
 }
