@@ -4,6 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "setup": "git submodule update --init vendor/reo-engine && npm install",
+    "update-engine": "git submodule update --remote vendor/reo-engine && git add vendor/reo-engine",
+    "predev": "git submodule update --init vendor/reo-engine",
+    "prebuild": "git submodule update --init vendor/reo-engine",
     "dev": "vite",
     "build": "vite build",
     "lint": "oxlint",
