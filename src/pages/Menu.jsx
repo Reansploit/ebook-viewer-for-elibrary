@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { api, readerApi } from '../api.js';
 import { useHashRoute } from '../router.jsx';
-import { CatatanBody, MacWindow, WinOpen } from '../components/AppWindow.jsx';
+import { CatatanBody, MacWindow, WinOpen, WinPreview } from '../components/AppWindow.jsx';
 import { useSession } from '../session.jsx';
 import { useTheme } from '../theme.jsx';
 import { detectTone } from '../wp.js';
@@ -595,6 +595,7 @@ export default function Menu({ onRead, wallpaper, setWallpaper, route, onLock })
                         <span className="win-status">
                             {resume ? `${resume.book.title} — halaman ${resume.page}` : 'Cari ebook lalu baca di sini.'}
                         </span>
+                        <WinPreview to={to} title="Baca" onZoom={zoom} />
                         <span className="win-actions">
                             <button type="button" className="win-openbtn" onClick={() => go('/cari')}>
                                 Cari ebook
@@ -618,6 +619,7 @@ export default function Menu({ onRead, wallpaper, setWallpaper, route, onLock })
                         <span className="win-status">
                             {token ? `${plCount} simpanan di daftar dan tandaan` : 'Masuk untuk memakai playlist.'}
                         </span>
+                        <WinPreview to={to} title="Playlist" onZoom={zoom} />
                         <WinOpen onZoom={zoom} />
                     </>
                 ),
@@ -637,6 +639,7 @@ export default function Menu({ onRead, wallpaper, setWallpaper, route, onLock })
                 body: (
                     <>
                         <span className="win-status">{last}</span>
+                        <WinPreview to={to} title="Riwayat" onZoom={zoom} />
                         <WinOpen onZoom={zoom} />
                     </>
                 ),
@@ -654,6 +657,7 @@ export default function Menu({ onRead, wallpaper, setWallpaper, route, onLock })
                 body: (
                     <>
                         <span className="win-status">{member?.name ? `Masuk sebagai ${member.name}` : 'Belum masuk.'}</span>
+                        <WinPreview to={to} title="Profil" onZoom={zoom} />
                         <WinOpen onZoom={zoom} />
                     </>
                 ),
@@ -667,7 +671,12 @@ export default function Menu({ onRead, wallpaper, setWallpaper, route, onLock })
         if (to === '/catatan')
             return {
                 title: 'Catatan',
-                body: <CatatanBody onZoom={zoom} />,
+                body: (
+                    <>
+                        <CatatanBody onZoom={zoom} />
+                        <WinPreview to={to} title="Catatan" onZoom={zoom} />
+                    </>
+                ),
                 mini: (
                     <>
                         <span className="win-status">Catatan</span>
@@ -691,6 +700,7 @@ export default function Menu({ onRead, wallpaper, setWallpaper, route, onLock })
                         loading="lazy"
                     />
                     <span className="win-status">{wpName}</span>
+                    <WinPreview to={to} title="Wallpaper" onZoom={zoom} />
                     <WinOpen onZoom={zoom} />
                 </>
             ),

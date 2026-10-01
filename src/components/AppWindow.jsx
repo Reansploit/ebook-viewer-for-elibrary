@@ -104,6 +104,17 @@ export function WinOpen({ onZoom, children }) {
     );
 }
 
+// Pratayang halaman asli di dalam jendela (seperti thumbnail OS):
+// rute yang sama dimuat dalam bingkai, digambar setengah ukuran,
+// klik = buka penuh. Interaksi dalam pratayang dimatikan.
+export function WinPreview({ to, title, onZoom }) {
+    return (
+        <button type="button" className="win-preview" onClick={onZoom} aria-label={`Buka penuh ${title}`}>
+            <iframe src={`#${to}`} title={`Pratayang ${title}`} loading="lazy" tabIndex={-1} aria-hidden="true" />
+        </button>
+    );
+}
+
 // Isi jendela Catatan: jumlah catatan akun (data nyata).
 export function CatatanBody({ onZoom }) {
     const { token } = useSession();
