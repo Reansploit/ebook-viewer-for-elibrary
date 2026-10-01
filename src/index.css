@@ -3738,7 +3738,7 @@ button.mac-app {
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    animation: text-shimmer 2.5s linear infinite;
+    animation: text-shimmer 5s linear infinite;
 }
 
 @keyframes text-shimmer {
