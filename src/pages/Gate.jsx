@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSession } from '../session.jsx';
 
-// Layar penuh kios: F11 browser atau Fullscreen API sama-sama dihitung.
+// Layar penuh: F11 browser atau Fullscreen API sama-sama dihitung.
 // API hanya boleh dari gestur pengguna; otomatis 5 detik bisa ditolak
 // browser (tampilkan suruhan F11 manual bila begitu).
 function useKioskFullscreen() {
@@ -112,7 +112,7 @@ export default function Gate({ onEnter }) {
             </header>
             {fsAsk && !fs && !member && (
                 <div className="mac-login-fs" role="alertdialog" aria-label="Layar penuh">
-                    <p className="mac-login-fs-title">Mode kios</p>
+                    <p className="mac-login-fs-title">Layar penuh</p>
                     <p className="mac-login-fs-text">
                         Tekan F11 atau tombol di bawah untuk layar penuh.
                         {fsFailed && ' Otomatis ditolak browser.'}
