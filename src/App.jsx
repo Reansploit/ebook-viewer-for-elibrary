@@ -194,8 +194,19 @@ function Shell() {
             return false;
         }
     });
-    // Masuk = layar shimmer 10 detik dulu, baru menu dibuka.
+    // Masuk = layar shimmer sampai menu benar-benar siap (bukan timer
+    // buta): minimal 10 detik + wallpaper sudah termuat. Jadi tidak ada
+    // kedip wallpaper bawaan setelah masuk.
     const [entering, setEntering] = useState(false);
+    const [booted, setBooted] = useState(false);
+    const [settingsDone, setSettingsDone] = useState(false);
+    const [imgDone, setImgDone] = useState(true);
+    const wpReady = settingsDone && imgDone;
+
+    useEffect(() => {
+        if (wpReady) setBooted(true);
+    }, [wpReady]);
+
     const enter = () => {
         if (entered || entering) return;
         setEntering(true);
@@ -203,6 +214,8 @@ function Shell() {
             setEntering(false);
             setEntered(true);
         }, 10000);
+        // Pengaman: API/halaman lambat pun maksimal 25 detik.
+        setTimeout(() => setBooted(true), 25000);
         try {
             localStorage.setItem('reader_entered', '1');
         } catch {
@@ -245,12 +258,16 @@ function Shell() {
 
     // Wallpaper akun dimuat saat masuk; tema mengikuti terang-gelapnya.
     // Tanpa toggle manual: foto gelap = mode gelap, foto terang/polos = terang.
+    // Booted = pengaturan + gambar wallpaper sudah di tangan.
     useEffect(() => {
+        setBooted(false);
         if (!token) {
-            setWallpaper('polos');
+            setWallpaperState('polos');
             setTheme('light');
+            setSettingsDone(true);
             return;
         }
+        setSettingsDone(false);
         readerApi(token, 'GET', '/api/v1/reader/settings')
             .then((s) => {
                 const wp = typeof s.wallpaper === 'string' && s.wallpaper !== '' ? s.wallpaper : 'polos';
@@ -260,12 +277,38 @@ function Shell() {
                 } else {
                     detectTone(wp).then((t) => setTheme(t));
                 }
+                setSettingsDone(true);
             })
             .catch((e) => {
+                setSettingsDone(true);
                 if (e.unauthorized) logout();
             });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token]);
+
+    // Praunduh gambar wallpaper agar menu dibuka saat gambar sudah ada.
+    useEffect(() => {
+        if (wallpaper === 'polos') {
+            setImgDone(true);
+            return;
+        }
+        let live = true;
+        setImgDone(false);
+        const img = new Image();
+        img.onload = img.onerror = () => {
+            if (live) setImgDone(true);
+        };
+        img.src = wallpaper;
+        return () => {
+            live = false;
+        };
+    }, [wallpaper]);
+
+    // Pengaman refresh: tanpa enter(), boot tetap dibatasi 25 detik.
+    useEffect(() => {
+        const t = setTimeout(() => setBooted(true), 25000);
+        return () => clearTimeout(t);
+    }, []);
 
     const openBook = (book, startPage) => {
         const next = { id: book.id, title: book.title, file: book.file || null, startPage: startPage || 1 };
@@ -316,7 +359,7 @@ function Shell() {
             <Wallpaper wallpaper={wallpaper} setWallpaper={setWallpaper} />,
         );
     else if (!authed) page = <Gate onEnter={enter} />;
-    else if (entering)
+    else if (entering || !booted)
         page = (
             <div className="reader entering-black">
                 <main className="portal">
