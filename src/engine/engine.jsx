@@ -2,12 +2,20 @@
 //   title, pageCount, page, status, error, goTo, next, prev, renderPage }.
 // source.fileUrl (URL absolut PDF/EPUB dari API) dibuka via Reo-Engine
 // parseFile. Tanpa fileUrl = demo stub (buka langsung #/baca).
-import { parseFile } from '@reo-engine/loader';
-import { openPdfSource } from '@reo-engine/parser-pdf';
-import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import ReoPage from './ReoPage.jsx';
-import ReoPdfPage from './ReoPdfPage.jsx';
+// Engine berat (pdfjs, fflate, Reo-Engine) dimuat malas via import()
+// agar bundel awal menu/login tetap kecil. Alasan (R-31): pengguna
+// yang tidak baca buku tidak membayar biaya engine.
+import { Suspense, lazy, useCallback, useEffect, useRef, useState } from 'react';
+
+const ReoPage = lazy(() => import('./ReoPage.jsx'));
+const ReoPdfPage = lazy(() => import('./ReoPdfPage.jsx'));
+
+function loadPdfDeps() {
+    return Promise.all([
+        import('@reo-engine/parser-pdf'),
+        import('pdfjs-dist/build/pdf.worker.min.mjs?url'),
+    ]).then(([{ openPdfSource }, { default: workerUrl }]) => ({ openPdfSource, workerUrl }));
+}
 
 // Unduh dengan progres (kitab 200+ halaman puluhan MB).
 async function fetchBytes(url, signal, onProgress) {
@@ -57,6 +65,14 @@ export function useEngine(source = {}, startPage = 1) {
         (async () => {
             // PDF: buka sumber langsung (pageCount kilat), halaman dirender
             // sesuai dibuka. EPUB kecil: parseFile seperti biasa.
+            // Import malas: chunk engine diunduh hanya saat buka berkas.
+            const { openPdfSource, workerUrl } = await loadPdfDeps().catch((err) => {
+                if (!controller.signal.aborted) throw err;
+                return {};
+            });
+            if (controller.signal.aborted || !openPdfSource) return;
+            const { parseFile } = await import('@reo-engine/loader');
+            if (controller.signal.aborted) return;
             const handle = isPdf
                 ? await (async () => {
                     const sourceObj = await openPdfSource(
@@ -118,13 +134,8 @@ export function useEngine(source = {}, startPage = 1) {
             // PDF lewat kanvas adaptif (piksel asli kitab scan tetap utuh).
             // Tanpa key per halaman: kanvas diperbarui di tempat agar
             // pindah halaman tidak terasa refresh (halaman lama tampil
-            // sampai yang baru siap).
-            if (doc?.format === 'pdf' && doc?.source) {
-                return <ReoPdfPage key={source.fileUrl} source={doc.source} page={n} theme={source.theme} />;
-            }
-            if (doc?.ir) return <ReoPage key={source.fileUrl} ir={doc.ir} theme={source.theme} />;
-            if (source.ir) return <ReoPage ir={source.ir} theme={source.theme} />;
-            return (
+            // sampai yang baru siap). Suspense menutup jeda unduh chunk.
+            const waiting = (
                 <div className="page-placeholder">
                     <p>Halaman {n}</p>
                     <p className="page-placeholder-sub">
@@ -132,6 +143,21 @@ export function useEngine(source = {}, startPage = 1) {
                     </p>
                 </div>
             );
+            if (doc?.format === 'pdf' && doc?.source) {
+                return (
+                    <Suspense key={source.fileUrl} fallback={waiting}>
+                        <ReoPdfPage source={doc.source} page={n} theme={source.theme} />
+                    </Suspense>
+                );
+            }
+            if (doc?.ir || source.ir) {
+                return (
+                    <Suspense key={source.fileUrl} fallback={waiting}>
+                        <ReoPage ir={doc?.ir || source.ir} theme={source.theme} />
+                    </Suspense>
+                );
+            }
+            return waiting;
         },
         [doc, source.ir, source.theme, source.fileUrl, status],
     );
