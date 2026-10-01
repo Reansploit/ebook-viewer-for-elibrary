@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { api, readerApi } from '../api.js';
-import { Link } from '../router.jsx';
+import { useHashRoute } from '../router.jsx';
+import { CatatanBody, MacWindow, WinOpen } from '../components/AppWindow.jsx';
 import { useSession } from '../session.jsx';
 import { useTheme } from '../theme.jsx';
 import { detectTone } from '../wp.js';
@@ -399,6 +400,26 @@ export default function Menu({ onRead, wallpaper, setWallpaper, route, onLock })
     const [spotOpen, setSpotOpen] = useState(false);
     // Control Center: panel wallpaper + aksi cepat.
     const [ccOpen, setCcOpen] = useState(false);
+    const { go } = useHashRoute();
+    // Jendela aplikasi: `to` yang terbuka (urutan = tumpuk z) + yang diringkas.
+    const [wins, setWins] = useState([]);
+    const [minWins, setMinWins] = useState([]);
+    // Bacaan terakhir untuk jendela Riwayat.
+    const [lastRead, setLastRead] = useState(null);
+
+    const toggleWin = (to) => {
+        setWins((w) => (w.includes(to) ? [...w.filter((x) => x !== to), to] : [...w, to]));
+    };
+    const focusWin = (to) => {
+        setWins((w) => (w.includes(to) ? [...w.filter((x) => x !== to), to] : w));
+    };
+    const closeWin = (to) => {
+        setWins((w) => w.filter((x) => x !== to));
+        setMinWins((m) => m.filter((x) => x !== to));
+    };
+    const minWin = (to) => {
+        setMinWins((m) => (m.includes(to) ? m.filter((x) => x !== to) : [...m, to]));
+    };
 
     useEffect(() => {
         const onKey = (e) => {
@@ -445,6 +466,7 @@ export default function Menu({ onRead, wallpaper, setWallpaper, route, onLock })
     useEffect(() => {
         if (!token) {
             setReadDays(null);
+            setLastRead(null);
             return;
         }
         readerApi(token, 'GET', '/api/v1/reader/history')
@@ -455,6 +477,7 @@ export default function Menu({ onRead, wallpaper, setWallpaper, route, onLock })
                     if (!Number.isNaN(t)) days.add(`${t.getFullYear()}-${t.getMonth()}-${t.getDate()}`);
                 }
                 setReadDays(days);
+                setLastRead((d.history || [])[0] || null);
             })
             .catch(() => {});
     }, [token]);
@@ -558,6 +581,126 @@ export default function Menu({ onRead, wallpaper, setWallpaper, route, onLock })
         };
         window.addEventListener('pointermove', move);
         window.addEventListener('pointerup', up);
+    };
+
+    // Isi per jendela aplikasi: status nyata + tombol yang jalan.
+    // Zoom (hijau) selalu mengarah ke halaman penuhnya.
+    const winDef = (to) => {
+        const zoom = () => go(to);
+        if (to === '/cari')
+            return {
+                title: 'Baca',
+                body: (
+                    <>
+                        <span className="win-status">
+                            {resume ? `${resume.book.title} — halaman ${resume.page}` : 'Cari ebook lalu baca di sini.'}
+                        </span>
+                        <span className="win-actions">
+                            <button type="button" className="win-openbtn" onClick={() => go('/cari')}>
+                                Cari ebook
+                            </button>
+                            <WinOpen onZoom={zoom} />
+                        </span>
+                    </>
+                ),
+                mini: (
+                    <>
+                        <span className="win-status">{resume ? `Hal. ${resume.page}` : 'Baca'}</span>
+                        <WinOpen onZoom={zoom}>Buka</WinOpen>
+                    </>
+                ),
+            };
+        if (to === '/playlist')
+            return {
+                title: 'Playlist',
+                body: (
+                    <>
+                        <span className="win-status">
+                            {token ? `${plCount} simpanan di daftar dan tandaan` : 'Masuk untuk memakai playlist.'}
+                        </span>
+                        <WinOpen onZoom={zoom} />
+                    </>
+                ),
+                mini: (
+                    <>
+                        <span className="win-status">{token ? `${plCount} simpanan` : 'Playlist'}</span>
+                        <WinOpen onZoom={zoom}>Buka</WinOpen>
+                    </>
+                ),
+            };
+        if (to === '/riwayat') {
+            const last = lastRead
+                ? `${lastRead.book.title} — ${new Date(lastRead.at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}`
+                : 'Belum ada riwayat.';
+            return {
+                title: 'Riwayat',
+                body: (
+                    <>
+                        <span className="win-status">{last}</span>
+                        <WinOpen onZoom={zoom} />
+                    </>
+                ),
+                mini: (
+                    <>
+                        <span className="win-status">{token ? last : 'Riwayat'}</span>
+                        <WinOpen onZoom={zoom}>Buka</WinOpen>
+                    </>
+                ),
+            };
+        }
+        if (to === '/profil')
+            return {
+                title: 'Profil',
+                body: (
+                    <>
+                        <span className="win-status">{member?.name ? `Masuk sebagai ${member.name}` : 'Belum masuk.'}</span>
+                        <WinOpen onZoom={zoom} />
+                    </>
+                ),
+                mini: (
+                    <>
+                        <span className="win-status">{member?.name || 'Profil'}</span>
+                        <WinOpen onZoom={zoom}>Buka</WinOpen>
+                    </>
+                ),
+            };
+        if (to === '/catatan')
+            return {
+                title: 'Catatan',
+                body: <CatatanBody onZoom={zoom} />,
+                mini: (
+                    <>
+                        <span className="win-status">Catatan</span>
+                        <WinOpen onZoom={zoom}>Buka</WinOpen>
+                    </>
+                ),
+            };
+        const wpName =
+            wallpaper === 'polos'
+                ? 'Polos'
+                : (CC_WALLPAPERS.find((w) => w.id !== 'polos' && String(wallpaper || '').endsWith(w.id))?.name ||
+                    'Foto custom');
+        return {
+            title: 'Wallpaper',
+            body: (
+                <>
+                    <img
+                        src={wallpaper === 'polos' ? '/mac.jpg' : wallpaper}
+                        alt={`Wallpaper ${wpName}`}
+                        className="win-wp"
+                        loading="lazy"
+                    />
+                    <span className="win-status">{wpName}</span>
+                    <WinOpen onZoom={zoom} />
+                </>
+            ),
+            mini: (
+                <>
+                    <span className="win-status">{wpName}</span>
+                    <WinOpen onZoom={zoom}>Buka</WinOpen>
+                </>
+            ),
+        };
     };
 
     return (
@@ -698,6 +841,24 @@ export default function Menu({ onRead, wallpaper, setWallpaper, route, onLock })
             )}
 
             <main className="os-desktop">
+                {wins.map((to, i) => {
+                    const def = winDef(to);
+                    return (
+                        <MacWindow
+                            key={to}
+                            title={def.title}
+                            order={i}
+                            minimized={minWins.includes(to)}
+                            onFocus={() => focusWin(to)}
+                            onClose={() => closeWin(to)}
+                            onToggleMin={() => minWin(to)}
+                            onZoom={() => go(to)}
+                            mini={def.mini}
+                        >
+                            {def.body}
+                        </MacWindow>
+                    );
+                })}
                 {resume && (
                     <div
                         ref={winRef}
@@ -778,11 +939,13 @@ export default function Menu({ onRead, wallpaper, setWallpaper, route, onLock })
                         }
                     }
                     return (
-                        <Link
+                        <button
                             key={a.to}
-                            to={a.to}
+                            type="button"
+                            onClick={() => toggleWin(a.to)}
+                            onDoubleClick={() => go(a.to)}
                             className={
-                                (route === a.to ? 'mac-app mac-active' : 'mac-app') +
+                                (route === a.to || wins.includes(a.to) ? 'mac-app mac-active' : 'mac-app') +
                                 (bounce === a.to ? ' mac-bounce' : '')
                             }
                             aria-label={
@@ -790,7 +953,7 @@ export default function Menu({ onRead, wallpaper, setWallpaper, route, onLock })
                                     ? `${a.title}, ${plCount} simpanan`
                                     : a.title
                             }
-                            title={a.title}
+                            title={`${a.title} (klik ganda untuk buka penuh)`}
                         >
                             <span className="mac-tip" aria-hidden="true">
                                 {a.title}
@@ -803,7 +966,7 @@ export default function Menu({ onRead, wallpaper, setWallpaper, route, onLock })
                                     {plCount > 99 ? '99+' : plCount}
                                 </span>
                             )}
-                        </Link>
+                        </button>
                     );
                 })}
             </nav>
