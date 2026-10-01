@@ -376,7 +376,7 @@ function Shell() {
             <Wallpaper wallpaper={wallpaper} setWallpaper={setWallpaper} />,
         );
     else if (!authed) page = <Gate onEnter={enter} />;
-    else if (!entered) page = <Gate onEnter={enter} />;
+    else if (!entered && !entering) page = <Gate onEnter={enter} />;
     else if (entering || !booted)
         page = (
             <div className="reader entering-black">
