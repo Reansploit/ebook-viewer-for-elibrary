@@ -9,6 +9,54 @@ export function MacWindow({ title, order, minimized, onFocus, onClose, onToggleM
     const winRef = useRef(null);
     const [winPos, setWinPos] = useState(null);
     const [winW, setWinW] = useState(null);
+    // Ukuran manual dari gagang tepi (null = otomatis).
+    const [size, setSize] = useState(null);
+
+    const clampSize = (w, h) => ({
+        w: Math.min(window.innerWidth - 32, Math.max(240, w)),
+        h: Math.min(window.innerHeight - 32, Math.max(160, h)),
+    });
+
+    const startResize = (e, dir) => {
+        e.preventDefault();
+        e.stopPropagation();
+        onFocus?.();
+        const rect = winRef.current?.getBoundingClientRect();
+        if (!rect) return;
+        const startW = rect.width;
+        const startH = rect.height;
+        const startX = e.clientX;
+        const startY = e.clientY;
+        const move = (ev) => {
+            const next = clampSize(
+                startW + (ev.clientX - startX),
+                startH + (ev.clientY - startY),
+            );
+            setSize({ w: dir === 's' ? startW : next.w, h: dir === 'e' ? startH : next.h });
+        };
+        const up = () => {
+            window.removeEventListener('pointermove', move);
+            window.removeEventListener('pointerup', up);
+        };
+        window.addEventListener('pointermove', move);
+        window.addEventListener('pointerup', up);
+    };
+
+    const keyResize = (e, dir) => {
+        const rect = winRef.current?.getBoundingClientRect();
+        if (!rect) return;
+        const step = e.shiftKey ? 48 : 16;
+        let w = rect.width;
+        let h = rect.height;
+        if (e.key === 'ArrowRight' && dir !== 's') w += step;
+        else if (e.key === 'ArrowLeft' && dir !== 's') w -= step;
+        else if (e.key === 'ArrowDown' && dir !== 'e') h += step;
+        else if (e.key === 'ArrowUp' && dir !== 'e') h -= step;
+        else return;
+        e.preventDefault();
+        const next = clampSize(w, h);
+        setSize({ w: dir === 's' ? rect.width : next.w, h: dir === 'e' ? rect.height : next.h });
+    };
 
     const dragStart = (e) => {
         onFocus?.();
@@ -60,9 +108,14 @@ export function MacWindow({ title, order, minimized, onFocus, onClose, onToggleM
                         translate: '-50% 0',
                         zIndex: 5 + order,
                         margin: 0,
-                        width: winW || undefined,
+                        width: size ? size.w : winW || undefined,
+                        height: size ? size.h : undefined,
                     }
-                    : { zIndex: 5 + order }
+                    : {
+                        zIndex: 5 + order,
+                        width: size ? size.w : undefined,
+                        height: size ? size.h : undefined,
+                    }
             }
         >
             <div className="mac-titlebar" onPointerDown={dragStart} style={{ touchAction: 'none', cursor: 'move' }}>
@@ -91,6 +144,27 @@ export function MacWindow({ title, order, minimized, onFocus, onClose, onToggleM
                 <span className="mac-wintitle">{title}</span>
             </div>
             {minimized ? <div className="mac-winmini">{mini}</div> : <div className="mac-winstatic">{children}</div>}
+            <button
+                type="button"
+                className="mac-resize-e"
+                aria-label="Lebarkan jendela"
+                onPointerDown={(e) => startResize(e, 'e')}
+                onKeyDown={(e) => keyResize(e, 'e')}
+            />
+            <button
+                type="button"
+                className="mac-resize-s"
+                aria-label="Tinggikan jendela"
+                onPointerDown={(e) => startResize(e, 's')}
+                onKeyDown={(e) => keyResize(e, 's')}
+            />
+            <button
+                type="button"
+                className="mac-resize-se"
+                aria-label="Ubah ukuran jendela"
+                onPointerDown={(e) => startResize(e, 'se')}
+                onKeyDown={(e) => keyResize(e, 'se')}
+            />
         </div>
     );
 }

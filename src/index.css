@@ -3132,6 +3132,7 @@ button.mac-app {
 /* Jendela mac: titlebar kaca + lampu lalu lintas yang berfungsi
    (merah tutup, kuning ciutkan, hijau lebarkan). */
 .mac-window {
+    position: relative;
     border-radius: 0.625rem;
     overflow: hidden;
     background: rgb(255 253 246 / 0.78);
@@ -3274,6 +3275,60 @@ button.mac-app {
     object-fit: cover;
     border-radius: 0.5rem;
     display: block;
+}
+
+/* Gagang ubah ukuran: sudut terlihat, sisi tak terlihat ala OS. */
+.mac-resize-e,
+.mac-resize-s,
+.mac-resize-se {
+    position: absolute;
+    background: none;
+    border: none;
+    padding: 0;
+    touch-action: none;
+}
+
+.mac-resize-e {
+    top: 0;
+    right: 0;
+    width: 8px;
+    height: 100%;
+    cursor: ew-resize;
+}
+
+.mac-resize-s {
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 8px;
+    cursor: ns-resize;
+}
+
+.mac-resize-se {
+    right: 2px;
+    bottom: 2px;
+    width: 18px;
+    height: 18px;
+    cursor: nwse-resize;
+}
+
+.mac-resize-se::after {
+    content: '';
+    position: absolute;
+    right: 3px;
+    bottom: 3px;
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid rgb(0 0 0 / 0.3);
+    border-bottom: 2px solid rgb(0 0 0 / 0.3);
+    border-bottom-right-radius: 4px;
+}
+
+.mac-resize-e:focus-visible,
+.mac-resize-s:focus-visible,
+.mac-resize-se:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
 }
 
 /* Pratayang halaman asli: bingkai setengah ukuran, klik = buka penuh. */
