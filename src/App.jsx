@@ -376,6 +376,7 @@ function Shell() {
             <Wallpaper wallpaper={wallpaper} setWallpaper={setWallpaper} />,
         );
     else if (!authed) page = <Gate onEnter={enter} />;
+    else if (!entered) page = <Gate onEnter={enter} />;
     else if (entering || !booted)
         page = (
             <div className="reader entering-black">
@@ -384,7 +385,6 @@ function Shell() {
                 </main>
             </div>
         );
-    else if (!entered) page = <Gate onEnter={enter} />;
     else page = <Menu onRead={openBook} wallpaper={wallpaper} setWallpaper={setWallpaper} route={path} onLock={() => setEntered(false)} />;
 
     return <>{page}</>;
