@@ -81,6 +81,39 @@ body {
     padding: 2rem 1.25rem;
 }
 
+/* Tombol samping pengapit kertas: ‹ kertas ›. */
+.page-side {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 64px;
+    font-size: 2rem;
+    line-height: 1;
+    color: var(--ink);
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 0.75rem;
+    cursor: pointer;
+}
+
+.page-side:hover {
+    border-color: var(--accent);
+}
+
+.page-side:disabled {
+    opacity: 0.3;
+    cursor: default;
+}
+
+.page-side-main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    justify-content: center;
+}
+
 .page-placeholder {
     text-align: center;
     color: var(--muted);

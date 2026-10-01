@@ -142,7 +142,7 @@ function Reader({ source, bookId, startPage }) {
                 onFull={toggleFull}
                 full={full}
             />
-            <Viewport page={engine.page} renderPage={engine.renderPage} onPrev={engine.prev} onNext={engine.next} />
+            <Viewport page={engine.page} pageCount={engine.pageCount} renderPage={engine.renderPage} onPrev={engine.prev} onNext={engine.next} />
             <Controls
                 page={engine.page}
                 pageCount={engine.pageCount}
