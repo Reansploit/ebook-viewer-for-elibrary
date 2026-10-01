@@ -19,7 +19,7 @@ export default function Wallpaper({ wallpaper, wpSrc, setWallpaper }) {
     const [error, setError] = useState('');
 
     // Wallpaper bawaan = simpan path-nya seperti custom (backend terima).
-    const useBuiltIn = async (id) => {
+    const applyBuiltIn = async (id) => {
         if (busy) return;
         setBusy(true);
         setError('');
@@ -79,7 +79,7 @@ export default function Wallpaper({ wallpaper, wpSrc, setWallpaper }) {
                                 key={w.id}
                                 type="button"
                                 className={String(wallpaper || '').endsWith(w.id) ? 'wp-thumb wp-active' : 'wp-thumb'}
-                                onClick={() => useBuiltIn(w.id)}
+                                onClick={() => applyBuiltIn(w.id)}
                                 aria-pressed={String(wallpaper || '').endsWith(w.id)}
                             >
                                 <img src={w.id} alt={w.name} loading="lazy" />

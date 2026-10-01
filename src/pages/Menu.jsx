@@ -431,7 +431,9 @@ export default function Menu({ onRead, wallpaper, wpSrc, setWallpaper, route, on
     }, []);
     // Pembesaran dock ala macOS: ikon dekat kursor membesar mulus.
     // Mousemove dibatasi satu per frame agar tidak patah-patah.
+    // Posisi ikon disimpan di state (bukan dibaca dari ref saat render).
     const [mouseX, setMouseX] = useState(null);
+    const [centers, setCenters] = useState([]);
     const dockRef = useRef(null);
     const rafRef = useRef(0);
 
@@ -440,7 +442,18 @@ export default function Menu({ onRead, wallpaper, wpSrc, setWallpaper, route, on
     const trackMouse = (e) => {
         const x = e.clientX;
         cancelAnimationFrame(rafRef.current);
-        rafRef.current = requestAnimationFrame(() => setMouseX(x));
+        rafRef.current = requestAnimationFrame(() => {
+            const kids = dockRef.current?.children;
+            setMouseX(x);
+            setCenters(
+                kids
+                    ? Array.from(kids).map((el) => {
+                        const r = el.getBoundingClientRect();
+                        return r.left + r.width / 2;
+                    })
+                    : [],
+            );
+        });
     };
     // Jendela lanjutkan: minimize = ciutkan isi, zoom = lebarkan.
     const [winMin, setWinMin] = useState(false);
@@ -487,7 +500,7 @@ export default function Menu({ onRead, wallpaper, wpSrc, setWallpaper, route, on
                 setResume(current || null);
             })
             .catch(() => {});
-    }, [token]);
+    }, [token, dismissed]);
 
     // Lencana playlist: total isi daftar + simpanan (data nyata, 0 = sembunyi).
     const [plCount, setPlCount] = useState(0);
@@ -925,23 +938,21 @@ export default function Menu({ onRead, wallpaper, wpSrc, setWallpaper, route, on
                 aria-label="Aplikasi"
                 ref={dockRef}
                 onMouseMove={trackMouse}
-                onMouseLeave={() => setMouseX(null)}
+                onMouseLeave={() => {
+                    setMouseX(null);
+                    setCenters([]);
+                }}
             >
                 {APPS.map((a, i) => {
                     let scale = 1;
                     let push = 0;
-                    if (mouseX !== null && dockRef.current) {
-                        const kids = dockRef.current.children;
-                        const el = kids[i];
-                        if (el) {
-                            const r = el.getBoundingClientRect();
-                            const center = r.left + r.width / 2;
-                            const dist = Math.abs(mouseX - center);
-                            const near = Math.max(0, 1 - dist / 120);
-                            scale = 1 + 0.6 * near;
-                            // Ikon tetangga minggir menjauhi kursor.
-                            push = Math.sign(center - mouseX || 1) * 14 * Math.max(0, 1 - dist / 140);
-                        }
+                    const center = centers[i];
+                    if (mouseX !== null && center !== undefined) {
+                        const dist = Math.abs(mouseX - center);
+                        const near = Math.max(0, 1 - dist / 120);
+                        scale = 1 + 0.6 * near;
+                        // Ikon tetangga minggir menjauhi kursor.
+                        push = Math.sign(center - mouseX || 1) * 14 * Math.max(0, 1 - dist / 140);
                     }
                     return (
                         <button

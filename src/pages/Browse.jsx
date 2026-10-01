@@ -36,7 +36,7 @@ export default function Browse({ params, go }) {
                 }
             })
             .catch(() => setError(true));
-    }, [q, kategori, page]);
+    }, [q, kategori, page, categories.length]);
 
     const withParams = (patch) => {
         const p = new URLSearchParams({ q, kategori, ...patch });

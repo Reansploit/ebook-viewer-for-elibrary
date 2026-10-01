@@ -99,7 +99,7 @@ export function useEngine(source = {}, startPage = 1) {
             handleRef.current?.close().catch(() => {});
             handleRef.current = null;
         };
-    }, [source.fileUrl]);
+    }, [source.fileUrl, source.title]);
 
     const pageCount = Math.max(1, doc?.pageCount || source.pageCount || 1);
     const [page, setPage] = useState(Math.min(pageCount, Math.max(1, startPage || 1)));
