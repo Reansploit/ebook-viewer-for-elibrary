@@ -97,15 +97,71 @@ function useClock() {
     }, []);
     const date = now.toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short' });
     const time = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-    return { date, time };
+    return { date, time, now };
+}
+
+// Kisi kalender bulan berjalan, Senin dulu (id-ID).
+// Sel kosong mengisi hari sebelum tanggal 1.
+const CAL_WEEKDAYS = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+
+function monthCells(year, month) {
+    const first = (new Date(year, month, 1).getDay() + 6) % 7;
+    const count = new Date(year, month + 1, 0).getDate();
+    const cells = [];
+    for (let i = 0; i < first; i++) cells.push(null);
+    for (let d = 1; d <= count; d++) cells.push(d);
+    return cells;
+}
+
+// Panel jam + kalender: jam besar detik hidup, tanggal penuh,
+// kisi bulan ini dengan hari ini ditandai. Alasan (R-31): pembaca
+// cek waktu tanpa keluar menu, gaya panel notifikasi macOS.
+function ClockPanel({ now }) {
+    const monthName = now.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+    const fullDate = now.toLocaleDateString('id-ID', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+    });
+    const bigTime = now.toLocaleTimeString('id-ID', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+    });
+    return (
+        <span className="mac-clockpop" role="dialog" aria-label={`Jam dan kalender: ${fullDate}`}>
+            <span className="mac-clockbig">{bigTime}</span>
+            <span className="mac-clockfull">{fullDate}</span>
+            <span className="mac-calhead">{monthName}</span>
+            <span className="mac-calgrid" aria-hidden="true">
+                {CAL_WEEKDAYS.map((w) => (
+                    <span key={w} className="mac-calweek">
+                        {w}
+                    </span>
+                ))}
+                {monthCells(now.getFullYear(), now.getMonth()).map((d, i) =>
+                    d === null ? (
+                        <span key={`e-${i}`} className="mac-calday" />
+                    ) : (
+                        <span key={d} className={d === now.getDate() ? 'mac-calday mac-caltoday' : 'mac-calday'}>
+                            {d}
+                        </span>
+                    ),
+                )}
+            </span>
+        </span>
+    );
 }
 
 export default function Menu({ onRead, wallpaper, route, onLock }) {
     const { member, token, logout } = useSession();
-    const { date, time } = useClock();
+    const { date, time, now } = useClock();
     const [resume, setResume] = useState(null);
     const [dismissed, setDismissed] = useState([]);
     const [powerOpen, setPowerOpen] = useState(false);
+    // Panel jam/kalender: hover buka (macOS), klik untuk sentuh.
+    const [clockOpen, setClockOpen] = useState(false);
     // Pembesaran dock ala macOS: ikon dekat kursor membesar mulus.
     // Mousemove dibatasi satu per frame agar tidak patah-patah.
     const [mouseX, setMouseX] = useState(null);
@@ -201,13 +257,36 @@ export default function Menu({ onRead, wallpaper, route, onLock }) {
                 </span>
                 <span className="mac-appname">Menu</span>
                 <span className="os-power os-right">
-                    <span className="mac-clock">
-                        {date} {time}
+                    <span
+                        className="mac-clockwrap"
+                        onMouseEnter={() => setClockOpen(true)}
+                        onMouseLeave={() => setClockOpen(false)}
+                    >
+                        <button
+                            type="button"
+                            className="mac-clockbtn"
+                            aria-expanded={clockOpen}
+                            aria-haspopup="dialog"
+                            aria-label="Tampilkan jam dan kalender"
+                            onClick={() => {
+                                setPowerOpen(false);
+                                setClockOpen((o) => !o);
+                            }}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Escape') setClockOpen(false);
+                            }}
+                        >
+                            {date} {time}
+                        </button>
+                        {clockOpen && <ClockPanel now={now} />}
                     </span>
                     <button
                         type="button"
                         className="os-exit"
-                        onClick={() => setPowerOpen((o) => !o)}
+                        onClick={() => {
+                            setClockOpen(false);
+                            setPowerOpen((o) => !o);
+                        }}
                         aria-expanded={powerOpen}
                         aria-label="Menu daya"
                     >
