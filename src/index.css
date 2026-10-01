@@ -3677,9 +3677,11 @@ button.mac-app {
     min-height: 44px;
 }
 
-/* Layar tunggu masuk: hitam penuh, teks shimmer tetap jalan. */
+/* Layar tunggu masuk: hitam penuh selebar layar, teks shimmer tetap jalan. */
 .entering-black {
     background: #000;
+    max-width: none;
+    margin: 0;
 }
 
 .mac-appname {
