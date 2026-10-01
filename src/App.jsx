@@ -318,7 +318,7 @@ function Shell() {
     else if (!authed) page = <Gate onEnter={enter} />;
     else if (entering)
         page = (
-            <div className="reader gate-dark gate-cyber">
+            <div className="reader entering-black">
                 <main className="portal">
                     <TextShimmer>Cooking up your best experience…</TextShimmer>
                 </main>

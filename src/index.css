@@ -3677,6 +3677,11 @@ button.mac-app {
     min-height: 44px;
 }
 
+/* Layar tunggu masuk: hitam penuh, teks shimmer tetap jalan. */
+.entering-black {
+    background: #000;
+}
+
 .mac-appname {
     font-size: 0.875rem;
     font-weight: 700;
