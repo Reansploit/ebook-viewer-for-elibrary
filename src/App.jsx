@@ -223,7 +223,16 @@ function Shell() {
         }
     };
     // Wallpaper milik akun: 'polos' atau URL foto. Polos = latar putih.
-    const [wallpaper, setWallpaperState] = useState('polos');
+    // Cache lokal agar refresh langsung melukis wallpaper terakhir,
+    // bukan putih/polos dulu. Dibersihkan saat keluar (kios bersama).
+    const [wallpaper, setWallpaperState] = useState(() => {
+        try {
+            const c = localStorage.getItem('wallpaper_cache');
+            return typeof c === 'string' && c !== '' ? c : 'polos';
+        } catch {
+            return 'polos';
+        }
+    });
     // Aset milik viewer (mac.jpg, base.jpg, wallpapers/*) tidak pernah
     // absolut ke elibrary: normalkan URL basi dari sesi lama.
     const setWallpaper = (v) => {
@@ -234,6 +243,11 @@ function Shell() {
             }
         }
         setWallpaperState(v);
+        try {
+            localStorage.setItem('wallpaper_cache', v);
+        } catch {
+            // abaikan
+        }
     };
     // Buku yang dibuka: bertahan lewat refresh (kalau tidak, jatuh ke demo).
     const [reading, setReading] = useState(() => {
@@ -280,6 +294,11 @@ function Shell() {
         setBooted(false);
         if (!token) {
             setWallpaperState('polos');
+            try {
+                localStorage.removeItem('wallpaper_cache');
+            } catch {
+                // abaikan
+            }
             setTheme('light');
             setSettingsDone(true);
             return;
@@ -304,6 +323,17 @@ function Shell() {
     }, [token]);
 
     // Praunduh gambar wallpaper agar menu dibuka saat gambar sudah ada.
+    // Gambar rusak (otorisasi basi, 404) = jatuh ke bawaan, bukan putih.
+    const fallbackWp = () => {
+        setWallpaperState('/mac.jpg');
+        setTheme('dark');
+        try {
+            localStorage.setItem('wallpaper_cache', '/mac.jpg');
+        } catch {
+            // abaikan
+        }
+        setImgDone(true);
+    };
     useEffect(() => {
         if (wallpaper === 'polos') {
             setImgDone(true);
@@ -312,13 +342,19 @@ function Shell() {
         let live = true;
         setImgDone(false);
         const img = new Image();
-        img.onload = img.onerror = () => {
-            if (live) setImgDone(true);
+        img.onload = () => {
+            if (!live) return;
+            if (img.naturalWidth > 0) setImgDone(true);
+            else fallbackWp();
+        };
+        img.onerror = () => {
+            if (live) fallbackWp();
         };
         img.src = wallpaper;
         return () => {
             live = false;
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [wallpaper]);
 
     // Pengaman refresh: tanpa enter(), boot tetap dibatasi 25 detik.
