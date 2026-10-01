@@ -32,8 +32,8 @@ function useLoginClock() {
         return () => clearInterval(t);
     }, []);
     return {
-        time: now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
-        date: now.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long' }),
+        time: now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+        date: now.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' }),
     };
 }
 
@@ -86,9 +86,9 @@ export default function Gate({ onEnter }) {
             const sisa = 10000 - (Date.now() - started);
             if (sisa > 0) await new Promise((r) => setTimeout(r, sisa));
             if (err.name === 'AbortError') {
-                setError('Jaringan lambat. Periksa koneksi lalu tempel ulang kartunya.');
+                setError('Slow network. Check the connection, then tap your card again.');
             } else {
-                setError('Kartu tidak dikenal. Tempelkan kartu santri yang terdaftar.');
+                setError('Unknown card. Use a registered student card.');
             }
             setErrKey((k) => k + 1);
         } finally {
@@ -111,29 +111,32 @@ export default function Gate({ onEnter }) {
                 <span className="mac-login-date">{date}</span>
             </header>
             {fsAsk && !fs && !member && (
-                <div className="mac-login-fs" role="alertdialog" aria-label="Layar penuh">
-                    <p className="mac-login-fs-title">Layar penuh</p>
+                <div className="mac-login-fs" role="alertdialog" aria-label="Full screen">
+                    <p className="mac-login-fs-title">Full screen</p>
                     <p className="mac-login-fs-text">
-                        Tekan F11 atau tombol di bawah untuk layar penuh.
-                        {fsFailed && ' Otomatis ditolak browser.'}
+                        Press F11 or the button below for full screen.
+                        {fsFailed && ' The automatic request was denied by the browser.'}
                     </p>
                     <div className="mac-login-row">
                         <button type="button" className="login-pill" onClick={goFull}>
-                            Layar penuh
+                            Full screen
                         </button>
                         <button type="button" className="login-ghost" onClick={() => setFsAsk(false)}>
-                            Nanti
+                            Later
                         </button>
                     </div>
                 </div>
             )}
             <main className="mac-login-main">
                 {!member ? (
-                    <div key={errKey} className={error ? 'login-shake' : undefined}>
+                    <div key={errKey} className={error ? 'mac-login-idle login-shake' : 'mac-login-idle'}>
                         <div className="mac-login-avatar" aria-hidden="true">
-                            <img src="/images/logo-wbs.png" alt="" />
+                            <svg viewBox="0 0 24 24" fill="#fff" aria-hidden="true">
+                                <circle cx="12" cy="8" r="4" />
+                                <path d="M4 20c1.5-3.5 4.5-5 8-5s6.5 1.5 8 5v1H4v-1Z" />
+                            </svg>
                         </div>
-                        <p className="mac-login-name">Perpustakaan</p>
+                        <p className="mac-login-name">Library</p>
                         <form className="mac-login-form" onSubmit={submit}>
                             <input
                                 type="password"
@@ -143,11 +146,11 @@ export default function Gate({ onEnter }) {
                                 disabled={busy}
                                 autoFocus
                                 autoComplete="off"
-                                placeholder="Tempel kartu santri"
-                                aria-label="Tempel kartu santri lalu tekan Enter"
+                                placeholder="Tap your card"
+                                aria-label="Tap your card, then press Enter"
                             />
                             <p className="mac-login-hint">
-                                {busy ? 'Mencari...' : 'Tempel kartu lalu tekan Enter'}
+                                {busy ? 'Searching...' : 'Tap your card, then press Enter'}
                             </p>
                         </form>
                         {error && (
@@ -168,13 +171,13 @@ export default function Gate({ onEnter }) {
                             )}
                         </div>
                         <p className="mac-login-name">{member.name}</p>
-                        <p className="mac-login-sub">Kelas {member.class}</p>
+                        <p className="mac-login-sub">Class {member.class}</p>
                         <div className="mac-login-row">
                             <button type="button" className="login-pill" onClick={onEnter} autoFocus>
-                                Masuk
+                                Log In
                             </button>
                             <button type="button" className="login-ghost" onClick={cancel}>
-                                Bukan kamu
+                                Not you?
                             </button>
                         </div>
                     </>
@@ -183,7 +186,7 @@ export default function Gate({ onEnter }) {
             <footer className="mac-login-foot">
                 {!fs && (
                     <button type="button" className="login-ghost" onClick={goFull}>
-                        Layar penuh
+                        Full screen
                     </button>
                 )}
             </footer>
