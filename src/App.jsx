@@ -245,6 +245,23 @@ function Shell() {
     });
 
     // Keluar = kembali ke gerbang.
+    // Token berganti (kartu lain discan) = ulangi dari konfirmasi,
+    // jangan pakai status masuk basi dari sesi sebelumnya.
+    const prevToken = useRef(token);
+    useEffect(() => {
+        if (prevToken.current !== token) {
+            prevToken.current = token;
+            if (token) {
+                setEntered(false);
+                setEntering(false);
+                try {
+                    localStorage.removeItem('reader_entered');
+                } catch {
+                    // abaikan
+                }
+            }
+        }
+    }, [token]);
     useEffect(() => {
         if (!authed) {
             setEntered(false);
