@@ -116,7 +116,7 @@ function monthCells(year, month) {
 // Panel jam + kalender: jam besar detik hidup, tanggal penuh,
 // kisi bulan ini dengan hari ini ditandai. Alasan (R-31): pembaca
 // cek waktu tanpa keluar menu, gaya panel notifikasi macOS.
-function ClockPanel({ now }) {
+function ClockPanel({ now, open }) {
     const monthName = now.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
     const fullDate = now.toLocaleDateString('id-ID', {
         weekday: 'long',
@@ -130,7 +130,12 @@ function ClockPanel({ now }) {
         second: '2-digit',
     });
     return (
-        <span className="mac-clockpop" role="dialog" aria-label={`Jam dan kalender: ${fullDate}`}>
+        <span
+            className={open ? 'mac-clockpop open' : 'mac-clockpop'}
+            role="dialog"
+            aria-hidden={!open}
+            aria-label={`Jam dan kalender: ${fullDate}`}
+        >
             <span className="mac-clockbig">{bigTime}</span>
             <span className="mac-clockfull">{fullDate}</span>
             <span className="mac-calhead">{monthName}</span>
@@ -278,7 +283,7 @@ export default function Menu({ onRead, wallpaper, route, onLock }) {
                         >
                             {date} {time}
                         </button>
-                        {clockOpen && <ClockPanel now={now} />}
+                        <ClockPanel now={now} open={clockOpen} />
                     </span>
                     <button
                         type="button"
@@ -295,16 +300,14 @@ export default function Menu({ onRead, wallpaper, route, onLock }) {
                             <path d="M6.3 6.5a8 8 0 1 0 11.4 0" strokeLinecap="round" />
                         </svg>
                     </button>
-                    {powerOpen && (
-                        <span className="os-menu">
-                            <button type="button" onClick={() => { setPowerOpen(false); onLock(); }}>
-                                Kunci
-                            </button>
-                            <button type="button" onClick={logout}>
-                                Keluar
-                            </button>
-                        </span>
-                    )}
+                    <span className={powerOpen ? 'os-menu open' : 'os-menu'} aria-hidden={!powerOpen}>
+                        <button type="button" tabIndex={powerOpen ? 0 : -1} onClick={() => { setPowerOpen(false); onLock(); }}>
+                            Kunci
+                        </button>
+                        <button type="button" tabIndex={powerOpen ? 0 : -1} onClick={logout}>
+                            Keluar
+                        </button>
+                    </span>
                 </span>
             </header>
 

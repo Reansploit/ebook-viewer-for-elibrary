@@ -2366,13 +2366,38 @@ body {
     display: flex;
     flex-direction: column;
     min-width: 10rem;
-    background: rgb(0 0 0 / 0.8);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border: 1px solid rgb(255 255 255 / 0.2);
+    background: linear-gradient(180deg, rgb(40 40 44 / 0.78), rgb(16 16 18 / 0.78));
+    backdrop-filter: blur(22px) saturate(1.7);
+    -webkit-backdrop-filter: blur(22px) saturate(1.7);
+    border: 1px solid rgb(255 255 255 / 0.28);
     border-radius: 0.5rem;
+    box-shadow:
+        0 12px 32px rgb(0 0 0 / 0.45),
+        inset 0 1px 0 rgb(255 255 255 / 0.18);
     overflow: hidden;
     z-index: 10;
+    opacity: 0;
+    translate: 0 -10px;
+    visibility: hidden;
+    transition:
+        opacity 0.18s ease-out,
+        translate 0.18s ease-out,
+        visibility 0s linear 0.18s;
+}
+
+.os-menu.open {
+    opacity: 1;
+    translate: 0 0;
+    visibility: visible;
+    transition:
+        opacity 0.18s ease-out,
+        translate 0.18s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .os-menu {
+        transition: none;
+    }
 }
 
 .os-menu button {
@@ -2463,14 +2488,38 @@ body {
     flex-direction: column;
     width: 15rem;
     padding: 0.875rem 1rem 1rem;
-    background: rgb(0 0 0 / 0.8);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border: 1px solid rgb(255 255 255 / 0.2);
+    background: linear-gradient(180deg, rgb(40 40 44 / 0.78), rgb(16 16 18 / 0.78));
+    backdrop-filter: blur(22px) saturate(1.7);
+    -webkit-backdrop-filter: blur(22px) saturate(1.7);
+    border: 1px solid rgb(255 255 255 / 0.28);
     border-radius: 0.75rem;
-    box-shadow: 0 12px 32px rgb(0 0 0 / 0.4);
+    box-shadow:
+        0 12px 32px rgb(0 0 0 / 0.45),
+        inset 0 1px 0 rgb(255 255 255 / 0.18);
     color: #fff;
     z-index: 10;
+    opacity: 0;
+    translate: 0 -10px;
+    visibility: hidden;
+    transition:
+        opacity 0.18s ease-out,
+        translate 0.18s ease-out,
+        visibility 0s linear 0.18s;
+}
+
+.mac-clockpop.open {
+    opacity: 1;
+    translate: 0 0;
+    visibility: visible;
+    transition:
+        opacity 0.18s ease-out,
+        translate 0.18s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mac-clockpop {
+        transition: none;
+    }
 }
 
 .mac-clockbig {
@@ -2504,7 +2553,7 @@ body {
 
 .mac-calweek {
     font-weight: 700;
-    color: rgb(255 255 255 / 0.6);
+    color: rgb(255 255 255 / 0.7);
     padding: 0.125rem 0;
 }
 
