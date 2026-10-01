@@ -110,11 +110,13 @@ export function MacWindow({ title, order, minimized, onFocus, onClose, onToggleM
                         margin: 0,
                         width: size ? size.w : winW || undefined,
                         height: size ? size.h : undefined,
+                        maxWidth: size ? 'none' : undefined,
                     }
                     : {
                         zIndex: 5 + order,
                         width: size ? size.w : undefined,
                         height: size ? size.h : undefined,
+                        maxWidth: size ? 'none' : undefined,
                     }
             }
         >
