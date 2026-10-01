@@ -3280,7 +3280,12 @@ button.mac-app {
 /* Gagang ubah ukuran: sudut terlihat, sisi tak terlihat ala OS. */
 .mac-resize-e,
 .mac-resize-s,
-.mac-resize-se {
+.mac-resize-se,
+.mac-resize-w,
+.mac-resize-n,
+.mac-resize-nw,
+.mac-resize-ne,
+.mac-resize-sw {
     position: absolute;
     background: none;
     border: none;
@@ -3296,6 +3301,14 @@ button.mac-app {
     cursor: ew-resize;
 }
 
+.mac-resize-w {
+    top: 0;
+    left: 0;
+    width: 8px;
+    height: 100%;
+    cursor: ew-resize;
+}
+
 .mac-resize-s {
     left: 0;
     bottom: 0;
@@ -3304,12 +3317,44 @@ button.mac-app {
     cursor: ns-resize;
 }
 
+.mac-resize-n {
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 8px;
+    cursor: ns-resize;
+}
+
+.mac-resize-se,
+.mac-resize-sw,
+.mac-resize-nw,
+.mac-resize-ne {
+    width: 18px;
+    height: 18px;
+}
+
 .mac-resize-se {
     right: 2px;
     bottom: 2px;
-    width: 18px;
-    height: 18px;
     cursor: nwse-resize;
+}
+
+.mac-resize-nw {
+    left: 2px;
+    top: 2px;
+    cursor: nwse-resize;
+}
+
+.mac-resize-ne {
+    right: 2px;
+    top: 2px;
+    cursor: nesw-resize;
+}
+
+.mac-resize-sw {
+    left: 2px;
+    bottom: 2px;
+    cursor: nesw-resize;
 }
 
 .mac-resize-se::after {
@@ -3326,7 +3371,12 @@ button.mac-app {
 
 .mac-resize-e:focus-visible,
 .mac-resize-s:focus-visible,
-.mac-resize-se:focus-visible {
+.mac-resize-se:focus-visible,
+.mac-resize-w:focus-visible,
+.mac-resize-n:focus-visible,
+.mac-resize-nw:focus-visible,
+.mac-resize-ne:focus-visible,
+.mac-resize-sw:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
 }

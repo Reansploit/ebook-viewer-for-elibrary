@@ -17,22 +17,45 @@ export function MacWindow({ title, order, minimized, onFocus, onClose, onToggleM
         h: Math.min(window.innerHeight - 32, Math.max(160, h)),
     });
 
+    // Ubah ukuran dari sisi/sudut mana saja. Sisi kiri/atas ikut
+    // menggeser posisi agar sisi lawannya diam (seperti OS beneran).
     const startResize = (e, dir) => {
         e.preventDefault();
         e.stopPropagation();
         onFocus?.();
         const rect = winRef.current?.getBoundingClientRect();
         if (!rect) return;
+        const west = dir.includes('w');
+        const north = dir.includes('n');
+        let orig = winPos;
+        if ((west || north) && !orig) {
+            orig = {
+                x: rect.left + rect.width / 2 - window.innerWidth / 2,
+                y: rect.top - window.innerHeight * 0.3,
+            };
+            setWinPos(orig);
+            setWinW(rect.width);
+        }
         const startW = rect.width;
         const startH = rect.height;
         const startX = e.clientX;
         const startY = e.clientY;
         const move = (ev) => {
-            const next = clampSize(
-                startW + (ev.clientX - startX),
-                startH + (ev.clientY - startY),
-            );
-            setSize({ w: dir === 's' ? startW : next.w, h: dir === 'e' ? startH : next.h });
+            const dx = ev.clientX - startX;
+            const dy = ev.clientY - startY;
+            const rawW = west ? startW - dx : startW + dx;
+            const rawH = north ? startH - dy : startH + dy;
+            const next = clampSize(rawW, rawH);
+            setSize({
+                w: dir === 'n' || dir === 's' ? startW : next.w,
+                h: dir === 'e' || dir === 'w' ? startH : next.h,
+            });
+            if (orig && (west || north)) {
+                setWinPos({
+                    x: west ? orig.x + (startW - next.w) / 2 : orig.x,
+                    y: north ? orig.y + (startH - next.h) : orig.y,
+                });
+            }
         };
         const up = () => {
             window.removeEventListener('pointermove', move);
@@ -48,10 +71,10 @@ export function MacWindow({ title, order, minimized, onFocus, onClose, onToggleM
         const step = e.shiftKey ? 48 : 16;
         let w = rect.width;
         let h = rect.height;
-        if (e.key === 'ArrowRight' && dir !== 's') w += step;
-        else if (e.key === 'ArrowLeft' && dir !== 's') w -= step;
-        else if (e.key === 'ArrowDown' && dir !== 'e') h += step;
-        else if (e.key === 'ArrowUp' && dir !== 'e') h -= step;
+        if (e.key === 'ArrowRight' && dir !== 'n' && dir !== 's') w += step;
+        else if (e.key === 'ArrowLeft' && dir !== 'n' && dir !== 's') w -= step;
+        else if (e.key === 'ArrowDown' && dir !== 'e' && dir !== 'w') h += step;
+        else if (e.key === 'ArrowUp' && dir !== 'e' && dir !== 'w') h -= step;
         else return;
         e.preventDefault();
         const next = clampSize(w, h);
@@ -166,6 +189,41 @@ export function MacWindow({ title, order, minimized, onFocus, onClose, onToggleM
                 aria-label="Ubah ukuran jendela"
                 onPointerDown={(e) => startResize(e, 'se')}
                 onKeyDown={(e) => keyResize(e, 'se')}
+            />
+            <button
+                type="button"
+                className="mac-resize-w"
+                aria-label="Lebarkan jendela ke kiri"
+                onPointerDown={(e) => startResize(e, 'w')}
+                onKeyDown={(e) => keyResize(e, 'w')}
+            />
+            <button
+                type="button"
+                className="mac-resize-n"
+                aria-label="Tinggikan jendela ke atas"
+                onPointerDown={(e) => startResize(e, 'n')}
+                onKeyDown={(e) => keyResize(e, 'n')}
+            />
+            <button
+                type="button"
+                className="mac-resize-nw"
+                aria-label="Ubah ukuran dari sudut kiri atas"
+                onPointerDown={(e) => startResize(e, 'nw')}
+                onKeyDown={(e) => keyResize(e, 'nw')}
+            />
+            <button
+                type="button"
+                className="mac-resize-ne"
+                aria-label="Ubah ukuran dari sudut kanan atas"
+                onPointerDown={(e) => startResize(e, 'ne')}
+                onKeyDown={(e) => keyResize(e, 'ne')}
+            />
+            <button
+                type="button"
+                className="mac-resize-sw"
+                aria-label="Ubah ukuran dari sudut kiri bawah"
+                onPointerDown={(e) => startResize(e, 'sw')}
+                onKeyDown={(e) => keyResize(e, 'sw')}
             />
         </div>
     );
