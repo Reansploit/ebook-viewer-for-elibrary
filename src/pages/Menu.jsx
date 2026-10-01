@@ -6,74 +6,69 @@ import { useSession } from '../session.jsx';
 import { useTheme } from '../theme.jsx';
 import { detectTone } from '../wp.js';
 
-// Ikon ala app macOS: ubin solid identitas + glyph putih. Bukan kaca
-// (kaca + zoom terlihat ngebug), jadi tile solid dengan bayangan.
+// Ikon dock: Lucide (lisensi ISC, gratis) sebagai glyph putih di atas
+// ubin warna identitas tiap app. Alasan (R-31): glyph konsisten dan
+// relevan (buku, daftar musik, riwayat, pengguna, catatan, gambar).
 function BooksArt() {
     return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" aria-hidden="true">
-            <path d="M12 6c-2-1.5-4.5-2-8-2v14c3.5 0 6 .5 8 2 2-1.5 4.5-2 8-2V4c-3.5 0-6 .5-8 2Zm0 0v14" />
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M12 5v16" />
+            <path d="M20.001 19A2 2 0 0022 17V5a2 2 0 00-1.999-2L16 3.002A5 5 0 0012 5a5 5 0 00-4-2H4a2 2 0 00-2 2v12a2 2 0 001.999 2H8a5 5 0 014 2 5 5 0 014-2z" />
         </svg>
     );
 }
 
 function MusicArt() {
     return (
-        <svg viewBox="0 0 24 24" fill="#fff" aria-hidden="true">
-            <circle cx="8" cy="17" r="3.2" />
-            <circle cx="19" cy="14" r="3.2" />
-            <path d="M11 17V6l8-2.5V14h-2.2V6.4L13 7.5V17h-2Z" />
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M16 5H3" />
+            <path d="M11 12H3" />
+            <path d="M11 19H3" />
+            <path d="M21 16V5" />
+            <circle cx="18" cy="16" r="3" />
         </svg>
     );
 }
 
 function CompassArt() {
     return (
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-            <circle cx="12" cy="12" r="9" fill="#fff" />
-            <polygon points="15.5,8.5 13.2,13.2 8.5,15.5 10.8,10.8" fill="#ff3b30" />
-            <polygon points="15.5,8.5 13.2,13.2 10.8,10.8" fill="#fff" />
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+            <path d="M3 3v5h5" />
+            <path d="M12 7v5l4 2" />
         </svg>
     );
 }
 
 function PersonArt() {
     return (
-        <svg viewBox="0 0 24 24" fill="#fff" aria-hidden="true">
-            <circle cx="12" cy="8" r="4" />
-            <path d="M4 20c1.5-3.5 4.5-5 8-5s6.5 1.5 8 5v1H4v-1Z" />
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M17.925 20.056a6 6 0 0 0-11.851.001" />
+            <circle cx="12" cy="11" r="4" />
+            <circle cx="12" cy="12" r="10" />
         </svg>
     );
 }
 
 function NotesArt() {
     return (
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-            <rect x="5" y="3" width="14" height="18" rx="2" fill="#fff" />
-            <rect x="5" y="3" width="14" height="6" rx="2" fill="#ffd60a" />
-            <rect x="8" y="12" width="8" height="1.6" rx="0.8" fill="#c7c7cc" />
-            <rect x="8" y="15" width="8" height="1.6" rx="0.8" fill="#c7c7cc" />
-            <rect x="8" y="18" width="5" height="1.6" rx="0.8" fill="#c7c7cc" />
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M13.4 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7.4" />
+            <path d="M2 6h4" />
+            <path d="M2 10h4" />
+            <path d="M2 14h4" />
+            <path d="M2 18h4" />
+            <path d="M21.378 5.626a1 1 0 1 0-3.004-3.004l-5.01 5.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z" />
         </svg>
     );
 }
 
 function PhotosArt() {
-    const petals = [0, 45, 90, 135, 180, 225, 270, 315];
-    const colors = ['#ff9f0a', '#ffd60a', '#34c759', '#64d2ff', '#0a84ff', '#bf5af2', '#ff375f', '#ff6482'];
     return (
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-            {petals.map((r, i) => (
-                <ellipse
-                    key={r}
-                    cx="12"
-                    cy="7.5"
-                    rx="2.6"
-                    ry="4.2"
-                    fill={colors[i]}
-                    opacity="0.85"
-                    transform={`rotate(${r} 12 12)`}
-                />
-            ))}
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+            <circle cx="9" cy="9" r="2" />
+            <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
         </svg>
     );
 }
@@ -85,8 +80,8 @@ const APPS = [
     { to: '/playlist', title: 'Playlist', tile: 'linear-gradient(180deg,#ff6482,#fc3c44)', Art: MusicArt },
     { to: '/riwayat', title: 'Riwayat', tile: 'linear-gradient(180deg,#0a84ff,#0060d0)', Art: CompassArt },
     { to: '/profil', title: 'Profil', tile: 'linear-gradient(180deg,#8e8e93,#636366)', Art: PersonArt },
-    { to: '/catatan', title: 'Catatan', tile: 'linear-gradient(180deg,#ffffff,#e5e5ea)', Art: NotesArt },
-    { to: '/wallpaper', title: 'Wallpaper', tile: 'linear-gradient(180deg,#ffffff,#d1d1d6)', Art: PhotosArt },
+    { to: '/catatan', title: 'Catatan', tile: 'linear-gradient(180deg,#ffcc00,#ff9500)', Art: NotesArt },
+    { to: '/wallpaper', title: 'Wallpaper', tile: 'linear-gradient(180deg,#64d2ff,#0a84ff)', Art: PhotosArt },
 ];
 
 // Layar utama gaya macOS: bar menu atas (logo, jam live, daya),
