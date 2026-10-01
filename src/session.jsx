@@ -6,6 +6,8 @@ import { api } from './api.js';
 // Tanpa token = tamu (boleh lihat katalog, tidak menyimpan apa-apa).
 // Diam 2 jam tanpa aktivitas = keluar otomatis.
 const IDLE_MS = 2 * 60 * 60 * 1000;
+// Peringatan 5 menit sebelumnya ("masih di sana?").
+const IDLE_WARN_MS = 5 * 60 * 1000;
 
 const SessionContext = createContext(null);
 
@@ -57,24 +59,42 @@ export function SessionProvider({ children }) {
     }, [token, member, logout]);
 
     // Diam 2 jam (tanpa sentuh, ketik, atau gulir) = keluar otomatis.
+    // 5 menit sebelumnya muncul peringatan; aktivitas apa pun
+    // membatalkannya dan mengulang hitungan dari awal.
+    // idleDeadline = 0 berarti tidak ada peringatan aktif.
+    const [idleDeadline, setIdleDeadline] = useState(0);
+    const stayRef = useRef(() => {});
+
     useEffect(() => {
-        if (!token) return undefined;
-        let timer = 0;
-        const reset = () => {
-            clearTimeout(timer);
-            timer = setTimeout(logout, IDLE_MS);
+        if (!token) {
+            setIdleDeadline(0);
+            return undefined;
+        }
+        let warnTimer = 0;
+        let outTimer = 0;
+        const arm = () => {
+            clearTimeout(warnTimer);
+            clearTimeout(outTimer);
+            setIdleDeadline(0);
+            const now = Date.now();
+            warnTimer = setTimeout(() => setIdleDeadline(now + IDLE_MS), IDLE_MS - IDLE_WARN_MS);
+            outTimer = setTimeout(logout, IDLE_MS);
         };
+        stayRef.current = arm;
         const events = ['pointerdown', 'keydown', 'scroll', 'touchstart'];
-        events.forEach((ev) => window.addEventListener(ev, reset, { passive: true }));
-        reset();
+        events.forEach((ev) => window.addEventListener(ev, arm, { passive: true }));
+        arm();
         return () => {
-            clearTimeout(timer);
-            events.forEach((ev) => window.removeEventListener(ev, reset));
+            clearTimeout(warnTimer);
+            clearTimeout(outTimer);
+            events.forEach((ev) => window.removeEventListener(ev, arm));
         };
     }, [token, logout]);
 
+    const stay = useCallback(() => stayRef.current(), []);
+
     return (
-        <SessionContext.Provider value={{ token, member, login, logout, authed: !!token && !!member }}>
+        <SessionContext.Provider value={{ token, member, login, logout, authed: !!token && !!member, idleDeadline, stay }}>
             {children}
         </SessionContext.Provider>
     );

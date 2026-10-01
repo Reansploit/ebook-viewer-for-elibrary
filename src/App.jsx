@@ -183,7 +183,20 @@ function Reader({ source, bookId, startPage }) {
 }
 
 function Shell() {
-    const { path, params, go } = useHashRoute();
+    const { idleDeadline, stay } = useSession();
+    const [idleLeft, setIdleLeft] = useState(0);
+
+    // Hitung mundur banner peringatan (logout jalan di session).
+    useEffect(() => {
+        if (!idleDeadline) {
+            setIdleLeft(0);
+            return undefined;
+        }
+        const tick = () => setIdleLeft(Math.max(0, idleDeadline - Date.now()));
+        tick();
+        const t = setInterval(tick, 1000);
+        return () => clearInterval(t);
+    }, [idleDeadline]);    const { path, params, go } = useHashRoute();
     const { token, authed, logout } = useSession();
     const { setTheme } = useTheme();
     // Status masuk bertahan lewat refresh (tokennya pun begitu).
@@ -458,7 +471,24 @@ function Shell() {
         );
     else page = <Menu onRead={openBook} wallpaper={wallpaper} wpSrc={wpSrc} setWallpaper={setWallpaper} route={path} onLock={() => setEntered(false)} />;
 
-    return <>{page}</>;
+    const idleM = Math.floor(idleLeft / 60000);
+    const idleS = Math.floor((idleLeft % 60000) / 1000);
+
+    return (
+        <>
+            {page}
+            {idleDeadline > 0 && (
+                <div className="idle-banner" role="alert">
+                    <span>
+                        Masih di sana? Keluar otomatis dalam {idleM}:{String(idleS).padStart(2, '0')}.
+                    </span>
+                    <button type="button" className="idle-stay" onClick={stay}>
+                        Tetap masuk
+                    </button>
+                </div>
+            )}
+        </>
+    );
 }
 
 export default function App() {
