@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api.js';
 import BookCard from '../components/BookCard.jsx';
+import NetState from '../components/NetState.jsx';
 import { useReaderMarks } from '../readerMarks.js';
 import CategoryChips from '../components/CategoryChips.jsx';
 import Pagination from '../components/Pagination.jsx';
@@ -16,14 +17,15 @@ export default function Browse({ params, go }) {
     const [data, setData] = useState(null);
     const [categories, setCategories] = useState([]);
     const [library, setLibrary] = useState('Perpustakaan WBS');
-    const [error, setError] = useState(false);
+    const [error, setError] = useState(null);
+    const [reloadKey, setReloadKey] = useState(0);
 
     useEffect(() => {
         setPage(1);
     }, [kategori, q]);
 
     useEffect(() => {
-        setError(false);
+        setError(null);
         api
             .all({ q, kategori, page, digital: '0' })
             .then((d) => {
@@ -35,8 +37,8 @@ export default function Browse({ params, go }) {
                     }).catch(() => {});
                 }
             })
-            .catch(() => setError(true));
-    }, [q, kategori, page, categories.length]);
+            .catch(setError);
+    }, [q, kategori, page, categories.length, reloadKey]);
 
     const withParams = (patch) => {
         const p = new URLSearchParams({ q, kategori, ...patch });
@@ -59,12 +61,7 @@ export default function Browse({ params, go }) {
                     activeId={kategori}
                     makeHref={(id) => withParams({ kategori: id })}
                 />
-                {error && (
-                    <div className="reader-state">
-                        <p>Daftar gagal dimuat.</p>
-                        <p className="page-placeholder-sub">Periksa koneksi lalu muat ulang halaman ini.</p>
-                    </div>
-                )}
+                {error && <NetState error={error} onRetry={() => setReloadKey((k) => k + 1)} />}
                 {data && data.data.length === 0 && (
                     <div className="reader-state">
                         <p>Tidak ada buku yang cocok.</p>

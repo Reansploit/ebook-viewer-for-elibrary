@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { api } from '../api.js';
 import { Link } from '../router.jsx';
 import BookCard from '../components/BookCard.jsx';
+import NetState from '../components/NetState.jsx';
 import { useReaderMarks } from '../readerMarks.js';
 import CategoryChips from '../components/CategoryChips.jsx';
 import SearchBox from '../components/SearchBox.jsx';
@@ -12,15 +13,18 @@ import ViewerHeader from '../components/ViewerHeader.jsx';
 export default function Catalog({ go }) {
     const { votes, sendVote } = useReaderMarks();
     const [data, setData] = useState(null);
-    const [error, setError] = useState(false);
+    const [error, setError] = useState(null);
+    const [reloadKey, setReloadKey] = useState(0);
     const [query, setQuery] = useState('');
     const [results, setResults] = useState(null);
     const [searching, setSearching] = useState(false);
+    const [searchErr, setSearchErr] = useState(null);
     const timer = useRef(null);
 
     useEffect(() => {
-        api.catalog().then(setData).catch(() => setError(true));
-    }, []);
+        setError(null);
+        api.catalog().then(setData).catch(setError);
+    }, [reloadKey]);
 
     const applyCounts = (bookId, likes, dislikes) => {
         const patch = (rows) => (rows || []).map((b) => (b.id === bookId ? { ...b, likes, dislikes } : b));
@@ -30,6 +34,7 @@ export default function Catalog({ go }) {
 
     const liveSearch = (q) => {
         setQuery(q);
+        setSearchErr(null);
         clearTimeout(timer.current);
         if (q.length < 1) {
             setResults(null);
@@ -43,7 +48,11 @@ export default function Catalog({ go }) {
                     setResults(d.books || []);
                     setSearching(false);
                 })
-                .catch(() => setSearching(false));
+                .catch((err) => {
+                    setSearching(false);
+                    setResults(null);
+                    setSearchErr(err);
+                });
         }, 350);
     };
 
@@ -62,16 +71,14 @@ export default function Catalog({ go }) {
                     onSubmit={(q) => q && go(`/semua?q=${encodeURIComponent(q)}`)}
                 />
 
-                {error && (
-                    <div className="reader-state">
-                        <p>Katalog gagal dimuat.</p>
-                        <p className="page-placeholder-sub">Periksa koneksi lalu muat ulang halaman ini.</p>
-                    </div>
-                )}
+                {error && <NetState error={error} onRetry={() => setReloadKey((k) => k + 1)} />}
 
                 {showResults ? (
                     <div className="result-list">
                         {searching && !results && <p className="reader-state">Mencari...</p>}
+                        {searchErr && !searching && (
+                            <NetState error={searchErr} onRetry={() => liveSearch(query)} />
+                        )}
                         {results && results.length === 0 && (
                             <div className="reader-state">
                                 <p>Tidak ditemukan.</p>

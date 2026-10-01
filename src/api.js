@@ -7,9 +7,25 @@ async function get(path, params = {}) {
     for (const [k, v] of Object.entries(params)) {
         if (v !== '' && v !== null && v !== undefined) url.searchParams.set(k, v);
     }
-    const res = await fetch(url.toString(), { headers: { Accept: 'application/json' } });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return res.json();
+    try {
+        const res = await fetch(url.toString(), { headers: { Accept: 'application/json' } });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+    } catch (err) {
+        throw netError(err);
+    }
+}
+
+// Gagal jaringan (fetch melempar TypeError) dibedakan dari galat server
+// agar halaman bisa menulis "tidak ada koneksi" dengan jujur.
+export function netError(err) {
+    if (err instanceof TypeError) {
+        const offline = new Error('Tidak ada koneksi ke server.');
+        offline.offline = true;
+        offline.cause = err;
+        return offline;
+    }
+    return err;
 }
 
 export const api = {
@@ -27,6 +43,8 @@ export const api = {
             const data = await res.json().catch(() => ({}));
             if (!res.ok) throw new Error(data.message || `HTTP ${res.status}`);
             return data;
+        }).catch((err) => {
+            throw netError(err);
         }),
     logout: (token) =>
         fetch(BASE + '/api/v1/reader/logout', {
@@ -64,15 +82,20 @@ export async function deleteWallpaper(token) {
 
 // Panggilan akun (butuh token). GET/POST/PUT/DELETE sederhana.
 export async function readerApi(token, method, path, body) {
-    const res = await fetch(BASE + path, {
-        method,
-        headers: {
-            ...authHeader(token),
-            Accept: 'application/json',
-            ...(body ? { 'Content-Type': 'application/json' } : {}),
-        },
-        ...(body ? { body: JSON.stringify(body) } : {}),
-    });
+    let res;
+    try {
+        res = await fetch(BASE + path, {
+            method,
+            headers: {
+                ...authHeader(token),
+                Accept: 'application/json',
+                ...(body ? { 'Content-Type': 'application/json' } : {}),
+            },
+            ...(body ? { body: JSON.stringify(body) } : {}),
+        });
+    } catch (err) {
+        throw netError(err);
+    }
     if (res.status === 401) {
         const err = new Error('Sesi berakhir, masuk lagi.');
         err.unauthorized = true;

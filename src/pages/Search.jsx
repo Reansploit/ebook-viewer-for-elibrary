@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { api, readerApi } from '../api.js';
 import BookCard from '../components/BookCard.jsx';
+import NetState from '../components/NetState.jsx';
 import { useReaderMarks } from '../readerMarks.js';
 import SearchBox from '../components/SearchBox.jsx';
 import ViewerHeader from '../components/ViewerHeader.jsx';
@@ -17,6 +18,7 @@ export default function Search({ onRead }) {
     const [pick, setPick] = useState({});
     const [results, setResults] = useState(null);
     const [searching, setSearching] = useState(false);
+    const [searchErr, setSearchErr] = useState(null);
     const timer = useRef(null);
 
     useEffect(() => {
@@ -43,6 +45,7 @@ export default function Search({ onRead }) {
 
     const liveSearch = (q) => {
         setQuery(q);
+        setSearchErr(null);
         clearTimeout(timer.current);
         if (q.length < 1) {
             setResults(null);
@@ -56,7 +59,11 @@ export default function Search({ onRead }) {
                     setResults(d.books || []);
                     setSearching(false);
                 })
-                .catch(() => setSearching(false));
+                .catch((err) => {
+                    setSearching(false);
+                    setResults(null);
+                    setSearchErr(err);
+                });
         }, 350);
     };
 
@@ -71,6 +78,9 @@ export default function Search({ onRead }) {
                 )}
                 {query.length >= 1 && searching && !results && (
                     <p className="reader-state">Mencari...</p>
+                )}
+                {query.length >= 1 && searchErr && !searching && (
+                    <NetState error={searchErr} onRetry={() => liveSearch(query)} />
                 )}
                 {results && results.length === 0 && (
                     <div className="reader-state">

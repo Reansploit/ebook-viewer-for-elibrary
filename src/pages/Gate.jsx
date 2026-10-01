@@ -87,6 +87,8 @@ export default function Gate({ onEnter }) {
             if (sisa > 0) await new Promise((r) => setTimeout(r, sisa));
             if (err.name === 'AbortError') {
                 setError('Slow network. Check the connection, then tap your card again.');
+            } else if (err.offline) {
+                setError('No connection to the server. Check the network, then tap again.');
             } else {
                 setError('Unknown card. Use a registered student card.');
             }

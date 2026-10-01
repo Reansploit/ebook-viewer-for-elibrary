@@ -126,6 +126,10 @@ body {
     color: var(--muted);
 }
 
+.net-retry {
+    margin-top: 0.75rem;
+}
+
 /* Portal: dua jalan (jelajahi / cari). Kartu adalah tautan sungguhan. */
 .portal {
     flex: 1;
