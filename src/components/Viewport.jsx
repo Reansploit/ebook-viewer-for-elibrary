@@ -1,6 +1,8 @@
 // Area baca. Seluruh isi halaman datang dari engine lewat renderPage.
 // Geser mouse/jari ke kiri = maju, ke kanan = mundur (ambang 60px).
 // Tombol samping ‹ › mengapit kertas untuk yang suka klik.
+import { useRef } from 'react';
+
 export default function Viewport({ page, pageCount, renderPage, onPrev, onNext }) {
     const startX = useRef(null);
 
