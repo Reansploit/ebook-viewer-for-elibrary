@@ -26,3 +26,7 @@ dist-ssr
 # folder debug lokal (jangan push)
 masalah/
 refrensi/
+
+# lokal editor/asisten
+.claude/
+.vscode/
