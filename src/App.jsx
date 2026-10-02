@@ -178,7 +178,7 @@ function Reader({ source, bookId, startPage }) {
                     {noteSaved && <p className="reader-state">Catatan tersimpan.</p>}
                 </div>
             )}
-            <footer className="watermark">© 2026 Studio-Alpaca</footer>
+            <footer className="watermark">Copyright © {new Date().getFullYear()} Studio-Alpaca</footer>
         </div>
     );
 }

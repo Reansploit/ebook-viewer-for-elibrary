@@ -191,7 +191,7 @@ export default function Gate({ onEnter }) {
                         Full screen
                     </button>
                 )}
-                <span className="watermark">© 2026 Studio-Alpaca</span>
+                <span className="watermark">Copyright © {new Date().getFullYear()} Studio-Alpaca</span>
             </footer>
         </div>
     );
