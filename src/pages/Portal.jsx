@@ -28,14 +28,15 @@ function SearchIcon() {
 // koleksi, Cari untuk langsung ke buku tertentu lalu baca.
 export default function Portal() {
     const [library, setLibrary] = useState('Perpustakaan WBS');
+    const [logo, setLogo] = useState(null);
 
     useEffect(() => {
-        api.catalog().then((d) => d.library && setLibrary(d.library)).catch(() => {});
+        api.catalog().then((d) => { if (d.library) setLibrary(d.library); if (d.logo) setLogo(d.logo); }).catch(() => {});
     }, []);
 
     return (
         <div className="reader">
-            <ViewerHeader library={library} backTo={null} />
+            <ViewerHeader library={library} backTo={null} logo={logo} />
             <main className="portal">
                 <h1 className="portal-title">Mau baca apa hari ini?</h1>
                 <div className="portal-options">

@@ -61,7 +61,7 @@ export default function Catalog({ go }) {
 
     return (
         <div className="reader">
-            <ViewerHeader library={data?.library || 'Perpustakaan WBS'} right="Katalog" />
+            <ViewerHeader library={data?.library || 'Perpustakaan WBS'} logo={data?.logo} right="Katalog" />
             <main className="page">
                 <h1 className="page-title">Cari buku</h1>
                 <p className="page-sub">Cek ketersediaan koleksi tanpa perlu login.</p>

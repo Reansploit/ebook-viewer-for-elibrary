@@ -18,6 +18,7 @@ export default function Browse({ params, go }) {
     const [data, setData] = useState(null);
     const [categories, setCategories] = useState([]);
     const [library, setLibrary] = useState('Perpustakaan WBS');
+    const [logo, setLogo] = useState(null);
     const [error, setError] = useState(null);
     const [reloadKey, setReloadKey] = useState(0);
 
@@ -35,6 +36,7 @@ export default function Browse({ params, go }) {
                     api.catalog().then((c) => {
                         setCategories(c.categories || []);
                         if (c.library) setLibrary(c.library);
+                        if (c.logo) setLogo(c.logo);
                     }).catch(() => {});
                 }
             })
@@ -50,7 +52,7 @@ export default function Browse({ params, go }) {
 
     return (
         <div className="reader">
-            <ViewerHeader library={library} backTo="/katalog" backLabel="Katalog" right="Buku fisik" />
+            <ViewerHeader library={library} backTo="/katalog" backLabel="Katalog" right="Buku fisik" logo={logo} />
             <main className="page">
                 <SearchBox
                     initial={q}

@@ -14,6 +14,7 @@ export default function Search({ onRead }) {
     const { votes, saves, sendVote, toggleSave } = useReaderMarks();
     const { token } = useSession();
     const [library, setLibrary] = useState('Perpustakaan WBS');
+    const [logo, setLogo] = useState(null);
     const [query, setQuery] = useState('');
     const [lists, setLists] = useState([]);
     const [pick, setPick] = useState({});
@@ -23,7 +24,7 @@ export default function Search({ onRead }) {
     const timer = useRef(null);
 
     useEffect(() => {
-        api.catalog().then((d) => d.library && setLibrary(d.library)).catch(() => {});
+        api.catalog().then((d) => { if (d.library) setLibrary(d.library); if (d.logo) setLogo(d.logo); }).catch(() => {});
     }, []);
 
     useEffect(() => {
@@ -70,7 +71,7 @@ export default function Search({ onRead }) {
 
     return (
         <div className="reader">
-            <ViewerHeader library={library} right="Cari buku" />
+            <ViewerHeader library={library} right="Cari buku" logo={logo} />
             <main className="page">
                 <SearchBox placeholder="Ketik judul, pengarang, atau ID buku" onSearch={liveSearch} />
                 <p className="page-sub">Hanya buku yang ada berkas digitalnya.</p>

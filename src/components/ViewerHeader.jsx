@@ -2,7 +2,7 @@ import { Link } from '../router.jsx';
 
 // Kepala halaman: tombol kembali gaya desktop + merek + konteks kanan.
 // Kembali selalu ada (kecuali backTo null) dan selalu menuju tempat nyata.
-export default function ViewerHeader({ library, backTo = '/', backLabel = 'Kembali', right }) {
+export default function ViewerHeader({ library, logo, backTo = '/', backLabel = 'Kembali', right }) {
     return (
         <header className="reader-header">
             <span className="site-brand">
@@ -11,7 +11,7 @@ export default function ViewerHeader({ library, backTo = '/', backLabel = 'Kemba
                         ‹
                     </Link>
                 )}
-                <img src="/images/logo-wbs.png" alt="" className="site-logo" />
+                <img src={logo || '/images/logo-wbs.png'} alt="" className="site-logo" />
                 <span className="site-name">{library}</span>
             </span>
             <div className="header-right">
