@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { deleteWallpaper, readerApi, uploadWallpaper } from '../api.js';
+import Footer from '../components/Footer.jsx';
 import ViewerHeader from '../components/ViewerHeader.jsx';
 import { useSession } from '../session.jsx';
 
@@ -119,6 +120,7 @@ export default function Wallpaper({ wallpaper, wpSrc, setWallpaper }) {
                     </div>
                 )}
             </main>
+            <Footer />
         </div>
     );
 }

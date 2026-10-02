@@ -6,6 +6,7 @@ import { useReaderMarks } from '../readerMarks.js';
 import CategoryChips from '../components/CategoryChips.jsx';
 import Pagination from '../components/Pagination.jsx';
 import SearchBox from '../components/SearchBox.jsx';
+import Footer from '../components/Footer.jsx';
 import ViewerHeader from '../components/ViewerHeader.jsx';
 
 // Semua buku: saring kategori + kata kunci + paginasi server 20/halaman.
@@ -90,6 +91,7 @@ export default function Browse({ params, go }) {
                     </>
                 )}
             </main>
+            <Footer />
         </div>
     );
 }

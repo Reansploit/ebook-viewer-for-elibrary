@@ -4,6 +4,7 @@ import BookCard from '../components/BookCard.jsx';
 import NetState from '../components/NetState.jsx';
 import { useReaderMarks } from '../readerMarks.js';
 import SearchBox from '../components/SearchBox.jsx';
+import Footer from '../components/Footer.jsx';
 import ViewerHeader from '../components/ViewerHeader.jsx';
 import { useSession } from '../session.jsx';
 
@@ -139,6 +140,7 @@ export default function Search({ onRead }) {
                     </div>
                 )}
             </main>
+            <Footer />
         </div>
     );
 }

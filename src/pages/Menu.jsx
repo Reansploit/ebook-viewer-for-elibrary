@@ -998,6 +998,7 @@ export default function Menu({ onRead, wallpaper, wpSrc, setWallpaper, route, on
                     );
                 })}
             </nav>
+            <span className="watermark os-credit">© 2026 Studio-Alpaca</span>
         </div>
     );
 }

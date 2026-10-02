@@ -6,6 +6,7 @@ import NetState from '../components/NetState.jsx';
 import { useReaderMarks } from '../readerMarks.js';
 import CategoryChips from '../components/CategoryChips.jsx';
 import SearchBox from '../components/SearchBox.jsx';
+import Footer from '../components/Footer.jsx';
 import ViewerHeader from '../components/ViewerHeader.jsx';
 
 // Beranda katalog: cari cepat + kategori + koleksi terbaru.
@@ -122,6 +123,7 @@ export default function Catalog({ go }) {
                     )
                 )}
             </main>
+            <Footer />
         </div>
     );
 }

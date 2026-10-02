@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 import { api, readerApi } from '../api.js';
+import Footer from '../components/Footer.jsx';
 import ViewerHeader from '../components/ViewerHeader.jsx';
 import { sanitizeNoteHtml } from '../sanitize.js';
 import { useSession } from '../session.jsx';
@@ -188,6 +189,7 @@ export default function Notes() {
                     </div>
                 </section>
             </main>
+            <Footer />
         </div>
     );
 }

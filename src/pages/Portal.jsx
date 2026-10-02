@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api.js';
 import { Link } from '../router.jsx';
+import Footer from '../components/Footer.jsx';
 import ViewerHeader from '../components/ViewerHeader.jsx';
 
 // Ikon garis seperlunya (R-04): buku untuk jelajah koleksi, kaca pembesar
@@ -54,6 +55,7 @@ export default function Portal() {
                     </Link>
                 </div>
             </main>
+            <Footer />
         </div>
     );
 }

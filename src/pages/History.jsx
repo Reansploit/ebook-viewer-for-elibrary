@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import Footer from '../components/Footer.jsx';
 import ViewerHeader from '../components/ViewerHeader.jsx';
 import { readerApi } from '../api.js';
 import { useSession } from '../session.jsx';
@@ -38,6 +39,7 @@ export default function History({ onRead }) {
                     ))}
                 </div>
             </main>
+            <Footer />
         </div>
     );
 }

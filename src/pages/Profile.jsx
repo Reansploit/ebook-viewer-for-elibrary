@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { readerApi } from '../api.js';
+import Footer from '../components/Footer.jsx';
 import ViewerHeader from '../components/ViewerHeader.jsx';
 import { useSession } from '../session.jsx';
 
@@ -96,6 +97,7 @@ export default function Profile() {
                     Keluar
                 </button>
             </main>
+            <Footer />
         </div>
     );
 }

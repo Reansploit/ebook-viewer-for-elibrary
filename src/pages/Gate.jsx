@@ -191,6 +191,7 @@ export default function Gate({ onEnter }) {
                         Full screen
                     </button>
                 )}
+                <span className="watermark">© 2026 Studio-Alpaca</span>
             </footer>
         </div>
     );

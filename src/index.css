@@ -3110,3 +3110,17 @@ button.mac-app {
 .idle-stay:hover {
     background: rgb(255 255 255 / 0.85);
 }
+
+/* Watermark studio: kecil, tengah, tidak mencolok. */
+.watermark {
+    padding: 1.5rem 1.25rem 2rem;
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--muted);
+}
+
+.watermark.os-credit {
+    padding: 0 1.25rem 0.75rem;
+    color: #fff;
+    text-shadow: 0 1px 4px rgb(0 0 0 / 0.6);
+}
