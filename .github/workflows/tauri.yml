@@ -50,7 +50,7 @@ jobs:
           if (-not [string]::IsNullOrWhiteSpace($env:VIEWER_URL)) {
             $conf = 'src-tauri/tauri.conf.json'
             $json = Get-Content $conf -Raw
-            $json = $json -replace 'https://viewer\.elibrary\.local', $env:VIEWER_URL
+            $json = $json -replace 'http://192\.168\.2\.51:3005', $env:VIEWER_URL
             Set-Content $conf $json
           }
 

@@ -16,15 +16,16 @@ native berubah (URL bawaan, ikon, updater, fullscreen).
 
 ## Ganti URL viewer server
 
-Bawaan: `https://viewer.elibrary.local` (placeholder).
+Bawaan (sudah diisi): `http://192.168.2.51:3005` — server viewer di LAN.
 
 - Cara cepat: isi repo variable `VIEWER_URL` di GitHub
   (Settings → Secrets and variables → Actions → Variables).
   Workflow otomatis menukarnya saat build.
 - Cara manual: ubah `frontendDist` di `src-tauri/tauri.conf.json`.
 
-URL boleh HTTP untuk LAN (mis. `http://192.168.1.10:4173`).
-Serve folder `dist/` hasil `npm run build` di server itu.
+URL boleh HTTP untuk LAN seperti di atas. Serve folder `dist/`
+hasil `npm run build` di server itu (port 3005). Kalau IP atau port
+server berubah, ubah `frontendDist` + ikut build ulang.
 
 ## Kunci updater (sekali saja)
 

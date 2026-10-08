@@ -7,7 +7,7 @@
     "devUrl": "http://localhost:5173",
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build",
-    "frontendDist": "https://viewer.elibrary.local"
+    "frontendDist": "http://192.168.2.51:3005"
   },
   "app": {
     "windows": [
