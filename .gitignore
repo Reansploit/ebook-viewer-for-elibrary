@@ -30,3 +30,8 @@ refrensi/
 # lokal editor/asisten
 .claude/
 .vscode/
+
+# Tauri
+src-tauri/target/
+src-tauri/*.key
+*.pem

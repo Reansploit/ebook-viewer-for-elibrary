@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Izin bawaan desktop plus updater diam.",
+  "windows": ["main"],
+  "permissions": ["core:default", "updater:default"]
+}

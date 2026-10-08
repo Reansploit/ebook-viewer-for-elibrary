@@ -1,0 +1,67 @@
+# Rilis aplikasi Tauri (Windows). Build jalan di GitHub Actions,
+# bukan di PC dev: picu dengan tag `tauri-v<versi>`.
+name: Tauri Release
+
+on:
+  push:
+    tags:
+      - 'tauri-v*'
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
+
+      - run: npm ci
+
+      # Samakan versi config dengan tag (tauri-v0.2.0 -> 0.2.0).
+      - name: Samakan versi
+        shell: pwsh
+        run: |
+          $version = '${{ github.ref_name }}' -replace '^tauri-v', ''
+          $conf = 'src-tauri/tauri.conf.json'
+          $json = Get-Content $conf -Raw
+          $json = $json -replace '"version": "[^"]+"', "`"version`": `"$version`""
+          $cargo = 'src-tauri/Cargo.toml'
+          $toml = Get-Content $cargo -Raw
+          $toml = $toml -replace '(?m)^version = "[^"]+"', "version = `"$version`""
+          Set-Content $conf $json
+          Set-Content $cargo $toml
+
+      # URL viewer diambil dari repo variable VIEWER_URL.
+      # Kosong = pakai placeholder di tauri.conf.json.
+      - name: Isi URL viewer
+        shell: pwsh
+        env:
+          VIEWER_URL: ${{ vars.VIEWER_URL }}
+        run: |
+          if (-not [string]::IsNullOrWhiteSpace($env:VIEWER_URL)) {
+            $conf = 'src-tauri/tauri.conf.json'
+            $json = Get-Content $conf -Raw
+            $json = $json -replace 'https://viewer\.elibrary\.local', $env:VIEWER_URL
+            Set-Content $conf $json
+          }
+
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+          TAURI_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_PRIVATE_KEY_PASSWORD }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: 'Ebook Viewer ${{ github.ref_name }}'
+          releaseDraft: true
+          updaterJsonKeepUniversal: false
+          args: --target x86_64-pc-windows-msvc
