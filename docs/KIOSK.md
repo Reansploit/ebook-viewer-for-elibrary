@@ -22,6 +22,11 @@ detik. Chord ini hanya satu, jadi tidak bisa ditebak tanpa disengaja.
 Chord tetap bekerja walau tidak ada halaman web yang terbuka, karena
 ditangani plugin native.
 
+Selalu paling atas (`always_on_top`): kalau aplikasi lain kebuka,
+viewer tetap menutupinya. Diuliangi setiap kali jendela kembali
+difokuskan, supaya tidak tergeser aplikasi lain yang juga
+topmost.
+
 ## Lapisan sistem (wajib untuk kunci total)
 
 Ctrl+Shift+Del, Alt+Tab, dan Win+Tab ditangani kernel dan shell
@@ -78,6 +83,9 @@ berfungsi karena shell desktop tidak pernah tampil.
 - Akses fisik ke PC selalu menjadi celah: orang bisa masuk dari
   account lain, memakai recovery Windows, atau mengganti drive. Kunci
   dengan password BIOS dan enkripsi disk bila perlu.
+- `always_on_top` ditangani Windows sebagai topmost. Aplikasi lain yang
+  juga memakai topmost secara eksklusif (mis. game atau presentasi
+  layar penuh) masih bisa menutupinya.
 
 ## Verifikasi setelah dipasang
 

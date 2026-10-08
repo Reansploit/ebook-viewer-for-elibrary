@@ -34,6 +34,13 @@ pub fn run() {
 
             let handle = app.handle().clone();
 
+            // Selalu paling atas: kalau ada aplikasi lain yang terbuka,
+            // viewer tetap menutupinya. Diuliangi saat jendela kembali
+            // difokuskan supaya tidak tergeser aplikasi topmost lain.
+            if let Some(window) = app.get_webview_window("main") {
+                let _ = window.set_always_on_top(true);
+            }
+
             // Update cangkang dicek diam-diam, dipasang untuk dipakai
             // pada peluncuran berikutnya.
             tauri::async_runtime::spawn(async move {
@@ -92,12 +99,16 @@ pub fn run() {
 
             Ok(())
         })
-        .on_window_event(|_window, event| {
-            if let WindowEvent::CloseRequested { api, .. } = event {
+        .on_window_event(|window, event| match event {
+            WindowEvent::Focused(true) => {
+                let _ = window.set_always_on_top(true);
+            }
+            WindowEvent::CloseRequested { api, .. } => {
                 if !CLOSE_UNLOCKED.load(Ordering::SeqCst) {
                     api.prevent_close();
                 }
             }
+            _ => {}
         })
         .run(tauri::generate_context!())
         .expect("gagal menjalankan Ebook Viewer");
