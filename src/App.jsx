@@ -175,7 +175,7 @@ function Reader({ source, bookId, startPage }) {
                             Simpan
                         </button>
                     </form>
-                    {noteSaved && <p className="reader-state">Catatan tersimpan.</p>}
+                    {noteSaved && <p className="reader-state">Noted bro.</p>}
                 </div>
             )}
             <footer className="watermark">Copyright © {new Date().getFullYear()} Studio-Alpaca</footer>
@@ -466,7 +466,7 @@ function Shell() {
         page = (
             <div className="reader entering-black">
                 <main className="portal">
-                    <TextShimmer>Cooking...</TextShimmer>
+                    <TextShimmer>Preparing...</TextShimmer>
                 </main>
             </div>
         );
