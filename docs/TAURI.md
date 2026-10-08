@@ -82,5 +82,6 @@ WebView2 sudah bawaan Windows 10/11, tidak perlu install.
 - Jendela putih/kosong: URL viewer salah atau server mati.
   Cek URL itu di browser biasa dulu.
 - Fullscreen: `app.windows[0].fullscreen` di `tauri.conf.json`.
+- Mode kios (kunci Alt+F4, Task Manager, chord keluar): `docs/KIOSK.md`.
 - Updater wajib HTTPS untuk endpoint: GitHub Releases sudah HTTPS,
   jadi aman walau konten viewer-nya HTTP LAN.

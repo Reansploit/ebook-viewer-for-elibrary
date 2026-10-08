@@ -3,5 +3,5 @@
   "identifier": "default",
   "description": "Izin bawaan desktop plus updater diam.",
   "windows": ["main"],
-  "permissions": ["core:default", "updater:default"]
+  "permissions": ["core:default", "updater:default", "global-shortcut:default"]
 }
