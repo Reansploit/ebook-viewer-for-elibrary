@@ -42,10 +42,12 @@ pub fn run() {
             }
 
             // Update cangkang dicek diam-diam, dipasang untuk dipakai
-            // pada peluncuran berikutnya.
+            // pada peluncuran berikutnya. Handle dicampur terpisah karena
+            // dipinjam ulang oleh shortcut di bawah.
+            let updater_handle = handle.clone();
             tauri::async_runtime::spawn(async move {
                 use tauri_plugin_updater::UpdaterExt;
-                let Ok(updater) = handle.updater() else {
+                let Ok(updater) = updater_handle.updater() else {
                     return;
                 };
                 let Ok(Some(update)) = updater.check().await else {
