@@ -3,6 +3,16 @@ name = "ebook-viewer"
 version = "0.1.0"
 edition = "2021"
 
+# Lokasi main.rs ada di root src-tauri (bukan src-tauri/src).
+[[bin]]
+name = "ebook-viewer"
+path = "main.rs"
+
+[lib]
+name = "ebook_viewer_lib"
+path = "lib.rs"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
 
